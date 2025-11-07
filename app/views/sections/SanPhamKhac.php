@@ -31,7 +31,7 @@ $spkhac = [
   </div>
 </section>
 <style>
-.spkhac-section {  margin-top : 0; position: relative; overflow: hidden; }
+.spkhac-section { text-align: center; font-size: 32px; font-weight: 800; color: #c2185b; margin-bottom: 40px; letter-spacing: 1px; }
 .spkhac-section .section-title { text-align: center; font-size: 32px; font-weight: 800; color: #c2185b; margin-bottom: 40px; letter-spacing: 1px; }
 .spkhac-section .site-width { max-width: 1200px; margin: 0 auto; }
 .spkhac-section .product-slider { position: relative; overflow: hidden; }

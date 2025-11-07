@@ -21,7 +21,9 @@ require_once __DIR__ . '/../layouts/header.php';
 <?php include __DIR__ . '/../sections/DaQuy.php'; ?>
 <?php include __DIR__ . '/../sections/Ngoc.php'; ?>
 <?php include __DIR__ . '/../sections/SanPhamKhac.php'; ?>
-<?php include __DIR__ . '/../sections/GiaVang.php'; ?>
+
+
+
 <?php include __DIR__ . '/../sections/TinTuc.php'; ?>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>

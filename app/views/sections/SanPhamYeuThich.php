@@ -1,12 +1,12 @@
 <?php
 $featuredProducts = [
-    ['id'=>1, 'name'=>'Trái tim anh đào - Sakura Heart', 'price'=>5000000, 'img'=>'public/images/a1.jpg'],
-    ['id'=>2, 'name'=>'Giọt lệ trong - Tear of Purity', 'price'=>3500000, 'img'=>'public/images/a2.jpg'],
-    ['id'=>3, 'name'=>'Hồng Diễm - Crimson Radiance', 'price'=>2000000, 'img'=>'public/images/a3.jpg'],
-    ['id'=>4, 'name'=>'Bạch Liên – White Lotus', 'price'=>1800000, 'img'=>'public/images/a4.jpg'],
-    ['id'=>5, 'name'=>'Băng Thanh - Pale Ocean', 'price'=>6000000, 'img'=>'public/images/a5.jpg'],
-    ['id'=>6, 'name'=>'Ngọc Thẳm - Deep Sapphire', 'price'=>4200000, 'img'=>'public/images/a6.jpg'],
-    ['id'=>7, 'name'=>'Hoàng Kim - Golden Radiance', 'price'=>3900000, 'img'=>'public/images/a7.jpg'],
+    ['id'=>1, 'name'=>'Trái tim anh đào - Sakura Heart', 'price'=>5000000, 'img'=>'https://i.pinimg.com/736x/12/94/d8/1294d8f172c11d72b3871e9fc29173cb.jpg'],
+    ['id'=>2, 'name'=>'Giọt lệ trong - Tear of Purity', 'price'=>3500000, 'img'=>'https://i.pinimg.com/1200x/21/19/d2/2119d25271416cf32575bd31a476fd1d.jpg'],
+    ['id'=>3, 'name'=>'Hồng Diễm - Crimson Radiance', 'price'=>2000000, 'img'=>'https://i.pinimg.com/736x/db/55/0e/db550e92f30e34cfcce2b07d539fb356.jpg'],
+    ['id'=>4, 'name'=>'Bạch Liên – White Lotus', 'price'=>1800000, 'img'=>'https://i.pinimg.com/736x/0b/05/27/0b0527600af58b7c721c7dd9095fcc94.jpg'],
+    ['id'=>5, 'name'=>'Băng Thanh - Pale Ocean', 'price'=>6000000, 'img'=>'https://i.pinimg.com/1200x/2e/92/6d/2e926d90c7adee0ecb2e1ac56a7b48c5.jpg'],
+    ['id'=>6, 'name'=>'Ngọc Thẳm - Deep Sapphire', 'price'=>4200000, 'img'=>'https://i.pinimg.com/736x/94/b7/06/94b7060d8100c3ff3978dc486f592bfd.jpg'],
+    ['id'=>7, 'name'=>'Hoàng Kim - Golden Radiance', 'price'=>3900000, 'img'=>'https://i.pinimg.com/736x/19/f5/94/19f594022698131694fa3e22785445c8.jpg'],
 ];
 ?>
 
