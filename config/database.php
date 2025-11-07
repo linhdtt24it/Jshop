@@ -1,9 +1,10 @@
 <?php
+// config/database.php
 class Database {
-    private $host = "localhost";   // máy chủ MySQL
-    private $db_name = "jshop";    // tên CSDL bạn vừa import
-    private $username = "root";    // tài khoản MySQL mặc định của XAMPP
-    private $password = "";        // mật khẩu trống (nếu bạn không đặt)
+    private $host = "localhost";
+    private $db_name = "jshop";
+    private $username = "root";
+    private $password = "";
     public $conn;
 
     public function connect() {
@@ -15,12 +16,9 @@ class Database {
                 $this->username,
                 $this->password
             );
-
-            // Bật chế độ thông báo lỗi
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
         } catch (PDOException $e) {
-            echo "❌ Kết nối CSDL thất bại: " . $e->getMessage();
+            echo "Kết nối CSDL thất bại: " . $e->getMessage();
         }
 
         return $this->conn;
