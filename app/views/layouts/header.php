@@ -21,7 +21,7 @@ require_once __DIR__ . '/../../../config/constants.php';
     <!-- GOOGLE FONTS -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- CSS CHÍNH – ĐẢM BẢO ĐƯỜNG DẪN ĐÚNG -->
+    <!-- CSS CHÍNH -->
     <link href="<?= BASE_URL ?>assets/css/header.css" rel="stylesheet">
     <link href="<?= BASE_URL ?>assets/css/footer.css" rel="stylesheet">
 </head>
@@ -45,22 +45,21 @@ require_once __DIR__ . '/../../../config/constants.php';
       </ul>
       <form class="d-flex ms-3" action="<?= BASE_URL ?>product" method="GET">
         <input class="form-control me-2" type="search" name="q" placeholder="Tìm kiếm..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
-        <button class="btn btn-outline-dark" type="submit">Tìm</button>
+        <button class="btn btn-outline-light" type="submit">Tìm</button>
       </form>
       <div class="d-flex align-items-center ms-3">
-        <?php if (isset($user)): ?>
-          <span class="me-2 text-white">Hi, <?= htmlspecialchars($user['full_name']) ?></span>
-          <a href="<?= BASE_URL ?>auth/logout" class="btn btn-outline-light btn-sm">Đăng xuất</a>
-        <?php else: ?>
-          <button class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
-            <i class="bi bi-person"></i> Đăng nhập
-          </button>
-        <?php endif; ?>
-        <a href="<?= BASE_URL ?>cart" class="btn btn-outline-success position-relative">
+        <!-- LUÔN HIỆN NÚT ĐĂNG NHẬP - BỎ HẾT CÁI KHÁC -->
+        <button class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+          <i class="bi bi-person"></i> Đăng nhập
+        </button>
+        
+        <a href="<?= BASE_URL ?>cart" class="btn btn-outline-light position-relative ms-2">
           <i class="bi bi-cart"></i> Giỏ hàng
+          <?php if (($cart_count ?? 0) > 0): ?>
           <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            <?= $cart_count ?? 0 ?>
+            <?= $cart_count ?>
           </span>
+          <?php endif; ?>
         </a>
       </div>
     </div>
@@ -97,7 +96,6 @@ require_once __DIR__ . '/../../../config/constants.php';
 <?php endif; ?>
 
 <!-- MODAL -->
-<?php if (!isset($user)): ?>
 <!-- Login Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
@@ -108,14 +106,22 @@ require_once __DIR__ . '/../../../config/constants.php';
       </div>
       <div class="modal-body">
         <form id="loginForm" action="<?= BASE_URL ?>auth/login" method="POST">
-          <div class="mb-3"><label>Email</label><input type="email" name="email" class="form-control" required></div>
-          <div class="mb-3"><label>Mật khẩu</label><input type="password" name="password" class="form-control" required></div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mật khẩu</label>
+            <input type="password" name="password" class="form-control" required>
+          </div>
           <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
         </form>
         <div id="loginMessage" class="mt-3"></div>
       </div>
       <div class="modal-footer justify-content-center">
-        <p class="text-muted mb-0">Chưa có tài khoản? <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">Đăng ký ngay</a></p>
+        <p class="text-muted mb-0">Chưa có tài khoản? 
+          <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">Đăng ký ngay</a>
+        </p>
       </div>
     </div>
   </div>
@@ -131,18 +137,31 @@ require_once __DIR__ . '/../../../config/constants.php';
       </div>
       <div class="modal-body">
         <form id="registerForm" action="<?= BASE_URL ?>auth/register" method="POST">
-          <div class="mb-3"><label>Họ tên</label><input type="text" name="name" class="form-control" required></div>
-          <div class="mb-3"><label>Email</label><input type="email" name="email" class="form-control" required></div>
-          <div class="mb-3"><label>Mật khẩu</label><input type="password" name="password" class="form-control" required></div>
-          <div class="mb-3"><label>Nhập lại</label><input type="password" name="confirm" class="form-control" required></div>
+          <div class="mb-3">
+            <label class="form-label">Họ tên</label>
+            <input type="text" name="name" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mật khẩu</label>
+            <input type="password" name="password" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Nhập lại mật khẩu</label>
+            <input type="password" name="confirm" class="form-control" required>
+          </div>
           <button type="submit" class="btn btn-success w-100">Đăng ký</button>
         </form>
         <div id="registerMessage" class="mt-3"></div>
       </div>
       <div class="modal-footer justify-content-center">
-        <p class="text-muted mb-0">Đã có tài khoản? <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">Đăng nhập</a></p>
+        <p class="text-muted mb-0">Đã có tài khoản? 
+          <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">Đăng nhập</a>
+        </p>
       </div>
     </div>
   </div>
 </div>
-<?php endif; ?>
