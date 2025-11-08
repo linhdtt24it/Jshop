@@ -1,13 +1,17 @@
 <?php
 // app/views/layouts/header.php
 require_once __DIR__ . '/../../../config/constants.php';
+
+// Đảm bảo header UTF-8
+header('Content-Type: text/html; charset=UTF-8');
 ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($page_title ?? 'JSHOP') ?> - Trang sức cao cấp</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title><?= htmlspecialchars($page_title ?? 'JSHOP', ENT_QUOTES, 'UTF-8') ?> - Trang sức cao cấp</title>
 
     <!-- BOOTSTRAP 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -18,8 +22,8 @@ require_once __DIR__ . '/../../../config/constants.php';
     <!-- SWIPER CSS -->
     <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet">
 
-    <!-- GOOGLE FONTS -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- GOOGLE FONTS - Đổi font hỗ trợ tốt tiếng Việt -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS CHÍNH -->
     <link href="<?= BASE_URL ?>assets/css/header.css" rel="stylesheet">
@@ -27,49 +31,62 @@ require_once __DIR__ . '/../../../config/constants.php';
 </head>
 <body>
 
-<!-- NAVBAR CHÍNH -->
-<nav class="navbar navbar-expand-lg navbar-top shadow-sm sticky-top">
+<!-- HEADER CHÍNH -->
+<header class="header-main">
   <div class="container">
-    <a class="navbar-brand fw-bold" href="<?= BASE_URL ?>">JSHOP</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>">Trang chủ</a></li>
-        <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>product">Sản phẩm</a></li>
-        <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>collection">Bộ sưu tập</a></li>
-        <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>news">Tin tức</a></li>
-        <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>contact">Liên hệ</a></li>
-        <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>metalprice">Giá vàng</a></li>
-      </ul>
-      <form class="d-flex ms-3" action="<?= BASE_URL ?>product" method="GET">
-        <input class="form-control me-2" type="search" name="q" placeholder="Tìm kiếm..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
-        <button class="btn btn-outline-light" type="submit">Tìm</button>
-      </form>
-      <div class="d-flex align-items-center ms-3">
-        <!-- LUÔN HIỆN NÚT ĐĂNG NHẬP - BỎ HẾT CÁI KHÁC -->
-        <button class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+    <div class="header-top">
+      <!-- Tên shop - Trên cùng bên trái -->
+      <div class="shop-name">
+        <a href="<?= BASE_URL ?>">JSHOP</a>
+      </div>
+      
+      <!-- Tìm kiếm ở giữa -->
+      <div class="search-center">
+        <form class="search-form" action="<?= BASE_URL ?>product" method="GET">
+          <input class="form-control" type="search" name="q" placeholder="Tìm kiếm sản phẩm..." value="<?= htmlspecialchars($_GET['q'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+          <button class="btn btn-search" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- Đăng nhập và giỏ hàng bên phải -->
+      <div class="user-actions">
+        <button class="btn btn-login" data-bs-toggle="modal" data-bs-target="#loginModal">
           <i class="bi bi-person"></i> Đăng nhập
         </button>
         
-        <a href="<?= BASE_URL ?>cart" class="btn btn-outline-light position-relative ms-2">
+        <a href="<?= BASE_URL ?>cart" class="btn btn-cart position-relative">
           <i class="bi bi-cart"></i> Giỏ hàng
           <?php if (($cart_count ?? 0) > 0): ?>
           <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            <?= $cart_count ?>
+            <?= htmlspecialchars($cart_count, ENT_QUOTES, 'UTF-8') ?>
           </span>
           <?php endif; ?>
         </a>
       </div>
     </div>
   </div>
+</header>
+
+<!-- NAVBAR CHÍNH - GIỮ NGUYÊN MENU -->
+<nav class="navbar navbar-main">
+  <div class="container">
+    <ul class="nav main-menu">
+      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>">Trang chủ</a></li>
+      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>product">Sản phẩm</a></li>
+      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>collection">Bộ sưu tập</a></li>
+      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>news">Tin tức</a></li>
+      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>contact">Liên hệ</a></li>
+      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>metalprice">Giá vàng</a></li>
+    </ul>
+  </div>
 </nav>
 
-<!-- SUB MENU -->
-<nav class="navbar navbar-expand-lg navbar-sub">
-  <div class="container-fluid px-5">
-    <ul class="navbar-nav mx-auto">
+<!-- SUB MENU - GIỮ NGUYÊN -->
+<nav class="navbar navbar-sub">
+  <div class="container">
+    <ul class="nav sub-menu">
       <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>product?category=1">Nam giới</a></li>
       <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>product?category=2">Nữ giới</a></li>
       <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>product?category=3">Trang sức cưới</a></li>
@@ -80,29 +97,34 @@ require_once __DIR__ . '/../../../config/constants.php';
   </div>
 </nav>
 
-<!-- SLIDER -->
+<!-- SLIDER - GIỮ NGUYÊN -->
 <?php if ($is_home ?? false): ?>
 <section class="main-slider">
   <div class="swiper mySwiper">
     <div class="swiper-wrapper">
-      <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1624365169364-0640dd10e180?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=2070" alt=""></div>
-      <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1548357194-9e1aace4e94d?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=2007" alt=""></div>
-      <div class="swiper-slide"><img src="https://i.pinimg.com/736x/87/5d/24/875d24a23b8965b56d1a1427e324d6ed.jpg" alt=""></div>
-      <div class="swiper-slide"><img src="https://i.pinimg.com/1200x/a0/f6/21/a0f621a3b2fa7086d44d9902e5613caf.jpg" alt=""></div>
+      <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1624365169364-0640dd10e180?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=2070" alt="Trang sức cao cấp"></div>
+      <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1548357194-9e1aace4e94d?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=2007" alt="Bộ sưu tập mới"></div>
+      <div class="swiper-slide"><img src="https://i.pinimg.com/736x/87/5d/24/875d24a23b8965b56d1a1427e324d6ed.jpg" alt="Trang sức phong thủy"></div>
+      <div class="swiper-slide"><img src="https://i.pinimg.com/1200x/a0/f6/21/a0f621a3b2fa7086d44d9902e5613caf.jpg" alt="Ưu đãi đặc biệt"></div>
     </div>
     <div class="swiper-pagination"></div>
   </div>
 </section>
 <?php endif; ?>
 
-<!-- MODAL -->
+<!-- NÚT BACK TO TOP -->
+<button id="backToTop" class="back-to-top" aria-label="Lên đầu trang">
+  <i class="bi bi-chevron-up"></i>
+</button>
+
+<!-- MODAL - GIỮ NGUYÊN -->
 <!-- Login Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
+      <div class="modal-header">
         <h5 class="modal-title">Đăng nhập JSHOP</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <form id="loginForm" action="<?= BASE_URL ?>auth/login" method="POST">
@@ -131,9 +153,9 @@ require_once __DIR__ . '/../../../config/constants.php';
 <div class="modal fade" id="registerModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header bg-success text-white">
+      <div class="modal-header">
         <h5 class="modal-title">Đăng ký JSHOP</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <form id="registerForm" action="<?= BASE_URL ?>auth/register" method="POST">
@@ -165,3 +187,52 @@ require_once __DIR__ . '/../../../config/constants.php';
     </div>
   </div>
 </div>
+
+<!-- JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+// Back to Top Functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const backToTopButton = document.getElementById('backToTop');
+  
+  // Hiển thị/nẩy nút khi scroll
+  window.addEventListener('scroll', function() {
+    if (window.pageYOffset > 300) {
+      backToTopButton.classList.add('show');
+    } else {
+      backToTopButton.classList.remove('show');
+    }
+  });
+  
+  // Xử lý click để scroll lên đầu trang
+  backToTopButton.addEventListener('click', function() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+  
+  // Khởi tạo Swiper (nếu có)
+  <?php if ($is_home ?? false): ?>
+  const swiper = new Swiper('.mySwiper', {
+    loop: true,
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+    autoplay: {
+      delay: 5000,
+      disableOnInteraction: false,
+    },
+    effect: 'fade',
+    fadeEffect: {
+      crossFade: true
+    },
+  });
+  <?php endif; ?>
+});
+</script>
+</body>
+</html>
