@@ -1,3 +1,14 @@
+<?php
+require_once __DIR__ . '/../../config/database.php';
+
+class Product {
+    private $conn;
+
+    public function __construct() {
+        $database = new Database();
+        $this->conn = $database->connect();
+    }
+
 
     public function getMenProducts($material_id = null, $purpose_id = null)
     {
@@ -6,7 +17,7 @@
                   FROM products p
                   LEFT JOIN materials m ON p.material_id = m.material_id
                   LEFT JOIN purposes pu ON p.purpose_id = pu.purpose_id
-                  WHERE p.category_id = 1"; // 1 = Nam giới
+                  WHERE p.category_id = 1";
 
         $params = [];
 
@@ -26,3 +37,4 @@
         $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+}

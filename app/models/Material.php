@@ -5,8 +5,8 @@ class Material {
     private $conn;
 
     public function __construct() {
-        $db = new Database();
-        $this->conn = $db->connect();
+        $database = new Database();
+        $this->conn = $database->connect();
     }
 
     public function getAll() {

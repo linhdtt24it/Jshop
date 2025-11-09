@@ -1,4 +1,4 @@
-<?php include "app/views/layouts/header.php"; ?>
+<?php include __DIR__ . '/../layouts/header.php'; ?>
 <link rel="stylesheet" href="/public/assets/css/collection.css">
 
 <div class="product-page">
@@ -49,4 +49,4 @@
     </section>
 </div>
 
-<?php include "app/views/layouts/footer.php"; ?>
+<?php include __DIR__ . '/../layouts/footer.php'; ?>
