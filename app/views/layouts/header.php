@@ -28,6 +28,9 @@ header('Content-Type: text/html; charset=UTF-8');
     <!-- CSS CHÍNH -->
     <link href="<?= BASE_URL ?>assets/css/header.css" rel="stylesheet">
     <link href="<?= BASE_URL ?>assets/css/footer.css" rel="stylesheet">
+    
+    <!-- AUTH JS -->
+    <script src="<?= BASE_URL ?>assets/js/auth.js"></script>
 </head>
 <body>
 
@@ -52,9 +55,25 @@ header('Content-Type: text/html; charset=UTF-8');
 
       <!-- Đăng nhập và giỏ hàng bên phải -->
       <div class="user-actions">
-        <button class="btn btn-login" data-bs-toggle="modal" data-bs-target="#loginModal">
-          <i class="bi bi-person"></i> Đăng nhập
-        </button>
+        <?php if (isset($_SESSION['user_id'])): ?>
+          <!-- Đã đăng nhập -->
+          <div class="dropdown">
+            <button class="btn btn-user dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle"></i> <?= htmlspecialchars($_SESSION['user_name'] ?? 'User') ?>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="<?= BASE_URL ?>profile"><i class="bi bi-person"></i> Tài khoản</a></li>
+              <li><a class="dropdown-item" href="<?= BASE_URL ?>orders"><i class="bi bi-bag"></i> Đơn hàng</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="<?= BASE_URL ?>auth/logout"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a></li>
+            </ul>
+          </div>
+        <?php else: ?>
+          <!-- Chưa đăng nhập -->
+          <button class="btn btn-login" data-bs-toggle="modal" data-bs-target="#loginModal">
+            <i class="bi bi-person"></i> Đăng nhập
+          </button>
+        <?php endif; ?>
         
         <a href="<?= BASE_URL ?>cart" class="btn btn-cart position-relative">
           <i class="bi bi-cart"></i> Giỏ hàng
@@ -111,82 +130,17 @@ header('Content-Type: text/html; charset=UTF-8');
   </div>
 </section>
 <?php endif; ?>
+<!-- INCLUDE MODAL AUTH -->
+<?php if (!isset($_SESSION['user_id'])): ?>
+    <?php include_once __DIR__ . '/../auth/login_modal.php'; ?>
+    <?php include_once __DIR__ . '/../auth/register_modal.php'; ?>
+<?php endif; ?>
+
 
 <!-- NÚT BACK TO TOP -->
 <button id="backToTop" class="back-to-top" aria-label="Lên đầu trang">
   <i class="bi bi-chevron-up"></i>
 </button>
-
-<!-- MODAL - GIỮ NGUYÊN -->
-<!-- Login Modal -->
-<div class="modal fade" id="loginModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Đăng nhập JSHOP</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form id="loginForm" action="<?= BASE_URL ?>auth/login" method="POST">
-          <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" name="email" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Mật khẩu</label>
-            <input type="password" name="password" class="form-control" required>
-          </div>
-          <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
-        </form>
-        <div id="loginMessage" class="mt-3"></div>
-      </div>
-      <div class="modal-footer justify-content-center">
-        <p class="text-muted mb-0">Chưa có tài khoản? 
-          <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">Đăng ký ngay</a>
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Register Modal -->
-<div class="modal fade" id="registerModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Đăng ký JSHOP</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form id="registerForm" action="<?= BASE_URL ?>auth/register" method="POST">
-          <div class="mb-3">
-            <label class="form-label">Họ tên</label>
-            <input type="text" name="name" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" name="email" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Mật khẩu</label>
-            <input type="password" name="password" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Nhập lại mật khẩu</label>
-            <input type="password" name="confirm" class="form-control" required>
-          </div>
-          <button type="submit" class="btn btn-success w-100">Đăng ký</button>
-        </form>
-        <div id="registerMessage" class="mt-3"></div>
-      </div>
-      <div class="modal-footer justify-content-center">
-        <p class="text-muted mb-0">Đã có tài khoản? 
-          <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">Đăng nhập</a>
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -232,6 +186,9 @@ document.addEventListener('DOMContentLoaded', function() {
     },
   });
   <?php endif; ?>
+
+
+  
 });
 </script>
 </body>
