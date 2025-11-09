@@ -26,8 +26,9 @@ header('Content-Type: text/html; charset=UTF-8');
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS CHÍNH -->
-    <link href="<?= BASE_URL ?>assets/css/header.css" rel="stylesheet">
-    <link href="<?= BASE_URL ?>assets/css/footer.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>public/assets/css/header.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>public/assets/css/footer.css" rel="stylesheet">
+
 </head>
 <body>
 
