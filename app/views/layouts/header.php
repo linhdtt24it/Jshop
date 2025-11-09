@@ -26,8 +26,9 @@ header('Content-Type: text/html; charset=UTF-8');
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS CHÍNH -->
-    <link href="<?= BASE_URL ?>assets/css/header.css" rel="stylesheet">
-    <link href="<?= BASE_URL ?>assets/css/footer.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>public/assets/css/header.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>public/assets/css/footer.css" rel="stylesheet">
+
 </head>
 <body>
 
@@ -87,7 +88,7 @@ header('Content-Type: text/html; charset=UTF-8');
 <nav class="navbar navbar-sub">
   <div class="container">
     <ul class="nav sub-menu">
-      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>product?category=1">Nam giới</a></li>
+      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>public/men">Nam giới</a></li>
       <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>product?category=2">Nữ giới</a></li>
       <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>product?category=3">Trang sức cưới</a></li>
       <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>product?category=4">Phong thủy</a></li>
