@@ -10,7 +10,7 @@ class Material {
     }
 
     public function getAll() {
-        $stmt = $this->conn->prepare("SELECT * FROM materials");
+        $stmt = $this->conn->prepare("SELECT * FROM materials ORDER BY name");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

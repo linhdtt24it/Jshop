@@ -10,7 +10,7 @@ class Purpose {
     }
 
     public function getAll() {
-        $stmt = $this->conn->prepare("SELECT * FROM purposes");
+        $stmt = $this->conn->prepare("SELECT * FROM purposes ORDER BY name");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
