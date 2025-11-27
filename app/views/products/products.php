@@ -3,7 +3,6 @@
 require_once "../config/constants.php";
 require_once "../app/controllers/ProductController.php";
 
-// === ROUTE ===
 $action = $_GET['action'] ?? 'index';
 $controller = new ProductController();
 

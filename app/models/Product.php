@@ -1,23 +1,25 @@
 <?php
-require_once "config/database.php";
+require_once __DIR__ . '/../core/Model.php';
 
-class Product {
-    private $conn;
-    private $table = "products";
+class Product extends Model {
 
-    public function __construct() {
-        $database = new Database();
-        $this->conn = $database->connect();
+    public function getProductsByCategory($cat_id) {
+        return $this->selectAll(
+            "SELECT * FROM products WHERE category_id = ?",
+            [$cat_id]
+        );
     }
-
-    public function getAll() {
-        $query = "SELECT p.*, c.name AS category_name
-                  FROM products p
-                  LEFT JOIN categories c ON p.category_id = c.category_id
-                  ORDER BY p.created_at DESC";
-        $stmt = $this->conn->prepare($query);
+    public function getMaleProducts() {
+        $stmt = $this->db->prepare("SELECT * FROM products WHERE category_id = 1 ORDER BY product_id DESC");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function getProductById($id) {
+    return $this->selectOne(
+        "SELECT * FROM products WHERE product_id = ?",
+        [$id]
+    );
+    }
+
+
 }
-?>

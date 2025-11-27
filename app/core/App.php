@@ -1,5 +1,7 @@
 <?php
-// app/core/App.php
+require_once __DIR__ . '/Controller.php';
+require_once __DIR__ . '/Model.php';
+
 class App {
     protected $controller = 'HomeController';
     protected $method = 'index';
@@ -8,12 +10,31 @@ class App {
     public function run() {
         $url = $this->parseUrl();
 
-        // 🔥 THÊM PHẦN NÀY: Xử lý auth routes trước
         if ($this->handleAuthRoutes($url)) {
-            return; // Nếu là auth route thì dừng ở đây
+            return; 
         }
 
-        // 1. Xác định Controller
+        // ADMIN
+        if (!empty($url[0]) && $url[0] === "admin") {
+
+            require_once __DIR__ . "/../controllers/AdminController.php";
+            $this->controller = new AdminController();
+
+            $method = !empty($url[1]) ? $url[1] : "dashboard";
+
+            if (method_exists($this->controller, $method)) {
+                unset($url[0], $url[1]);
+                $this->params = $url ? array_values($url) : [];
+                call_user_func_array([$this->controller, $method], $this->params);
+                return;
+            }
+
+            $this->notFound();
+            return;
+        }
+
+        // ===== CONTROLLER BÌNH THƯỜNG =====
+        // Ví dụ: /category → CategoryController
         $controllerName = !empty($url[0]) ? ucfirst($url[0]) . 'Controller' : $this->controller;
         $controllerFile = __DIR__ . "/../controllers/{$controllerName}.php";
 
@@ -26,7 +47,8 @@ class App {
             return;
         }
 
-        // 2. Xác định Method
+        // ===== METHOD =====
+        // Nếu URL không có method → mặc định “index”
         $method = !empty($url[1]) ? $url[1] : $this->method;
 
         if (method_exists($this->controller, $method)) {
@@ -37,19 +59,17 @@ class App {
             return;
         }
 
-        // 3. Lấy tham số
+        // ===== PARAMS =====
         $this->params = $url ? array_values($url) : [];
 
-        // 4. Gọi method với params
         call_user_func_array([$this->controller, $this->method], $this->params);
     }
 
-    // 🔥 THÊM PHƯƠNG THỨC XỬ LÝ AUTH ROUTES
+    // ===== AUTH =====
     private function handleAuthRoutes($url) {
         $path = implode('/', $url);
         $method = $_SERVER['REQUEST_METHOD'];
 
-        // Auth routes
         if ($method === 'POST') {
             if ($path === 'auth/login') {
                 $this->callAuthController('login');
@@ -69,7 +89,6 @@ class App {
         return false;
     }
 
-    // 🔥 THÊM PHƯƠNG THỨC GỌI AUTH CONTROLLER
     private function callAuthController($action) {
         $controllerFile = __DIR__ . "/../controllers/AuthController.php";
         

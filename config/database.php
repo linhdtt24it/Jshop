@@ -1,27 +1,22 @@
 <?php
-// config/database.php
 class Database {
     private $host = "localhost";
-    private $db_name = "jshop";
-    private $username = "root";
-    private $password = "";
-    public $conn;
+    private $dbname = "jshop";
+    private $user = "root";
+    private $pass = "";
 
     public function connect() {
-        $this->conn = null;
-
         try {
-            $this->conn = new PDO(
-                "mysql:host={$this->host};dbname={$this->db_name};charset=utf8mb4",
-                $this->username,
-                $this->password
+            $conn = new PDO(
+                "mysql:host=$this->host;dbname=$this->dbname;charset=utf8",
+                $this->user,
+                $this->pass
             );
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
-            echo "Kết nối CSDL thất bại: " . $e->getMessage();
-        }
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return $conn;
 
-        return $this->conn;
+        } catch (PDOException $e) {
+            die("DB error: " . $e->getMessage());
+        }
     }
 }
-?>

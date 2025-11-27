@@ -18,7 +18,7 @@ $tsNam = [
       <div class="product-track">
         <?php foreach ($tsNam as $product): ?>
           <div class="product-card">
-            <a href="product_detail.php?id=<?php echo $product['id']; ?>" class="product-image">
+            <a href="<?= BASE_URL ?>product/detail/<?= $product['id'] ?>" class="product-image">
               <img src="<?php echo $product['img']; ?>" alt="<?php echo $product['name']; ?>">
             </a>
             <div class="product-info">
@@ -32,6 +32,7 @@ $tsNam = [
     </div>
   </div>
 </section>
+
 
 <style>
 .trangsucnam-section {
