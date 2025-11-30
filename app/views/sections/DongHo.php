@@ -1,38 +1,44 @@
 <?php
-$dongho = [
-  ['id'=>1, 'name'=>'Đồng Hồ Nam Titanium', 'price'=>5200000, 'img'=>'https://i.pinimg.com/1200x/01/c5/dc/01c5dc48a095ca19fa48706a8bcec208.jpg'],
-  ['id'=>2, 'name'=>'Đồng Hồ Nữ Vàng Hồng', 'price'=>7800000, 'img'=>'https://i.pinimg.com/736x/96/9a/94/969a94b870c6f62f622fd8451c6c69e2.jpg'],
-  ['id'=>3, 'name'=>'Đồng Hồ Cặp Đôi Classic', 'price'=>8900000, 'img'=>'https://i.pinimg.com/1200x/ff/73/04/ff73047011707b69fa8811fec4887134.jpg'],
-  ['id'=>4, 'name'=>'Đồng Hồ Mạ Bạc Sang Trọng', 'price'=>6500000, 'img'=>'https://i.pinimg.com/1200x/68/55/07/685507e770cdd30c4fa950545ad03866.jpg'],
-  ['id'=>5, 'name'=>'Đồng Hồ Kim Cương Đen', 'price'=>12500000, 'img'=>'https://chicwatchluxury.vn/wp-content/uploads/2024/08/84da2530c28466da3f9531-scaled.jpg'],
-  ['id'=>6, 'name'=>'Đồng Hồ Quartz Thời Trang', 'price'=>4500000, 'img'=>'https://winwatch.vn/wp-content/uploads/2024/11/Orient-5.webp'],
-  ['id'=>7, 'name'=>'Đồng Hồ Mặt Vuông Retro', 'price'=>5200000, 'img'=>'https://donghoduyanh.com/images/news/2020/01/13/large/ca-tinh-cung-dong-ho-mat-vuong.jpg'],
-];
+require_once __DIR__ . '/../../models/Product.php';
+$productModel = new Product();
+
+// lấy đúng nhóm đồng hồ theo id hoặc category tuỳ bạn
+$products = $productModel->getProductsByIdRange(54, 60);
 ?>
 
 <section class="dongho-section">
   <div class="site-width">
     <h3 class="section-title text-uppercase">Đồng hồ</h3>
+
     <div class="product-slider">
       <button class="product-prev">&#10094;</button>
       <button class="product-next">&#10095;</button>
+
       <div class="product-track">
-        <?php foreach ($dongho as $product): ?>
+        <?php foreach ($products as $product): ?>
           <div class="product-card">
-            <a href="product_detail.php?id=<?php echo $product['id']; ?>" class="product-image">
-              <img src="<?php echo $product['img']; ?>" alt="<?php echo $product['name']; ?>">
+
+            <a href="<?= BASE_URL . 'product/detail/' . $product['product_id'] ?>" class="product-image">
+              <img src="<?= $product['image'] ?>" alt="<?= htmlspecialchars($product['name']) ?>">
             </a>
+
             <div class="product-info">
               <h4 class="brand">JEWELRY</h4>
-              <p class="name"><?php echo $product['name']; ?></p>
-              <div class="price"><?php echo number_format($product['price'], 0, ',', '.'); ?> VNĐ</div>
+
+              <p class="name"><?= htmlspecialchars($product['name']) ?></p>
+
+              <div class="price">
+                <?= number_format($product['price'], 0, ',', '.') ?> VNĐ
+              </div>
             </div>
+
           </div>
         <?php endforeach; ?>
       </div>
     </div>
   </div>
 </section>
+
 
 <style>
 .dongho-section {  margin-top : 0; position: relative; overflow: hidden; }

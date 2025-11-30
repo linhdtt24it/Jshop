@@ -1,37 +1,45 @@
 <?php
-$tsNu = [
-  ['id'=>1, 'name'=>'Nhẫn Kim Cương Trắng', 'price'=>9800000, 'img'=>'https://locphuc.com.vn/Content/Images/022023/DSR0918BRW.WG01A/nhan-kim-cuong-DSR0918BRW-WG01A-g1.jpg'],
-  ['id'=>2, 'name'=>'Bông Tai Ngọc Trai Tự Nhiên', 'price'=>4600000, 'img'=>'https://quatangngoctrai.com/wp-content/uploads/2020/11/Bong-Tai-Ngoc-Trai-T20.027-1.jpg'],
-  ['id'=>3, 'name'=>'Dây Chuyền Trái Tim Vàng Hồng', 'price'=>5200000, 'img'=>'https://bizweb.dktcdn.net/100/461/213/products/vyn62-h-1696827181292.png?v=1751356900743'],
-  ['id'=>4, 'name'=>'Vòng Tay Bạc Nữ Tinh Tế', 'price'=>2300000, 'img'=>'https://tnj.vn/40969-large_default/lac-tay-bac-nu-ban-to-khac-ten-ltn0212.jpg'],
-  ['id'=>5, 'name'=>'Nhẫn Đính Đá Ruby Đỏ', 'price'=>7900000, 'img'=>'https://i.pinimg.com/1200x/d5/9c/07/d59c07a8dc10beee4787561a0ebaba1d.jpg'],
-  ['id'=>6, 'name'=>'Bông Tai Vàng 18K ECZ', 'price'=>6700000, 'img'=>'https://apj.vn/wp-content/uploads/2020/10/BTP77-bong-tai-vang-vang-18k.jpg'],
-];
+require_once __DIR__ . '/../../models/Product.php';
+$productModel = new Product();
+
+// lấy sản phẩm nữ
+$products = $productModel->getProductsByCategory(2);
 ?>
 
 <section class="trangsucnu-section">
   <div class="site-width">
     <h3 class="section-title text-uppercase">Trang sức nữ</h3>
+
     <div class="product-slider">
       <button class="product-prev">&#10094;</button>
       <button class="product-next">&#10095;</button>
+
       <div class="product-track">
-        <?php foreach ($tsNu as $product): ?>
+        <?php foreach ($products as $product): ?>
           <div class="product-card">
-            <a href="product_detail.php?id=<?php echo $product['id']; ?>" class="product-image">
-              <img src="<?php echo $product['img']; ?>" alt="<?php echo $product['name']; ?>">
+
+            <a href="<?= BASE_URL ?>product/detail/<?= $product['product_id'] ?>" class="product-image">
+              <img src="<?= $product['image'] ?>" alt="<?= htmlspecialchars($product['name']) ?>">
             </a>
+
             <div class="product-info">
               <h4 class="brand">JEWELRY</h4>
-              <p class="name"><?php echo $product['name']; ?></p>
-              <div class="price"><?php echo number_format($product['price'], 0, ',', '.'); ?> VNĐ</div>
+
+              <p class="name"><?= htmlspecialchars($product['name']) ?></p>
+
+              <div class="price">
+                <?= number_format($product['price'], 0, ',', '.') ?> VNĐ
+              </div>
             </div>
+
           </div>
         <?php endforeach; ?>
       </div>
+
     </div>
   </div>
 </section>
+
 <style>
 .trangsucnu-section {  margin-top : 0; position: relative; overflow: hidden; }
 .trangsucnu-section .section-title { text-align: center; font-size: 32px; font-weight: 800; color: #c2185b; margin-bottom: 40px; letter-spacing: 1px; }

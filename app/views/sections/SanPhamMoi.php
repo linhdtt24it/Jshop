@@ -1,39 +1,46 @@
 <?php
-$newProducts = [
-  ['id'=>1, 'name'=>'Nhẫn Ngọc Trai Tinh Khiết', 'price'=>2800000, 'img'=>'https://trangsucvn.com/images/201410/goods_img/7727_P_1414469171678.jpg'],
-  ['id'=>2, 'name'=>'Vòng Tay Kim Cương Mini', 'price'=>4200000, 'img'=>'https://i.pinimg.com/1200x/19/f5/94/19f594022698131694fa3e22785445c8.jpg'],
-  ['id'=>3, 'name'=>'Bông Tai Vàng Trắng ECZ', 'price'=>3500000, 'img'=>'https://i.pinimg.com/736x/0b/39/e5/0b39e5c9b0b2cf5922e7412b83f9450b.jpg'],
-  ['id'=>4, 'name'=>'Dây Chuyền Ngọc Lục Bảo', 'price'=>3900000, 'img'=>'https://i.pinimg.com/1200x/bd/73/17/bd73176f7429f22ec13182f48bc57f8f.jpg'],
-  ['id'=>5, 'name'=>'Dây Chuyền Ruby Hồng', 'price'=>9900000, 'img'=>'https://i.pinimg.com/736x/f0/a0/1b/f0a01b76c3822da238cade1b7a02fc74.jpg'],
-  ['id'=>6, 'name'=>'Bông Tai Kim Cương Tự Nhiên', 'price'=>3900000, 'img'=>'https://i.pinimg.com/1200x/2e/7d/1a/2e7d1aec9594cbc101de0cb06f3a008f.jpg'],
-];
+require_once __DIR__ . '/../../models/Product.php';
+$productModel = new Product();
+$products = $productModel->getProductsByIdRange(32, 37);
 ?>
 
-<section class="new-products-section">
-  <div class="site-width">
-    <h3 class="section-title text-uppercase">Sản phẩm mới</h3>
+<section class="new-products-section py-5">
+    <div class="site-width">
+        <h2 class="section-title mb-4">SẢN PHẨM MỚI</h2>
 
-    <div class="product-slider">
-      <button class="product-prev">&#10094;</button>
-      <button class="product-next">&#10095;</button>
+        <div class="product-slider">
 
-      <div class="product-track">
-        <?php foreach ($newProducts as $product): ?>
-          <div class="product-card">
-            <a href="product_detail.php?id=<?php echo $product['id']; ?>" class="product-image">
-              <img src="<?php echo $product['img']; ?>" alt="<?php echo $product['name']; ?>">
-            </a>
-            <div class="product-info">
-              <h4 class="brand">JEWELRY</h4>
-              <p class="name"><?php echo $product['name']; ?></p>
-              <div class="price"><?php echo number_format($product['price'], 0, ',', '.'); ?> VNĐ</div>
+            <button class="product-prev">&#10094;</button>
+            <button class="product-next">&#10095;</button>
+
+            <div class="product-track">
+
+                <?php foreach ($products as $product): ?>
+                <div class="product-card">
+
+                    <a href="<?= BASE_URL . 'product/detail/' . $product['product_id'] ?>" class="product-image">
+                        <img src="<?= $product['image'] ?>"
+                             alt="<?= htmlspecialchars($product['name']) ?>">
+                    </a>
+
+                    <div class="product-info">
+                        <h4 class="brand">JEWELRY</h4>
+
+                        <p class="name"><?= htmlspecialchars($product['name']) ?></p>
+
+                        <div class="price">
+                            <?= number_format($product['price'], 0, ',', '.') ?> VNĐ
+                        </div>
+                    </div>
+
+                </div>
+                <?php endforeach; ?>
+
             </div>
-          </div>
-        <?php endforeach; ?>
-      </div>
+        </div>
     </div>
-  </div>
 </section>
+
 
 <style>
 .new-products-section {

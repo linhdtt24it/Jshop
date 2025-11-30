@@ -1,35 +1,46 @@
 <?php
-$spkhac = [
-  ['id'=>1, 'name'=>'Hộp Đựng Trang Sức Cao Cấp', 'price'=>650000, 'img'=>'https://i.pinimg.com/1200x/53/81/da/5381da261d5d0a21e66d9c2a16d24181.jpg'],
-  ['id'=>2, 'name'=>'Khăn Lau Trang Sức Chuyên Dụng', 'price'=>12000, 'img'=>'https://salt.tikicdn.com/cache/750x750/ts/product/0a/87/5a/e3fd6931b261683d3fe92dbb86da3865.jpg'],
-  ['id'=>3, 'name'=>'Dụng Cụ Vệ Sinh Trang Sức', 'price'=>180000, 'img'=>'https://i.pinimg.com/736x/7b/ee/cd/7beecd9db2fe247eae188fcdce96603b.jpg'],
-  ['id'=>4, 'name'=>'Găng Tay Nữ Trang', 'price'=>95000, 'img'=>'https://down-vn.img.susercontent.com/file/vn-11134202-7ras8-m0er46ug0i3309'],
-];
-?>
+require_once __DIR__ . '/../../models/Product.php';
+$productModel = new Product();
 
+// material_id = 6
+$products = $productModel->getProductsByMaterial(6);
+?>
 <section class="spkhac-section">
   <div class="site-width">
     <h3 class="section-title text-uppercase">Sản phẩm khác</h3>
+
     <div class="product-slider">
       <button class="product-prev">&#10094;</button>
       <button class="product-next">&#10095;</button>
+
       <div class="product-track">
-        <?php foreach ($spkhac as $product): ?>
+        <?php foreach ($products as $product): ?>
           <div class="product-card">
-            <a href="product_detail.php?id=<?php echo $product['id']; ?>" class="product-image">
-              <img src="<?php echo $product['img']; ?>" alt="<?php echo $product['name']; ?>">
+
+            <a href="<?= BASE_URL ?>product/detail/<?= $product['product_id'] ?>" class="product-image">
+              <img src="<?= $product['image'] ?>" alt="<?= htmlspecialchars($product['name']) ?>">
             </a>
+
             <div class="product-info">
               <h4 class="brand">ACCESSORY</h4>
-              <p class="name"><?php echo $product['name']; ?></p>
-              <div class="price"><?php echo number_format($product['price'], 0, ',', '.'); ?> VNĐ</div>
+
+              <p class="name"><?= htmlspecialchars($product['name']) ?></p>
+
+              <div class="price">
+                <?= number_format($product['price'], 0, ',', '.') ?> VNĐ
+              </div>
             </div>
+
           </div>
         <?php endforeach; ?>
       </div>
+
     </div>
   </div>
 </section>
+
+
+
 <style>
 .spkhac-section { text-align: center; font-size: 32px; font-weight: 800; color: #c2185b; margin-bottom: 40px; letter-spacing: 1px; }
 .spkhac-section .section-title { text-align: center; font-size: 32px; font-weight: 800; color: #c2185b; margin-bottom: 40px; letter-spacing: 1px; }

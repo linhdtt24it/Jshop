@@ -1,38 +1,43 @@
 <?php
-$kimcuong = [
-  ['id'=>1, 'name'=>'Nhẫn Kim Cương Tự Nhiên', 'price'=>26500000, 'img'=>'https://i.pinimg.com/1200x/0c/dc/37/0cdc37daccd6d99c494d6a4d65dd8365.jpg'],
-  ['id'=>2, 'name'=>'Bông Tai Kim Cương ECZ', 'price'=>18900000, 'img'=>'https://i.pinimg.com/736x/15/c2/9d/15c29d606a706aa0f83d05082894bf6e.jpg'],
-  ['id'=>3, 'name'=>'Vòng Tay Kim Cương Trắng', 'price'=>31200000, 'img'=>'https://i.pinimg.com/1200x/21/11/16/211116e6dfde6ee4dcfab64c1abce9ad.jpg'],
-  ['id'=>4, 'name'=>'Dây Chuyền Kim Cương Hồng', 'price'=>28800000, 'img'=>'https://i.pinimg.com/1200x/d2/95/85/d2958516b3492bf5c90afd2cd6696deb.jpg'],
-  ['id'=>5, 'name'=>'Nhẫn Đôi Kim Cương Vàng', 'price'=>35600000, 'img'=>'https://i.pinimg.com/736x/70/70/c9/7070c928554920bb6e23d48225b74c6a.jpg'],
-  ['id'=>6, 'name'=>'Mặt Dây Chuyền Kim Cương Đen', 'price'=>21000000, 'img'=>'https://i.pinimg.com/1200x/99/b9/4b/99b94b812161b54dc18009425bb7dbe5.jpg'],
-];
+require_once __DIR__ . '/../../models/Product.php';
+$productModel = new Product();
+
+// Lấy sản phẩm kim cương (material_id = 3)
+$products = $productModel->getProductsByMaterial(3);
 ?>
-
-
 <section class="kimcuong-section">
   <div class="site-width">
     <h3 class="section-title text-uppercase">Kim cương</h3>
+
     <div class="product-slider">
       <button class="product-prev">&#10094;</button>
       <button class="product-next">&#10095;</button>
+
       <div class="product-track">
-        <?php foreach ($kimcuong as $product): ?>
+        <?php foreach ($products as $product): ?>
           <div class="product-card">
-            <a href="product_detail.php?id=<?php echo $product['id']; ?>" class="product-image">
-              <img src="<?php echo $product['img']; ?>" alt="<?php echo $product['name']; ?>">
+
+            <a href="<?= BASE_URL ?>product/detail/<?= $product['product_id'] ?>" class="product-image">
+              <img src="<?= $product['image'] ?>" alt="<?= htmlspecialchars($product['name']) ?>">
             </a>
+
             <div class="product-info">
               <h4 class="brand">DIAMOND</h4>
-              <p class="name"><?php echo $product['name']; ?></p>
-              <div class="price"><?php echo number_format($product['price'], 0, ',', '.'); ?> VNĐ</div>
+              <p class="name"><?= htmlspecialchars($product['name']) ?></p>
+
+              <div class="price">
+                <?= number_format($product['price'], 0, ',', '.') ?> VNĐ
+              </div>
             </div>
+
           </div>
         <?php endforeach; ?>
       </div>
+
     </div>
   </div>
 </section>
+
 
 <style>
 .kimcuong-section {

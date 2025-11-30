@@ -1,37 +1,44 @@
 <?php
-$tsNam = [
-  ['id'=>1, 'name'=>'Nhẫn Bạc Đen Nam Tính', 'price'=>1800000, 'img'=>'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJ2GePz2ar0PZLbLppY_kP7YRgUMZ6xvgnHg&s'],
-  ['id'=>2, 'name'=>'Vòng Tay Da Đính Bạc', 'price'=>2100000, 'img'=>'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmIzxf3NxGXrLhTadaBWFL-Ov2bH9ZYY3OIg&s'],
-  ['id'=>3, 'name'=>'Dây Chuyền Nam Đính Đá Đen', 'price'=>2800000, 'img'=>'https://luxcreuni.com/wp-content/uploads/2024/10/day-chuyen-nam-den-kim-cuong-5-500x500.jpg'],
-  ['id'=>4, 'name'=>'Nhẫn Vàng Trắng Phong Cách', 'price'=>3500000, 'img'=>'https://tnj.vn/59810-large_default/nhan-nam-moissanite-don-gian-nnam0009.jpg'],
-  ['id'=>5, 'name'=>'Mặt Dây Chuyền Hổ Phách', 'price'=>4200000, 'img'=>'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQti3Ti7jMmCTpAS2b3AwxU6MIPYY9m-RFmNg&s'],
-  ['id'=>6, 'name'=>'Bông Tai Nam Bạc S925', 'price'=>1600000, 'img'=>'https://bizweb.dktcdn.net/100/487/604/products/z4430060620800-3cf1c06e70af1536012626d195627712.jpg?v=1690991544790'],
-];
-?>
+require_once __DIR__ . '/../../models/Product.php';
+$productModel = new Product();
 
+// Lấy sản phẩm category = 1 (nam)
+$products = $productModel->getProductsByCategory(1);
+?>
 <section class="trangsucnam-section">
   <div class="site-width">
     <h3 class="section-title text-uppercase">Trang sức nam</h3>
+
     <div class="product-slider">
       <button class="product-prev">&#10094;</button>
       <button class="product-next">&#10095;</button>
+
       <div class="product-track">
-        <?php foreach ($tsNam as $product): ?>
+        <?php foreach ($products as $product): ?>
           <div class="product-card">
-            <a href="<?= BASE_URL ?>product/detail/<?= $product['id'] ?>" class="product-image">
-              <img src="<?php echo $product['img']; ?>" alt="<?php echo $product['name']; ?>">
+
+            <a href="<?= BASE_URL ?>product/detail/<?= $product['product_id'] ?>" class="product-image">
+              <img src="<?= $product['image'] ?>" alt="<?= htmlspecialchars($product['name']) ?>">
             </a>
+
             <div class="product-info">
               <h4 class="brand">JEWELRY</h4>
-              <p class="name"><?php echo $product['name']; ?></p>
-              <div class="price"><?php echo number_format($product['price'], 0, ',', '.'); ?> VNĐ</div>
+
+              <p class="name"><?= htmlspecialchars($product['name']) ?></p>
+
+              <div class="price">
+                <?= number_format($product['price'], 0, ',', '.') ?> VNĐ
+              </div>
             </div>
+
           </div>
         <?php endforeach; ?>
       </div>
+
     </div>
   </div>
 </section>
+
 
 
 <style>

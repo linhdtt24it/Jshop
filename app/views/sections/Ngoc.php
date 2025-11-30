@@ -1,37 +1,47 @@
 <?php
-$ngoc = [
-  ['id'=>1, 'name'=>'Dây Chuyền Ngọc Trai Tự Nhiên', 'price'=>5900000, 'img'=>'https://i.pinimg.com/736x/6b/65/87/6b658756a5d0d507a4bf95903a0458cf.jpg'],
-  ['id'=>2, 'name'=>'Bông Tai Ngọc Bích', 'price'=>6200000, 'img'=>'https://i.pinimg.com/1200x/0a/8c/3e/0a8c3ea16b900e352177db8658ed944d.jpg'],
-  ['id'=>3, 'name'=>'Vòng Tay Ngọc Jade', 'price'=>7200000, 'img'=>'https://i.pinimg.com/1200x/05/0d/3a/050d3a6f049dceab7d67cc5d3867967d.jpg'],
-  ['id'=>4, 'name'=>'Nhẫn Ngọc Lục Bảo', 'price'=>8800000, 'img'=>'https://i.pinimg.com/1200x/20/32/07/203207c926fb2907d10e0c928e6f0487.jpg'],
-  ['id'=>5, 'name'=>'Chuỗi Ngọc Trai Hồng', 'price'=>9200000, 'img'=>'https://i.pinimg.com/1200x/56/ce/bb/56cebb73ab3a971991e6e235a45e15e8.jpg'],
-  ['id'=>6, 'name'=>'Dây Chuyền Ngọc Lam', 'price'=>6800000, 'img'=>'https://i.pinimg.com/1200x/51/7c/ae/517cae45d592f9b8a8cdd78d2226c2a1.jpg'],
-];
-?>
+require_once __DIR__ . '/../../models/Product.php';
+$productModel = new Product();
 
+// Lấy sản phẩm ngọc (material_id = 5)
+$products = $productModel->getProductsByMaterial(5);
+?>
 <section class="ngoc-section">
   <div class="site-width">
     <h3 class="section-title text-uppercase">Ngọc</h3>
+
     <div class="product-slider">
       <button class="product-prev">&#10094;</button>
       <button class="product-next">&#10095;</button>
+
       <div class="product-track">
-        <?php foreach ($ngoc as $product): ?>
+        <?php foreach ($products as $product): ?>
           <div class="product-card">
-            <a href="product_detail.php?id=<?php echo $product['id']; ?>" class="product-image">
-              <img src="<?php echo $product['img']; ?>" alt="<?php echo $product['name']; ?>">
+
+            <a href="<?= BASE_URL ?>product/detail/<?= $product['product_id'] ?>" class="product-image">
+              <img src="<?= $product['image'] ?>" alt="<?= htmlspecialchars($product['name']) ?>">
             </a>
+
             <div class="product-info">
               <h4 class="brand">PEARL</h4>
-              <p class="name"><?php echo $product['name']; ?></p>
-              <div class="price"><?php echo number_format($product['price'], 0, ',', '.'); ?> VNĐ</div>
+
+              <p class="name"><?= htmlspecialchars($product['name']) ?></p>
+
+              <div class="price">
+                <?= number_format($product['price'], 0, ',', '.') ?> VNĐ
+              </div>
             </div>
+
           </div>
         <?php endforeach; ?>
       </div>
+
     </div>
   </div>
 </section>
+
+
+
+
 <style>
 .ngoc-section {
   padding: 40px 0; /* 40px trên + dưới */

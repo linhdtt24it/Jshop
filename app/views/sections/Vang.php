@@ -1,37 +1,45 @@
 <?php
-$vang = [
-  ['id'=>1, 'name'=>'Nhẫn Vàng 24K Trơn', 'price'=>7200000, 'img'=>'https://i.pinimg.com/1200x/63/a8/30/63a8307328da322ebe978d188ea877a4.jpg'],
-  ['id'=>2, 'name'=>'Dây Chuyền Vàng 18K', 'price'=>8500000, 'img'=>'https://i.pinimg.com/1200x/6b/55/b6/6b55b61a7d8adadc35f42dbfb09e3a17.jpg'],
-  ['id'=>3, 'name'=>'Vòng Tay Vàng Hồng', 'price'=>9400000, 'img'=>'https://i.pinimg.com/736x/1e/d3/95/1ed39537c1ab7c752976187d96020044.jpg'],
-  ['id'=>4, 'name'=>'Nhẫn Cưới Vàng 18K', 'price'=>12500000, 'img'=>'https://i.pinimg.com/1200x/63/a8/30/63a8307328da322ebe978d188ea877a4.jpg'],
-  ['id'=>5, 'name'=>'Bông Tai Vàng 24K', 'price'=>10200000, 'img'=>'https://i.pinimg.com/736x/20/cc/6a/20cc6ad8eafffb0a913cadcdff327c25.jpg'],
-  ['id'=>6, 'name'=>'Lắc Tay Vàng Ý', 'price'=>9800000, 'img'=>'https://cdn.pnj.io/images/detailed/113/gl0000z000158-lac-tay-vang-y-18k-pnj-01.png'],
-];
-?>
+require_once __DIR__ . '/../../models/Product.php';
+$productModel = new Product();
 
+// lấy sản phẩm theo material_id = 1
+$products = $productModel->getProductsByMaterial(1);
+?>
 <section class="vang-section">
   <div class="site-width">
     <h3 class="section-title text-uppercase">Vàng</h3>
+
     <div class="product-slider">
       <button class="product-prev">&#10094;</button>
       <button class="product-next">&#10095;</button>
+
       <div class="product-track">
-        <?php foreach ($vang as $product): ?>
+        <?php foreach ($products as $product): ?>
           <div class="product-card">
-            <a href="product_detail.php?id=<?php echo $product['id']; ?>" class="product-image">
-              <img src="<?php echo $product['img']; ?>" alt="<?php echo $product['name']; ?>">
+
+            <a href="<?= BASE_URL ?>product/detail/<?= $product['product_id'] ?>" class="product-image">
+              <img src="<?= $product['image'] ?>" alt="<?= htmlspecialchars($product['name']) ?>">
             </a>
+
             <div class="product-info">
               <h4 class="brand">GOLD</h4>
-              <p class="name"><?php echo $product['name']; ?></p>
-              <div class="price"><?php echo number_format($product['price'], 0, ',', '.'); ?> VNĐ</div>
+
+              <p class="name"><?= htmlspecialchars($product['name']) ?></p>
+
+              <div class="price">
+                <?= number_format($product['price'], 0, ',', '.') ?> VNĐ
+              </div>
             </div>
+
           </div>
         <?php endforeach; ?>
       </div>
+
     </div>
   </div>
 </section>
+
+
 <style>
 .vang-section {
   padding: 40px 0; /* 40px trên + dưới */

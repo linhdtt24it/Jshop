@@ -1,37 +1,46 @@
 <?php
-$bac = [
-  ['id'=>1, 'name'=>'Nhẫn Bạc S925', 'price'=>950000, 'img'=>'https://bsj.vn/wp-content/uploads/2017/09/nhan-bac-nu-bac-ta-cao-cap-bac-bsj-13-768x768.jpg'],
-  ['id'=>2, 'name'=>'Vòng Tay Bạc Đính Đá', 'price'=>1250000, 'img'=>'https://calliesilver.com/wp-content/uploads/2022/07/Vo%CC%80ng-tay-ba%CC%A3c-Callie-Silver-di%CC%81nh-full-da%CC%81-VT21.3-768x768.jpeg'],
-  ['id'=>3, 'name'=>'Bông Tai Bạc Trắng', 'price'=>870000, 'img'=>'https://bizweb.dktcdn.net/100/461/213/products/vye28-t-b.png?v=1671245465853'],
-  ['id'=>4, 'name'=>'Dây Chuyền Bạc Ý', 'price'=>1500000, 'img'=>'https://bizweb.dktcdn.net/thumb/large/100/302/551/products/ne-ncropstudio-session-038-1.jpg?v=1759388474590'],
-  ['id'=>5, 'name'=>'Lắc Tay Bạc Mix Vàng', 'price'=>1350000, 'img'=>'https://pos.nvncdn.com/331316-3334/ps/20250125_1JF23tmh2H.jpeg?v=1737813526'],
-  ['id'=>6, 'name'=>'Mặt Dây Chuyền Bạc', 'price'=>1100000, 'img'=>'https://tnj.vn/img/cms/day-chuyen-nam-bac/DCK0028/day-chuyen-bac-y-nam-DCK0028-3.jpg'],
-];
-?>
+require_once __DIR__ . '/../../models/Product.php';
+$productModel = new Product();
 
+// lấy tất cả sản phẩm bạc (material_id = 2)
+$products = $productModel->getProductsByMaterial(2);
+?>
 <section class="bac-section">
   <div class="site-width">
     <h3 class="section-title text-uppercase">Bạc</h3>
     <div class="product-slider">
       <button class="product-prev">&#10094;</button>
       <button class="product-next">&#10095;</button>
+
       <div class="product-track">
-        <?php foreach ($bac as $product): ?>
+        <?php foreach ($products as $product): ?>
           <div class="product-card">
-            <a href="product_detail.php?id=<?php echo $product['id']; ?>" class="product-image">
-              <img src="<?php echo $product['img']; ?>" alt="<?php echo $product['name']; ?>">
+
+            <a href="<?= BASE_URL ?>product/detail/<?= $product['product_id'] ?>" class="product-image">
+              <img src="<?= $product['image'] ?>" alt="<?= htmlspecialchars($product['name']) ?>">
             </a>
+
             <div class="product-info">
               <h4 class="brand">SILVER</h4>
-              <p class="name"><?php echo $product['name']; ?></p>
-              <div class="price"><?php echo number_format($product['price'], 0, ',', '.'); ?> VNĐ</div>
+              <p class="name"><?= htmlspecialchars($product['name']) ?></p>
+
+              <div class="price">
+                <?= number_format($product['price'], 0, ',', '.') ?> VNĐ
+              </div>
             </div>
+
           </div>
         <?php endforeach; ?>
       </div>
+
     </div>
   </div>
 </section>
+
+
+
+
+
 <style>
 .bac-section {  margin-top : 0; position: relative; overflow: hidden; }
 .bac-section .section-title { text-align: center; font-size: 32px; font-weight: 800; color: #c2185b; margin-bottom: 40px; letter-spacing: 1px; }

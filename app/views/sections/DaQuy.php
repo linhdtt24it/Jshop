@@ -1,37 +1,47 @@
 <?php
-$daquy = [
-  ['id'=>1, 'name'=>'Nhẫn Đá Ruby Đỏ', 'price'=>8900000, 'img'=>'https://i.pinimg.com/1200x/a7/e0/b2/a7e0b26ac09ab9e542aacfb2d89e70da.jpg'],
-  ['id'=>2, 'name'=>'Vòng Tay Đá Sapphire', 'price'=>9700000, 'img'=>'https://i.pinimg.com/1200x/a5/4a/a8/a54aa84b72a7beca992ede9f4d651488.jpg'],
-  ['id'=>3, 'name'=>'Bông Tai Đá Emerald', 'price'=>11500000, 'img'=>'https://i.pinimg.com/736x/a0/af/b4/a0afb494e66c9d436e43f29ebe2d3a9e.jpg'],
-  ['id'=>4, 'name'=>'Dây Chuyền Đá Topaz Xanh', 'price'=>9400000, 'img'=>'https://i.pinimg.com/1200x/0a/79/2e/0a792edf223a5393ed5a9fce73b3167a.jpg'],
-  ['id'=>5, 'name'=>'Lắc Tay Đá Garnet', 'price'=>8800000, 'img'=>'https://i.pinimg.com/736x/d3/47/66/d34766167bbf54ad3a42672b71868e9e.jpg'],
-  ['id'=>6, 'name'=>'Nhẫn Đá Peridot', 'price'=>9200000, 'img'=>'https://i.pinimg.com/736x/50/17/35/501735d1f4db676c479a3b5176f84930.jpg'],
-];
-?>
+require_once __DIR__ . '/../../models/Product.php';
+$productModel = new Product();
 
+// Lấy sản phẩm đá quý (material_id = 4)
+$products = $productModel->getProductsByMaterial(4);
+?>
 <section class="daquy-section">
   <div class="site-width">
     <h3 class="section-title text-uppercase">Đá quý</h3>
+
     <div class="product-slider">
       <button class="product-prev">&#10094;</button>
       <button class="product-next">&#10095;</button>
+
       <div class="product-track">
-        <?php foreach ($daquy as $product): ?>
+        <?php foreach ($products as $product): ?>
           <div class="product-card">
-            <a href="product_detail.php?id=<?php echo $product['id']; ?>" class="product-image">
-              <img src="<?php echo $product['img']; ?>" alt="<?php echo $product['name']; ?>">
+
+            <a href="<?= BASE_URL ?>product/detail/<?= $product['product_id'] ?>" class="product-image">
+              <img src="<?= $product['image'] ?>" alt="<?= htmlspecialchars($product['name']) ?>">
             </a>
+
             <div class="product-info">
               <h4 class="brand">GEMSTONE</h4>
-              <p class="name"><?php echo $product['name']; ?></p>
-              <div class="price"><?php echo number_format($product['price'], 0, ',', '.'); ?> VNĐ</div>
+
+              <p class="name"><?= htmlspecialchars($product['name']) ?></p>
+
+              <div class="price">
+                <?= number_format($product['price'], 0, ',', '.') ?> VNĐ
+              </div>
             </div>
+
           </div>
         <?php endforeach; ?>
       </div>
+
     </div>
   </div>
 </section>
+
+
+
+
 <style>
 .daquy-section {  margin-top : 0; position: relative; overflow: hidden; }
 .daquy-section .section-title { text-align: center; font-size: 32px; font-weight: 800; color: #c2185b; margin-bottom: 40px; letter-spacing: 1px; }
