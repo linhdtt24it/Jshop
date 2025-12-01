@@ -1,150 +1,119 @@
-// public/assets/js/auth.js - SỬA HOÀN TOÀN
 document.addEventListener('DOMContentLoaded', function() {
     let currentModal = null;
 
-    // Xử lý chuyển đổi modal
+    // Chuyển modal
     function switchModal(fromModalId, toModalId) {
-        if (currentModal) {
-            currentModal.hide();
-        }
-        
-        setTimeout(() => {
-            document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
-                backdrop.remove();
-            });
-            
+        if(currentModal) currentModal.hide();
+
+        setTimeout(()=>{
+            document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
             document.body.classList.remove('modal-open');
             document.body.style.overflow = '';
             document.body.style.paddingRight = '';
-            
+
             const newModal = new bootstrap.Modal(document.getElementById(toModalId));
             newModal.show();
             currentModal = newModal;
         }, 200);
     }
 
-    document.querySelectorAll('.switch-to-login').forEach(link => {
-        link.addEventListener('click', function(e) {
+    // Chuyển giữa login/register
+    document.querySelectorAll('.switch-to-login').forEach(link=>{
+        link.addEventListener('click', e=>{
             e.preventDefault();
-            switchModal('registerModal', 'loginModal');
+            switchModal('registerModal','loginModal');
         });
     });
 
-    document.querySelectorAll('.switch-to-register').forEach(link => {
-        link.addEventListener('click', function(e) {
+    document.querySelectorAll('.switch-to-register').forEach(link=>{
+        link.addEventListener('click', e=>{
             e.preventDefault();
-            switchModal('loginModal', 'registerModal');
+            switchModal('loginModal','registerModal');
         });
     });
 
-    // Xử lý đăng nhập - DEBUG MODE
-    document.getElementById('loginForm')?.addEventListener('submit', function(e) {
+    // AJAX đăng nhập
+    document.getElementById('loginForm')?.addEventListener('submit', function(e){
         e.preventDefault();
         const formData = new FormData(this);
         const messageDiv = document.getElementById('loginMessage');
-        
         messageDiv.innerHTML = '<div class="alert alert-info">Đang xử lý...</div>';
 
-        console.log('🔄 Sending login request...');
-
-        fetch('auth/login', {
-            method: 'POST',
+        fetch('/app/controllers/AuthController.php?action=login',{
+            method:'POST',
             body: formData
         })
-        .then(response => {
-            console.log('📨 Response status:', response.status);
-            console.log('📨 Response URL:', response.url);
-            
-            // XEM RESPONSE THỰC TẾ
-            return response.text().then(html => {
-                console.log('🔍 RAW RESPONSE (first 500 chars):', html.substring(0, 500));
-                
-                // Thử parse JSON
-                try {
-                    const data = JSON.parse(html);
-                    console.log('✅ Valid JSON:', data);
-                    return data;
-                } catch (jsonError) {
-                    console.error('❌ JSON Parse Error:', jsonError);
-                    console.log('📄 Full response saved to console as htmlResponse');
-                    
-                    // Lưu toàn bộ response để debug
-                    window.htmlResponse = html;
-                    
-                    throw new Error('Server returned HTML instead of JSON. Check console for details.');
-                }
-            });
-        })
+        .then(res => res.json())
         .then(data => {
-            console.log('✅ Final data:', data);
-            if (data.success) {
-                messageDiv.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
-                setTimeout(() => location.reload(), 1000);
+            if(data.status==='success'){
+                messageDiv.innerHTML = '<div class="alert alert-success">Đăng nhập thành công!</div>';
+                setTimeout(()=>location.reload(),1000);
             } else {
                 messageDiv.innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
             }
         })
-        .catch(error => {
-            console.error('❌ Final Error:', error);
-            messageDiv.innerHTML = `<div class="alert alert-danger">Lỗi: ${error.message}. Xem console để biết chi tiết.</div>`;
+        .catch(err=>{
+            messageDiv.innerHTML = `<div class="alert alert-danger">Lỗi server. Xem console.</div>`;
+            console.error(err);
         });
     });
 
-    // Xử lý đăng ký - DEBUG MODE
-    document.getElementById('registerForm')?.addEventListener('submit', function(e) {
+    // AJAX đăng ký
+    document.getElementById('registerForm')?.addEventListener('submit', function(e){
         e.preventDefault();
         const formData = new FormData(this);
         const messageDiv = document.getElementById('registerMessage');
-        
         messageDiv.innerHTML = '<div class="alert alert-info">Đang xử lý...</div>';
 
-        console.log('🔄 Sending register request...');
-
-        fetch('auth/register', {
-            method: 'POST',
+        fetch('/app/controllers/AuthController.php?action=register',{
+            method:'POST',
             body: formData
         })
-        .then(response => {
-            console.log('📨 Response status:', response.status);
-            
-            return response.text().then(html => {
-                console.log('🔍 RAW RESPONSE (first 500 chars):', html.substring(0, 500));
-                
-                try {
-                    const data = JSON.parse(html);
-                    console.log('✅ Valid JSON:', data);
-                    return data;
-                } catch (jsonError) {
-                    console.error('❌ JSON Parse Error:', jsonError);
-                    window.htmlResponse = html;
-                    throw new Error('Server returned HTML instead of JSON. Check console.');
-                }
-            });
-        })
+        .then(res => res.json())
         .then(data => {
-            console.log('✅ Final data:', data);
-            if (data.success) {
-                messageDiv.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
-                setTimeout(() => {
-                    switchModal('registerModal', 'loginModal');
+            if(data.status==='success'){
+                messageDiv.innerHTML = '<div class="alert alert-success">Đăng ký thành công! Kiểm tra email để nhận OTP.</div>';
+                setTimeout(()=>{
+                    switchModal('registerModal','loginModal');
                     document.getElementById('registerForm').reset();
-                }, 2000);
+                },1500);
             } else {
                 messageDiv.innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
             }
         })
-        .catch(error => {
-            console.error('❌ Final Error:', error);
-            messageDiv.innerHTML = `<div class="alert alert-danger">Lỗi: ${error.message}</div>`;
+        .catch(err=>{
+            messageDiv.innerHTML = `<div class="alert alert-danger">Lỗi server. Xem console.</div>`;
+            console.error(err);
         });
     });
 
-    // Theo dõi sự kiện đóng modal
-    document.getElementById('loginModal')?.addEventListener('hidden.bs.modal', function() {
-        currentModal = null;
+    // Reset modal khi đóng
+    document.getElementById('loginModal')?.addEventListener('hidden.bs.modal', ()=>currentModal=null);
+    document.getElementById('registerModal')?.addEventListener('hidden.bs.modal', ()=>currentModal=null);
+
+    // Toggle password
+
+ function togglePassword(inputId, spanId){
+    const input = document.getElementById(inputId);
+    const span = document.getElementById(spanId);
+    if(!input || !span) return;
+
+    const icon = span.querySelector('i');
+    if(!icon) return;
+
+    span.addEventListener('click', ()=>{
+        if(input.type==='password'){
+            input.type='text';
+            icon.classList.replace('bi-eye-fill','bi-eye-slash-fill');
+        } else {
+            input.type='password';
+            icon.classList.replace('bi-eye-slash-fill','bi-eye-fill');
+        }
     });
-    
-    document.getElementById('registerModal')?.addEventListener('hidden.bs.modal', function() {
-        currentModal = null;
-    });
+}
+togglePassword('loginPassword','toggleLoginPassword');
+togglePassword('registerPassword','toggleRegisterPassword');
+togglePassword('registerConfirm','toggleRegisterConfirm');
+
+
 });

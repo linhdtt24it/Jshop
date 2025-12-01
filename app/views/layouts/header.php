@@ -22,15 +22,16 @@ header('Content-Type: text/html; charset=UTF-8');
     <!-- SWIPER CSS -->
     <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet">
 
-    <!-- GOOGLE FONTS - Đổi font hỗ trợ tốt tiếng Việt -->
+    <!-- GOOGLE FONTS -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS CHÍNH -->
     <link href="<?= BASE_URL ?>assets/css/header.css" rel="stylesheet">
     <link href="<?= BASE_URL ?>assets/css/footer.css" rel="stylesheet">
-    
+    <link href="<?= BASE_URL ?>assets/css/login.css" rel="stylesheet"> <!-- đổi sang login.css -->
+
     <!-- AUTH JS -->
-    <script src="<?= BASE_URL ?>assets/js/auth.js"></script>
+    <script src="<?= BASE_URL ?>assets/js/auth.js" defer></script> <!-- defer để đảm bảo DOM load xong -->
 </head>
 <body>
 
@@ -38,12 +39,9 @@ header('Content-Type: text/html; charset=UTF-8');
 <header class="header-main">
   <div class="container">
     <div class="header-top">
-      <!-- Tên shop - Trên cùng bên trái -->
       <div class="shop-name">
         <a href="<?= BASE_URL ?>">JSHOP</a>
       </div>
-      
-      <!-- Tìm kiếm ở giữa -->
       <div class="search-center">
         <form class="search-form" action="<?= BASE_URL ?>product" method="GET">
           <input class="form-control" type="search" name="q" placeholder="Tìm kiếm sản phẩm..." value="<?= htmlspecialchars($_GET['q'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
@@ -52,11 +50,8 @@ header('Content-Type: text/html; charset=UTF-8');
           </button>
         </form>
       </div>
-
-      <!-- Đăng nhập và giỏ hàng bên phải -->
       <div class="user-actions">
         <?php if (isset($_SESSION['user_id'])): ?>
-          <!-- Đã đăng nhập -->
           <div class="dropdown">
             <button class="btn btn-user dropdown-toggle" type="button" data-bs-toggle="dropdown">
               <i class="bi bi-person-circle"></i> <?= htmlspecialchars($_SESSION['user_name'] ?? 'User') ?>
@@ -69,12 +64,11 @@ header('Content-Type: text/html; charset=UTF-8');
             </ul>
           </div>
         <?php else: ?>
-          <!-- Chưa đăng nhập -->
           <button class="btn btn-login" data-bs-toggle="modal" data-bs-target="#loginModal">
             <i class="bi bi-person"></i> Đăng nhập
           </button>
         <?php endif; ?>
-        
+
         <a href="<?= BASE_URL ?>cart" class="btn btn-cart position-relative">
           <i class="bi bi-cart"></i> Giỏ hàng
           <?php if (($cart_count ?? 0) > 0): ?>
@@ -88,7 +82,7 @@ header('Content-Type: text/html; charset=UTF-8');
   </div>
 </header>
 
-<!-- NAVBAR CHÍNH - GIỮ NGUYÊN MENU -->
+<!-- NAVBAR -->
 <nav class="navbar navbar-main">
   <div class="container">
     <ul class="nav main-menu">
@@ -102,21 +96,19 @@ header('Content-Type: text/html; charset=UTF-8');
   </div>
 </nav>
 
-<!-- SUB MENU - GIỮ NGUYÊN -->
 <nav class="navbar navbar-sub">
   <div class="container">
     <ul class="nav sub-menu">
-          <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>category/index/1">Nam giới</a></li>
-          <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>category/index/2">Nữ giới</a></li>
-          <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>category/index/3">Trang sức cưới</a></li>
-          <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>category/index/4">Phong thủy</a></li>
-          <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>category/index/5">Đặc biệt</a></li>
-
+      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>category/index/1">Nam giới</a></li>
+      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>category/index/2">Nữ giới</a></li>
+      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>category/index/3">Trang sức cưới</a></li>
+      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>category/index/4">Phong thủy</a></li>
+      <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>category/index/5">Đặc biệt</a></li>
     </ul>
   </div>
 </nav>
 
-<!-- SLIDER - GIỮ NGUYÊN -->
+<!-- SLIDER -->
 <?php if ($is_home ?? false): ?>
 <section class="main-slider">
   <div class="swiper mySwiper">
@@ -130,66 +122,38 @@ header('Content-Type: text/html; charset=UTF-8');
   </div>
 </section>
 <?php endif; ?>
-<!-- INCLUDE MODAL AUTH -->
+
+<!-- INCLUDE MODAL AUTH CHỈ KHI CHƯA LOGIN -->
 <?php if (!isset($_SESSION['user_id'])): ?>
-    <?php include_once __DIR__ . '/../auth/login_modal.php'; ?>
-    <?php include_once __DIR__ . '/../auth/register_modal.php'; ?>
+    <?php include_once __DIR__ . '/../auth/login_register.php'; ?>
 <?php endif; ?>
 
-
-<!-- NÚT BACK TO TOP -->
+<!-- BACK TO TOP -->
 <button id="backToTop" class="back-to-top" aria-label="Lên đầu trang">
   <i class="bi bi-chevron-up"></i>
 </button>
 
-<!-- JavaScript -->
+<!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <script>
-// Back to Top Functionality
 document.addEventListener('DOMContentLoaded', function() {
   const backToTopButton = document.getElementById('backToTop');
-  
-  // Hiển thị/nẩy nút khi scroll
   window.addEventListener('scroll', function() {
-    if (window.pageYOffset > 300) {
-      backToTopButton.classList.add('show');
-    } else {
-      backToTopButton.classList.remove('show');
-    }
+    backToTopButton.classList.toggle('show', window.pageYOffset > 300);
   });
-  
-  // Xử lý click để scroll lên đầu trang
   backToTopButton.addEventListener('click', function() {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
-  
-  // Khởi tạo Swiper (nếu có)
+
   <?php if ($is_home ?? false): ?>
   const swiper = new Swiper('.mySwiper', {
     loop: true,
-    pagination: {
-      el: '.swiper-pagination',
-      clickable: true,
-    },
-    autoplay: {
-      delay: 5000,
-      disableOnInteraction: false,
-    },
-    effect: 'fade',
-    fadeEffect: {
-      crossFade: true
-    },
+    pagination: { el: '.swiper-pagination', clickable: true },
+    autoplay: { delay: 5000, disableOnInteraction: false },
+    effect: 'fade', fadeEffect: { crossFade: true }
   });
   <?php endif; ?>
-
-
-  
 });
 </script>
-</body>
-</html>
