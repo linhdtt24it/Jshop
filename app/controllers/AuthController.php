@@ -1,138 +1,151 @@
 <?php
-require_once __DIR__.'/../../config/database.php';
+// C:\Users\LENOVO\Jshop\app\controllers\AuthController.php
+session_start();
+header('Content-Type: application/json');
 
-// Include PHPMailer thủ công từ zip
-require_once __DIR__.'/../libs/PHPMailer/src/PHPMailer.php';
-require_once __DIR__.'/../libs/PHPMailer/src/SMTP.php';
-require_once __DIR__.'/../libs/PHPMailer/src/Exception.php';
+// ========== TEST ==========
+if(($_GET['action'] ?? '') == 'test') {
+    echo json_encode([
+        'status' => 'success',
+        'message' => 'AuthController hoạt động',
+        'path' => __FILE__
+    ]);
+    exit;
+}
 
-class AuthController {
-
-    private $pdo;
-
-    public function __construct() {
-        global $pdo;
-        $this->pdo = $pdo;
-    }
-
-    // ====== REGISTER ======
-    public function register() {
-        $name = trim($_POST['name'] ?? '');
-        $email = trim($_POST['email'] ?? '');
-        $phone = trim($_POST['phone'] ?? '');
-        $address = trim($_POST['address'] ?? '');
+// ========== REGISTER ==========
+if(($_GET['action'] ?? '') == 'register') {
+    try {
+        $full_name = $_POST['name'] ?? ''; // CHÚ Ý: POST name nhưng DB là full_name
+        $email = $_POST['email'] ?? '';
+        $phone_number = $_POST['phone'] ?? ''; // CHÚ Ý: POST phone nhưng DB là phone_number
+        $address = $_POST['address'] ?? '';
         $password = $_POST['password'] ?? '';
         $confirm = $_POST['confirm'] ?? '';
-
-        // Validate cơ bản
-        if(!$name || !$email || !$phone || !$address || !$password || !$confirm){
-            echo json_encode(['status'=>'error','message'=>'Vui lòng điền đủ thông tin']);
-            return;
+        
+        // Kiểm tra cơ bản
+        if(empty($full_name) || empty($email) || empty($password) || $password !== $confirm) {
+            echo json_encode(['status' => 'error', 'message' => 'Thông tin không hợp lệ']);
+            exit;
         }
-
-        if($password !== $confirm){
-            echo json_encode(['status'=>'error','message'=>'Mật khẩu không trùng khớp']);
-            return;
-        }
-
-        // Kiểm tra email đã tồn tại
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email=?");
+        
+        // Kết nối DB
+        $pdo = new PDO("mysql:host=localhost;dbname=jshop;charset=utf8", 'root', '');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        // Kiểm tra email tồn tại
+        $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ?");
         $stmt->execute([$email]);
-        if($stmt->rowCount() > 0){
-            echo json_encode(['status'=>'error','message'=>'Email đã tồn tại']);
-            return;
+        if($stmt->rowCount() > 0) {
+            echo json_encode(['status' => 'error', 'message' => 'Email đã tồn tại']);
+            exit;
         }
-
-        // Hash password
+        
+        // Tạo OTP
+        $otp = rand(100000, 999999);
+        $otp_expiry = date('Y-m-d H:i:s', strtotime('+15 minutes'));
         $hash = password_hash($password, PASSWORD_DEFAULT);
-
-        // Role mặc định là 'customer'
-        $role = 'customer';
-
-        // Tạo OTP 6 chữ số
-        $otp = rand(100000,999999);
-
-        // Lưu user + OTP
-        $stmt = $this->pdo->prepare("INSERT INTO users (name,email,phone,address,password,role,otp,otp_verified) VALUES (?,?,?,?,?,?,?,0)");
-        $stmt->execute([$name,$email,$phone,$address,$hash,$role,$otp]);
-
-        // Gửi OTP email
-        $this->sendOTPEmail($email,$otp);
-
-        echo json_encode(['status'=>'success','message'=>'Đăng ký thành công! Kiểm tra email để nhận OTP.']);
+        
+        // Lưu user - CHÚ Ý TÊN CỘT
+        $stmt = $pdo->prepare("INSERT INTO users (full_name, email, phone_number, password, otp, otp_expiry, is_verified, role, created_at) 
+                              VALUES (?, ?, ?, ?, ?, ?, 0, 'customer', NOW())");
+        
+        // Không có address trong bảng của mày, bỏ qua hoặc thêm cột
+        if(columnExists($pdo, 'users', 'address')) {
+            $stmt = $pdo->prepare("INSERT INTO users (full_name, email, phone_number, address, password, otp, otp_expiry, is_verified, role, created_at) 
+                                  VALUES (?, ?, ?, ?, ?, ?, ?, 0, 'customer', NOW())");
+            $stmt->execute([$full_name, $email, $phone_number, $address, $hash, $otp, $otp_expiry]);
+        } else {
+            $stmt->execute([$full_name, $email, $phone_number, $hash, $otp, $otp_expiry]);
+        }
+        
+        // Gửi email OTP
+        require_once __DIR__ . '/../libs/PHPMailer/src/PHPMailer.php';
+        require_once __DIR__ . '/../libs/PHPMailer/src/SMTP.php';
+        
+        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'thithuylinhdinh003@gmail.com';
+        $mail->Password = 'woxmcvkbzsevhdjp';
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+        
+        $mail->setFrom('thithuylinhdinh003@gmail.com', 'JSHOP');
+        $mail->addAddress($email, $full_name);
+        $mail->isHTML(true);
+        $mail->Subject = 'Mã OTP JSHOP';
+        $mail->Body = "Xin chào $full_name,<br>Mã OTP của bạn là: <b style='font-size:24px;color:red;'>$otp</b>";
+        
+        if($mail->send()) {
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Đăng ký thành công! Kiểm tra email để nhận OTP.',
+                'email' => $email
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'warning',
+                'message' => 'Đăng ký thành công nhưng không gửi được email.',
+                'otp' => $otp,
+                'email' => $email
+            ]);
+        }
+        
+    } catch(Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Lỗi: ' . $e->getMessage()]);
     }
+    exit;
+}
 
-    // ====== LOGIN ======
-    public function login() {
-        $email = trim($_POST['email'] ?? '');
+// ========== LOGIN ==========
+if(($_GET['action'] ?? '') == 'login') {
+    try {
+        $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
-
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email=?");
+        
+        $pdo = new PDO("mysql:host=localhost;dbname=jshop;charset=utf8", 'root', '');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if(!$user || !password_verify($password,$user['password'])){
-            echo json_encode(['status'=>'error','message'=>'Email hoặc mật khẩu không đúng']);
-            return;
+        
+        if(!$user || !password_verify($password, $user['password'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Sai email hoặc mật khẩu']);
+            exit;
         }
-
-        if($user['otp_verified']==0){
-            echo json_encode(['status'=>'error','message'=>'Vui lòng xác nhận email trước khi đăng nhập']);
-            return;
+        
+        // Kiểm tra OTP verified
+        if($user['is_verified'] == 0) {
+            echo json_encode(['status' => 'error', 'message' => 'Vui lòng xác thực OTP trước']);
+            exit;
         }
-
-        // Lưu session
-        session_start();
+        
         $_SESSION['user_id'] = $user['user_id'];
-        $_SESSION['user_name'] = $user['name'];
-        $_SESSION['user_role'] = $user['role'];
-
-        echo json_encode(['status'=>'success','message'=>'Đăng nhập thành công']);
+        $_SESSION['user_name'] = $user['full_name']; // CHÚ Ý: full_name
+        $_SESSION['user_email'] = $email;
+        $_SESSION['user_role'] = $user['role'] ?? 'customer';
+        
+        echo json_encode(['status' => 'success', 'message' => 'Đăng nhập thành công']);
+        
+    } catch(Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Lỗi đăng nhập: ' . $e->getMessage()]);
     }
+    exit;
+}
 
-    // ====== SEND OTP EMAIL ======
-    private function sendOTPEmail($email,$otp){
-        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
-
-        try {
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com'; // thay bằng mail server của bạn
-            $mail->SMTPAuth = true;
-            $mail->Username = 'youremail@gmail.com'; // email gửi OTP
-            $mail->Password = 'yourpassword';       // mật khẩu ứng dụng (App Password)
-            $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = 587;
-
-            $mail->setFrom('youremail@gmail.com','JSHOP');
-            $mail->addAddress($email);
-
-            $mail->isHTML(true);
-            $mail->Subject = 'Xác nhận email JSHOP';
-            $mail->Body = "Mã OTP của bạn là: <b>$otp</b>";
-
-            $mail->send();
-        } catch (Exception $e){
-            error_log("Mailer Error: ".$mail->ErrorInfo);
-        }
-    }
-
-    // ====== VERIFY OTP ======
-    public function verifyOTP() {
-        $email = trim($_POST['email'] ?? '');
-        $otp = trim($_POST['otp'] ?? '');
-
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email=? AND otp=?");
-        $stmt->execute([$email,$otp]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if(!$user){
-            echo json_encode(['status'=>'error','message'=>'OTP không hợp lệ']);
-            return;
-        }
-
-        $stmt = $this->pdo->prepare("UPDATE users SET otp_verified=1, otp=NULL WHERE user_id=?");
-        $stmt->execute([$user['user_id']]);
-
-        echo json_encode(['status'=>'success','message'=>'Xác nhận email thành công! Bạn có thể đăng nhập.']);
+// ========== HÀM KIỂM TRA CỘT ==========
+function columnExists($pdo, $table, $column) {
+    try {
+        $stmt = $pdo->prepare("SHOW COLUMNS FROM $table LIKE ?");
+        $stmt->execute([$column]);
+        return $stmt->rowCount() > 0;
+    } catch(Exception $e) {
+        return false;
     }
 }
+
+// ========== DEFAULT ==========
+echo json_encode(['status' => 'error', 'message' => 'Action không hợp lệ: ' . ($_GET['action'] ?? 'none')]);
