@@ -128,6 +128,9 @@ header('Content-Type: text/html; charset=UTF-8');
     <?php include_once __DIR__ . '/../auth/login_register.php'; ?>
 <?php endif; ?>
 
+<!-- THÊM DÒNG NÀY NGAY SAU ĐÓ -->
+<?php include_once __DIR__ . '/../auth/modal_otp.php'; ?>
+
 <!-- BACK TO TOP -->
 <button id="backToTop" class="back-to-top" aria-label="Lên đầu trang">
   <i class="bi bi-chevron-up"></i>
