@@ -28,10 +28,13 @@ header('Content-Type: text/html; charset=UTF-8');
     <!-- CSS CHÍNH -->
     <link href="<?= BASE_URL ?>assets/css/header.css" rel="stylesheet">
     <link href="<?= BASE_URL ?>assets/css/footer.css" rel="stylesheet">
-    <link href="<?= BASE_URL ?>assets/css/login.css" rel="stylesheet"> <!-- đổi sang login.css -->
-
+    <link href="<?= BASE_URL ?>assets/css/login.css" rel="stylesheet"> 
+    <link href="<?= BASE_URL ?>assets/css/otp_modal.css" rel="stylesheet"> 
     <!-- AUTH JS -->
-    <script src="<?= BASE_URL ?>assets/js/auth.js" defer></script> <!-- defer để đảm bảo DOM load xong -->
+    <script src="<?= BASE_URL ?>assets/js/auth.js" defer></script> 
+  
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/otp_handlers.js"></script>
 </head>
 <body>
 

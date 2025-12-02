@@ -56,10 +56,6 @@
                         <label class="form-label">Số điện thoại</label>
                         <input type="text" name="phone" class="form-control" required>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Địa chỉ</label>
-                        <input type="text" name="address" class="form-control" required>
-                    </div>
                     <div class="mb-3 position-relative">
                         <label class="form-label">Mật khẩu</label>
                         <div class="input-group">

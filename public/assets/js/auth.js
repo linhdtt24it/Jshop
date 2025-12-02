@@ -1,370 +1,520 @@
+// FILE: auth.js - Xử lý đăng nhập, đăng ký
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ Auth JS loaded');
+    console.log('🔧 Auth System đang khởi tạo...');
     
     const BASE_URL = '/Jshop/app/controllers/AuthController.php';
     
     // ================== DEBUG CHECK ==================
-    console.log('🔍 OTP Modal:', document.getElementById('otpModal') ? '✅ Found' : '❌ Not found');
-    console.log('🔍 Login Modal:', document.getElementById('loginModal') ? '✅ Found' : '❌ Not found');
-    console.log('🔍 Register Modal:', document.getElementById('registerModal') ? '✅ Found' : '❌ Not found');
-    console.log('🔍 Bootstrap:', typeof bootstrap !== 'undefined' ? '✅ Loaded' : '❌ Not loaded');
+    console.log('🔍 Login Modal:', document.getElementById('loginModal') ? '✅ Tìm thấy' : '❌ Không tìm thấy');
+    console.log('🔍 Register Modal:', document.getElementById('registerModal') ? '✅ Tìm thấy' : '❌ Không tìm thấy');
+    console.log('🔍 OTP Modal:', document.getElementById('otpModal') ? '✅ Tìm thấy' : '❌ Không tìm thấy');
     
-    // ================== HÀM GỌI API ==================
-    function callAuthAPI(action, data) {
-        const formData = new FormData();
-        for (const key in data) {
-            formData.append(key, data[key]);
-        }
+    // ================== BIẾN QUẢN LÝ TRẠNG THÁI ==================
+    let isProcessing = false;
+    let registerSubmitLock = false;
+    
+    // ================== TIỆN ÍCH ==================
+    const AuthUtils = {
+        // Hiển thị thông báo
+        showMessage(elementId, type, message) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            const alertClass = {
+                'success': 'alert-success',
+                'error': 'alert-danger',
+                'warning': 'alert-warning',
+                'info': 'alert-info'
+            }[type] || 'alert-info';
+            
+            element.innerHTML = `
+                <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            // Tự động ẩn sau 5 giây (trừ info)
+            if (type !== 'info') {
+                setTimeout(() => {
+                    element.innerHTML = '';
+                }, 5000);
+            }
+        },
         
-        return fetch(`${BASE_URL}?action=${action}`, {
-            method: 'POST',
-            body: formData
-        }).then(res => res.json());
-    }
-    
-    // ================== HÀM ĐÓNG/MỞ MODAL ==================
-    function closeAllModals() {
-        const modals = document.querySelectorAll('.modal.show');
-        modals.forEach(modal => {
-            const bsModal = bootstrap.Modal.getInstance(modal);
-            if(bsModal) bsModal.hide();
-        });
+        // Bật/tắt trạng thái loading
+        setLoading(button, isLoading) {
+            if (!button) return;
+            
+            if (isLoading) {
+                button.dataset.originalText = button.innerHTML;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang xử lý...';
+                button.disabled = true;
+            } else {
+                button.innerHTML = button.dataset.originalText || 'Gửi';
+                button.disabled = false;
+            }
+        },
         
-        // Xóa backdrop
-        const backdrops = document.querySelectorAll('.modal-backdrop');
-        backdrops.forEach(backdrop => backdrop.remove());
-        document.body.classList.remove('modal-open');
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
-    }
-    
-    function openModal(modalId) {
-        const modalElement = document.getElementById(modalId);
-        if(modalElement) {
-            const modal = new bootstrap.Modal(modalElement);
-            modal.show();
-            return modal;
+        // Gọi API
+        async callAPI(action, data) {
+            if (isProcessing) {
+                return { status: 'error', message: 'Đang xử lý yêu cầu trước, vui lòng đợi...' };
+            }
+            
+            isProcessing = true;
+            
+            try {
+                const formData = new FormData();
+                for (const key in data) {
+                    if (data[key] !== undefined && data[key] !== null) {
+                        formData.append(key, data[key]);
+                    }
+                }
+                
+                console.log(`📤 API Call: ${action}`, Object.fromEntries(formData));
+                
+                const response = await fetch(`${BASE_URL}?action=${action}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                console.log(`📥 API Response (${action}):`, result);
+                
+                return result;
+            } catch (error) {
+                console.error(`❌ API Error (${action}):`, error);
+                return { status: 'error', message: 'Lỗi kết nối máy chủ' };
+            } finally {
+                isProcessing = false;
+            }
+        },
+        
+        // Đóng modal
+        closeModal(modalId) {
+            const modalElement = document.getElementById(modalId);
+            if (!modalElement) return;
+            
+            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        },
+        
+        // Kiểm tra email
+        validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        },
+        
+        // Disable button trong thời gian
+        disableButton(button, seconds, text = 'Đợi') {
+            if (!button) return;
+            
+            const originalText = button.innerHTML;
+            let countdown = seconds;
+            
+            button.disabled = true;
+            button.innerHTML = `${text} ${countdown}s...`;
+            
+            const timer = setInterval(() => {
+                countdown--;
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                } else {
+                    button.innerHTML = `${text} ${countdown}s...`;
+                }
+            }, 1000);
+            
+            return timer;
         }
-        return null;
-    }
+    };
     
     // ================== ĐĂNG NHẬP ==================
-    const loginForm = document.getElementById('loginForm');
-    if(loginForm) {
+    (function initLogin() {
+        const loginForm = document.getElementById('loginForm');
+        if (!loginForm) return;
+        
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const submitBtn = this.querySelector('button[type="submit"]');
-            const messageDiv = document.getElementById('loginMessage');
+            const email = this.querySelector('[name="email"]').value.trim();
+            const password = this.querySelector('[name="password"]').value.trim();
             
-            const formData = {
-                email: this.querySelector('[name="email"]').value,
-                password: this.querySelector('[name="password"]').value
-            };
+            // Validate
+            if (!email || !password) {
+                AuthUtils.showMessage('loginMessage', 'error', 'Vui lòng nhập đầy đủ thông tin');
+                return;
+            }
             
-            // Hiển thị loading
-            messageDiv.innerHTML = '<div class="alert alert-info">Đang đăng nhập...</div>';
-            submitBtn.disabled = true;
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Đang xử lý...';
+            if (!AuthUtils.validateEmail(email)) {
+                AuthUtils.showMessage('loginMessage', 'error', 'Email không hợp lệ');
+                return;
+            }
+            
+            AuthUtils.showMessage('loginMessage', 'info', 'Đang đăng nhập...');
+            AuthUtils.setLoading(submitBtn, true);
             
             try {
-                const result = await callAuthAPI('login', formData);
-                console.log('Login result:', result);
+                const result = await AuthUtils.callAPI('login', { email, password });
                 
-                if(result.status === 'success') {
-                    messageDiv.innerHTML = '<div class="alert alert-success">Đăng nhập thành công!</div>';
+                if (result.status === 'success') {
+                    AuthUtils.showMessage('loginMessage', 'success', 'Đăng nhập thành công!');
                     
-                    // Đóng modal đăng nhập
-                    const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-                    if(loginModal) {
-                        loginModal.hide();
-                    }
+                    // Đóng modal
+                    AuthUtils.closeModal('loginModal');
                     
-                    setTimeout(() => location.reload(), 1000);
+                    // Reload trang sau 1 giây
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
                 } else {
-                    messageDiv.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
+                    AuthUtils.showMessage('loginMessage', 'error', result.message || 'Đăng nhập thất bại');
                 }
-            } catch(error) {
-                console.error('Login error:', error);
-                messageDiv.innerHTML = '<div class="alert alert-danger">Lỗi kết nối</div>';
+            } catch (error) {
+                AuthUtils.showMessage('loginMessage', 'error', 'Lỗi hệ thống');
             } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
+                AuthUtils.setLoading(submitBtn, false);
             }
         });
-    }
+    })();
     
     // ================== ĐĂNG KÝ ==================
-    const registerForm = document.getElementById('registerForm');
-    if(registerForm) {
+    (function initRegister() {
+        const registerForm = document.getElementById('registerForm');
+        if (!registerForm) return;
+        
         registerForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            // Chống double submit
+            if (registerSubmitLock) {
+                AuthUtils.showMessage('registerMessage', 'warning', 'Đang xử lý, vui lòng đợi...');
+                return;
+            }
+            
+            registerSubmitLock = true;
+            
             const submitBtn = this.querySelector('button[type="submit"]');
-            const messageDiv = document.getElementById('registerMessage');
-            
-            // Kiểm tra mật khẩu
-            const password = document.getElementById('registerPassword').value;
-            const confirm = document.getElementById('registerConfirm').value;
-            
-            if(password !== confirm) {
-                messageDiv.innerHTML = '<div class="alert alert-danger">Mật khẩu không khớp!</div>';
-                return;
-            }
-            
-            if(password.length < 6) {
-                messageDiv.innerHTML = '<div class="alert alert-danger">Mật khẩu phải có ít nhất 6 ký tự!</div>';
-                return;
-            }
-            
-            // Lấy dữ liệu form
             const formData = {
-                name: this.querySelector('[name="name"]').value,
-                email: this.querySelector('[name="email"]').value,
-                phone: this.querySelector('[name="phone"]').value,
-                address: this.querySelector('[name="address"]').value,
-                password: password,
-                confirm: confirm
+                name: this.querySelector('[name="name"]').value.trim(),
+                email: this.querySelector('[name="email"]').value.trim(),
+                phone: this.querySelector('[name="phone"]').value.trim(),
+                password: document.getElementById('registerPassword').value.trim(),
+                confirm: document.getElementById('registerConfirm').value.trim()
             };
             
-            // Hiển thị loading
-            messageDiv.innerHTML = '<div class="alert alert-info">Đang đăng ký...</div>';
-            submitBtn.disabled = true;
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Đang xử lý...';
+            // Validate
+            if (!formData.name || !formData.email || !formData.password || !formData.confirm) {
+                AuthUtils.showMessage('registerMessage', 'error', 'Vui lòng điền đầy đủ thông tin');
+                registerSubmitLock = false;
+                return;
+            }
+            
+            if (!AuthUtils.validateEmail(formData.email)) {
+                AuthUtils.showMessage('registerMessage', 'error', 'Email không hợp lệ');
+                registerSubmitLock = false;
+                return;
+            }
+            
+            if (formData.password.length < 6) {
+                AuthUtils.showMessage('registerMessage', 'error', 'Mật khẩu ít nhất 6 ký tự');
+                registerSubmitLock = false;
+                return;
+            }
+            
+            if (formData.password !== formData.confirm) {
+                AuthUtils.showMessage('registerMessage', 'error', 'Mật khẩu không khớp');
+                registerSubmitLock = false;
+                return;
+            }
+            
+            AuthUtils.showMessage('registerMessage', 'info', 'Đang đăng ký và gửi OTP...');
+            AuthUtils.setLoading(submitBtn, true);
             
             try {
-                const result = await callAuthAPI('register', formData);
-                console.log('Register result:', result);
+                const result = await AuthUtils.callAPI('register', formData);
                 
-                if(result.status === 'success' || result.status === 'warning') {
-                    // Ẩn thông báo
-                    messageDiv.innerHTML = '';
+                if (result.status === 'success') {
+                    AuthUtils.showMessage('registerMessage', 'success', 'Đã gửi OTP đến email!');
                     
-                    // Đóng modal đăng ký
-                    const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
-                    if(registerModal) {
-                        registerModal.hide();
-                    }
+                    // Đóng modal đăng ký sau 1 giây
+                    setTimeout(() => {
+                        AuthUtils.closeModal('registerModal');
+                    }, 1000);
                     
-                    // Reset form
-                    this.reset();
-                    
-                    // MỞ MODAL OTP
+                    // Mở modal OTP sau 500ms
                     setTimeout(() => {
                         const emailToShow = result.email || formData.email;
-                        const otpCode = result.otp || null;
+                        console.log('Mở OTP modal cho:', emailToShow);
                         
-                        console.log('Opening OTP modal for:', emailToShow);
-                        
-                        // Gọi hàm từ modal_otp.php
-                        if(typeof window.showOTPModal === 'function') {
-                            window.showOTPModal(emailToShow, otpCode);
-                        } else {
-                            // Fallback
-                            const otpModalElement = document.getElementById('otpModal');
-                            if(otpModalElement) {
-                                const otpEmailInput = document.getElementById('otpEmail');
-                                if(otpEmailInput) otpEmailInput.value = emailToShow;
-                                
-                                const otpModal = new bootstrap.Modal(otpModalElement);
-                                otpModal.show();
-                            } else {
-                                alert(`Vui lòng nhập mã OTP đã gửi đến: ${emailToShow}`);
-                            }
+                        if (typeof window.showOTPModal === 'function') {
+                            window.showOTPModal(emailToShow);
                         }
                     }, 500);
                     
                 } else {
-                    messageDiv.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
+                    AuthUtils.showMessage('registerMessage', 'error', result.message || 'Đăng ký thất bại');
                 }
-            } catch(error) {
-                console.error('Register error:', error);
-                messageDiv.innerHTML = '<div class="alert alert-danger">Lỗi đăng ký</div>';
+            } catch (error) {
+                AuthUtils.showMessage('registerMessage', 'error', 'Lỗi hệ thống');
             } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
+                AuthUtils.setLoading(submitBtn, false);
+                registerSubmitLock = false;
             }
         });
-    }
+        
+        // Reset khi đóng modal
+        const registerModal = document.getElementById('registerModal');
+        if (registerModal) {
+            registerModal.addEventListener('hidden.bs.modal', function() {
+                registerSubmitLock = false;
+                const messageDiv = document.getElementById('registerMessage');
+                if (messageDiv) messageDiv.innerHTML = '';
+            });
+        }
+    })();
     
     // ================== XÁC THỰC OTP ==================
-    const otpForm = document.getElementById('otpForm');
-    if(otpForm) {
+    (function initOTPForm() {
+        const otpForm = document.getElementById('otpForm');
+        if (!otpForm) return;
+        
+        let isVerifyingOTP = false;
+        
         otpForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const messageDiv = document.getElementById('otpMessage');
+            if (isVerifyingOTP) {
+                AuthUtils.showMessage('otpMessage', 'warning', 'Đang xác thực, vui lòng đợi...');
+                return;
+            }
             
-            const formData = {
-                email: document.getElementById('otpEmail').value,
-                otp: this.querySelector('[name="otp"]').value
-            };
+            isVerifyingOTP = true;
             
-            // Hiển thị loading
-            messageDiv.innerHTML = '<div class="alert alert-info">Đang xác thực...</div>';
-            submitBtn.disabled = true;
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Đang xử lý...';
+            const submitBtn = this.querySelector('button[type="submit"]') || document.getElementById('otpSubmitBtn');
+            const email = document.getElementById('otpEmail')?.value;
+            
+            // Lấy OTP từ input ẩn hoặc 6 ô
+            let otpValue = document.getElementById('fullOtp')?.value || '';
+            if (!otpValue || otpValue.length !== 6) {
+                const otpInputs = document.querySelectorAll('.otp-input');
+                otpValue = '';
+                otpInputs.forEach(input => {
+                    otpValue += input.value;
+                });
+            }
+            
+            // Validate
+            if (!email || !otpValue) {
+                AuthUtils.showMessage('otpMessage', 'error', 'Vui lòng nhập mã OTP');
+                isVerifyingOTP = false;
+                return;
+            }
+            
+            if (otpValue.length !== 6) {
+                AuthUtils.showMessage('otpMessage', 'error', 'Mã OTP phải có đúng 6 số');
+                isVerifyingOTP = false;
+                return;
+            }
+            
+            AuthUtils.showMessage('otpMessage', 'info', 'Đang xác thực OTP...');
+            AuthUtils.setLoading(submitBtn, true);
             
             try {
-                const result = await callAuthAPI('verifyOTP', formData);
-                console.log('Verify OTP result:', result);
+                const result = await AuthUtils.callAPI('verifyOTP', { email, otp: otpValue });
                 
-                if(result.status === 'success') {
-                    messageDiv.innerHTML = '<div class="alert alert-success">Xác thực thành công!</div>';
+                if (result.status === 'success') {
+                    AuthUtils.showMessage('otpMessage', 'success', 'Xác thực thành công! Đang chuyển hướng...');
                     
-                    // Đóng modal OTP
-                    const otpModal = bootstrap.Modal.getInstance(document.getElementById('otpModal'));
-                    if(otpModal) {
-                        otpModal.hide();
-                    }
-                    
-                    // Chuyển hướng hoặc reload
+                    // Đóng modal sau 1 giây
                     setTimeout(() => {
-                        if(result.redirect) {
+                        AuthUtils.closeModal('otpModal');
+                        
+                        if (result.redirect) {
                             window.location.href = result.redirect;
                         } else {
-                            location.reload();
+                            window.location.reload();
                         }
                     }, 1000);
                     
                 } else {
-                    messageDiv.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
+                    AuthUtils.showMessage('otpMessage', 'error', result.message || 'Mã OTP không đúng');
+                    isVerifyingOTP = false;
                 }
-            } catch(error) {
-                console.error('Verify OTP error:', error);
-                messageDiv.innerHTML = '<div class="alert alert-danger">Lỗi xác thực</div>';
+            } catch (error) {
+                AuthUtils.showMessage('otpMessage', 'error', 'Lỗi xác thực');
+                isVerifyingOTP = false;
             } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
+                AuthUtils.setLoading(submitBtn, false);
             }
         });
-    }
+    })();
     
     // ================== GỬI LẠI OTP ==================
     window.resendOTP = async function() {
-        const email = document.getElementById('otpEmail').value;
-        const messageDiv = document.getElementById('otpMessage');
+        const email = document.getElementById('otpEmail')?.value;
         const resendBtn = document.getElementById('resendOTPBtn');
         
-        if(!email) {
-            alert('Vui lòng nhập email');
+        if (!email) {
+            AuthUtils.showMessage('otpMessage', 'error', 'Không tìm thấy email');
             return;
         }
         
-        // Disable nút gửi lại
-        if(resendBtn) {
-            resendBtn.disabled = true;
-            const originalText = resendBtn.innerHTML;
-            resendBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Đang gửi...';
-        }
+        // Vô hiệu hóa nút ngay lập tức
+        AuthUtils.setLoading(resendBtn, true);
         
-        messageDiv.innerHTML = '<div class="alert alert-info">Đang gửi lại OTP...</div>';
+        console.log('🔄 Yêu cầu gửi lại OTP cho:', email);
+        AuthUtils.showMessage('otpMessage', 'info', 'Đang gửi lại OTP...');
         
         try {
-            const formData = new FormData();
-            formData.append('email', email);
+            const result = await AuthUtils.callAPI('resendOTP', { email });
             
-            const response = await fetch(`${BASE_URL}?action=resendOTP`, {
-                method: 'POST',
-                body: formData
-            });
-            
-            const result = await response.json();
-            
-            if(result.status === 'success' || result.status === 'warning') {
-                messageDiv.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
+            if (result.status === 'success') {
+                AuthUtils.showMessage('otpMessage', 'success', result.message);
                 
-                if(result.otp) {
-                    messageDiv.innerHTML += `<div class="alert alert-warning mt-2">OTP mới: <strong>${result.otp}</strong></div>`;
+                // Vô hiệu hóa nút trong 60 giây
+                if (resendBtn) {
+                    AuthUtils.disableButton(resendBtn, 60, 'Gửi lại sau');
                 }
+                
+                // Cập nhật thông tin số lần gửi
+                if (result.attempts_left !== undefined) {
+                    updateOTPAttemptsInfo(result.attempts_left, result.current_attempt || 1);
+                }
+                
             } else {
-                messageDiv.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
+                AuthUtils.showMessage('otpMessage', 'error', result.message);
+                AuthUtils.setLoading(resendBtn, false);
             }
-        } catch(error) {
-            console.error('Resend OTP error:', error);
-            messageDiv.innerHTML = '<div class="alert alert-danger">Lỗi gửi lại OTP</div>';
-        } finally {
-            if(resendBtn) {
-                setTimeout(() => {
-                    resendBtn.disabled = false;
-                    resendBtn.innerHTML = '<i class="bi bi-arrow-clockwise me-2"></i>GỬI LẠI OTP';
-                }, 30000);
-            }
+        } catch (error) {
+            AuthUtils.showMessage('otpMessage', 'error', 'Lỗi gửi lại OTP');
+            AuthUtils.setLoading(resendBtn, false);
         }
     };
     
-    // ================== CHUYỂN ĐỔI GIỮA LOGIN/REGISTER ==================
-    function setupModalSwitcher() {
-        // Chuyển từ Register sang Login
-        document.querySelectorAll('.switch-to-login').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                console.log('🔄 Switching to Login');
-                
-                // Đóng modal Register
-                const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
-                if(registerModal) {
-                    registerModal.hide();
-                }
-                
-                // Mở modal Login sau 400ms
-                setTimeout(() => {
-                    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-                    loginModal.show();
-                }, 400);
-            });
-        });
+    // Hàm cập nhật thông tin số lần gửi OTP
+    function updateOTPAttemptsInfo(attemptsLeft, currentAttempt) {
+        const attemptsInfo = document.getElementById('otpAttemptsInfo');
+        if (attemptsInfo) {
+            attemptsInfo.innerHTML = `
+                <div class="alert alert-light border small">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Đã gửi OTP ${currentAttempt}/4 lần
+                    ${attemptsLeft > 0 ? `• Còn ${attemptsLeft} lần gửi lại` : '• Đã hết lượt gửi'}
+                </div>
+            `;
+        }
         
-        // Chuyển từ Login sang Register
-        document.querySelectorAll('.switch-to-register').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                console.log('🔄 Switching to Register');
-                
-                // Đóng modal Login
-                const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-                if(loginModal) {
-                    loginModal.hide();
-                }
-                
-                // Mở modal Register sau 400ms
-                setTimeout(() => {
-                    const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
-                    registerModal.show();
-                }, 400);
-            });
-        });
-    }
-    
-    // Gọi hàm setup modal switcher
-    setupModalSwitcher();
-    
-    // ================== TOGGLE PASSWORD ==================
-    function setupPasswordToggle(inputId, toggleId) {
-        const input = document.getElementById(inputId);
-        const toggle = document.getElementById(toggleId);
-        
-        if(input && toggle) {
-            toggle.addEventListener('click', function() {
-                const icon = this.querySelector('i');
-                if(input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.replace('bi-eye-fill', 'bi-eye-slash-fill');
-                } else {
-                    input.type = 'password';
-                    icon.classList.replace('bi-eye-slash-fill', 'bi-eye-fill');
-                }
-            });
+        // Ẩn nút gửi lại nếu hết lượt
+        const resendBtn = document.getElementById('resendOTPBtn');
+        if (attemptsLeft <= 0 && resendBtn) {
+            resendBtn.disabled = true;
+            resendBtn.innerHTML = '<i class="bi bi-slash-circle me-2"></i>Đã hết lượt gửi';
+            resendBtn.classList.remove('btn-outline-primary');
+            resendBtn.classList.add('btn-secondary');
         }
     }
     
-    setupPasswordToggle('loginPassword', 'toggleLoginPassword');
-    setupPasswordToggle('registerPassword', 'toggleRegisterPassword');
-    setupPasswordToggle('registerConfirm', 'toggleRegisterConfirm');
+// Sửa phần CHUYỂN MODAL trong auth.js của bạn:
+
+// ================== CHUYỂN MODAL ==================
+document.querySelectorAll('.switch-to-login').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('🔄 Switching to Login modal');
+        
+        // Đóng modal đăng ký bằng cách remove class
+        const registerModal = document.getElementById('registerModal');
+        if (registerModal) {
+            registerModal.classList.remove('show');
+            registerModal.style.display = 'none';
+            registerModal.setAttribute('aria-hidden', 'true');
+        }
+        
+        // Xóa backdrop
+        const backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) backdrop.remove();
+        
+        // Reset body
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Mở modal đăng nhập
+        setTimeout(() => {
+            const loginModalElement = document.getElementById('loginModal');
+            if (loginModalElement) {
+                const loginModal = new bootstrap.Modal(loginModalElement);
+                loginModal.show();
+            }
+        }, 200);
+    });
+});
+
+document.querySelectorAll('.switch-to-register').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('🔄 Switching to Register modal');
+        
+        // Đóng modal đăng nhập bằng cách remove class
+        const loginModal = document.getElementById('loginModal');
+        if (loginModal) {
+            loginModal.classList.remove('show');
+            loginModal.style.display = 'none';
+            loginModal.setAttribute('aria-hidden', 'true');
+        }
+        
+        // Xóa backdrop
+        const backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) backdrop.remove();
+        
+        // Reset body
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Mở modal đăng ký
+        setTimeout(() => {
+            const registerModalElement = document.getElementById('registerModal');
+            if (registerModalElement) {
+                const registerModal = new bootstrap.Modal(registerModalElement);
+                registerModal.show();
+            }
+        }, 200);
+    });
+});
     
-    console.log('✅ Auth system ready - Modal switchers initialized');
+    // ================== TOGGLE PASSWORD ==================
+    (function initPasswordToggles() {
+        const toggles = [
+            { input: 'loginPassword', toggle: 'toggleLoginPassword' },
+            { input: 'registerPassword', toggle: 'toggleRegisterPassword' },
+            { input: 'registerConfirm', toggle: 'toggleRegisterConfirm' }
+        ];
+        
+        toggles.forEach(({ input, toggle }) => {
+            const inputElement = document.getElementById(input);
+            const toggleElement = document.getElementById(toggle);
+            
+            if (inputElement && toggleElement) {
+                toggleElement.addEventListener('click', function() {
+                    const icon = this.querySelector('i');
+                    if (inputElement.type === 'password') {
+                        inputElement.type = 'text';
+                        icon.classList.replace('bi-eye-fill', 'bi-eye-slash-fill');
+                    } else {
+                        inputElement.type = 'password';
+                        icon.classList.replace('bi-eye-slash-fill', 'bi-eye-fill');
+                    }
+                });
+            }
+        });
+    })();
+    
+    console.log('✅ Auth System đã sẵn sàng');
 });
