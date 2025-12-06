@@ -6,7 +6,7 @@ class ProductController {
 
     public function __construct() {
         $database = new Database();
-        $this->db = $database->connect(); // ⬅️ PHẢI CÓ 
+        $this->db = $database->connect();  
     }
 
     public function index() {
@@ -16,7 +16,6 @@ class ProductController {
         $perPage = 12;
         $offset = ($page - 1) * $perPage;
 
-        // WHERE
         $where = [];
         $params = [];
 
@@ -55,7 +54,6 @@ class ProductController {
         $total = (int)$countStmt->fetchColumn();
         $totalPages = ceil($total / $perPage);
 
-        // PRODUCTS
         $sql = "
             SELECT p.*, c.name AS cat_name
             FROM products p
@@ -68,8 +66,6 @@ class ProductController {
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // CATEGORIES
         $catStmt = $this->db->query("SELECT category_id, name FROM categories ORDER BY name");
         $cats = $catStmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
@@ -91,8 +87,6 @@ class ProductController {
         if (!$product) {
             die("Không tìm thấy sản phẩm");
         }
-
-        // ẢNH DUY NHẤT (vì DB bạn chỉ có 1 cột image)
         $product['images'] = [$product['image']]; 
 
         require_once __DIR__ . '/../views/products/detail.php';

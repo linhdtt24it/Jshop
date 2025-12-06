@@ -61,14 +61,14 @@ require_once __DIR__ . '/../../../config/constants.php';
     <div class="footer-col">
       <h5>KẾT NỐI VỚI CHÚNG TÔI</h5>
       <div class="social-links">
-        <a href="#"><i class="bi bi-facebook"></i></a>
-        <a href="#"><i class="bi bi-instagram"></i></a>
-        <a href="#"><i class="bi bi-youtube"></i></a>
-        <a href="#"><i class="bi bi-envelope"></i></a>
+        <a href="https://www.facebook.com/"><i class="bi bi-facebook"></i></a>
+        <a href="https://www.instagram.com/"><i class="bi bi-instagram"></i></a>
+        <a href="https://www.youtube.com/"><i class="bi bi-youtube"></i></a>
+        <a href="https://mail.google.com/mail/u/0/#inbox?compose=new"><i class="bi bi-envelope"></i></a>
       </div>
       <div class="zalo-box">
         <p>Quan tâm Zalo OA JSHOP</p>
-        <a href="#" class="zalo-btn">Quan tâm</a>
+        <a href="https://www.zalo.me/pc" class="zalo-btn">Quan tâm</a>
       </div>
 
       <h5>PHƯƠNG THỨC THANH TOÁN</h5>

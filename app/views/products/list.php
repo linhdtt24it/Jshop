@@ -5,8 +5,6 @@ include __DIR__ . "/../layouts/header.php";
 
 <div class="container my-5">
   <div class="row">
-
-    <!-- SIDEBAR -->
     <div class="col-lg-3">
       <div class="card shadow-sm mb-4">
         <div class="card-body">
@@ -29,16 +27,12 @@ include __DIR__ . "/../layouts/header.php";
                     </option>
                   <?php endforeach; ?>
               </select>
-
-              <!-- ✔️ CHÈN 3 FILTER VÀO ĐÂY — KHÔNG XÓA GÌ -->
-
               <select name="gender" class="form-control mb-3">
                 <option value="">Giới tính</option>
                 <option value="nam"     <?= ($_GET['gender'] ?? '') == 'nam' ? 'selected' : '' ?>>Nam</option>
                 <option value="nu"      <?= ($_GET['gender'] ?? '') == 'nu' ? 'selected' : '' ?>>Nữ</option>
                 <option value="unisex"  <?= ($_GET['gender'] ?? '') == 'unisex' ? 'selected' : '' ?>>Unisex</option>
               </select>
-
               <select name="material" class="form-control mb-3">
                 <option value="">Chất liệu</option>
                 <option value="vang"      <?= ($_GET['material'] ?? '') == 'vang' ? 'selected' : '' ?>>Vàng</option>
@@ -46,7 +40,6 @@ include __DIR__ . "/../layouts/header.php";
                 <option value="kimcuong"  <?= ($_GET['material'] ?? '') == 'kimcuong' ? 'selected' : '' ?>>Kim cương</option>
                 <option value="ngoc"      <?= ($_GET['material'] ?? '') == 'ngoc' ? 'selected' : '' ?>>Ngọc</option>
               </select>
-
               <select name="purpose" class="form-control mb-3">
                 <option value="">Mục đích</option>
                 <option value="cuoi"      <?= ($_GET['purpose'] ?? '') == 'cuoi' ? 'selected' : '' ?>>Trang sức cưới</option>
@@ -54,17 +47,12 @@ include __DIR__ . "/../layouts/header.php";
                 <option value="mayman"    <?= ($_GET['purpose'] ?? '') == 'mayman' ? 'selected' : '' ?>>May mắn</option>
                 <option value="hoangdao"  <?= ($_GET['purpose'] ?? '') == 'hoangdao' ? 'selected' : '' ?>>Cung hoàng đạo</option>
               </select>
-
-              <!-- ✔️ HẾT PHẦN CHÈN THÊM -->
-
               <button class="btn btn-primary w-100">Lọc</button>
           </form>
 
         </div>
       </div>
     </div>
-
-    <!-- MAIN -->
     <div class="col-lg-9">
 
       <h3>

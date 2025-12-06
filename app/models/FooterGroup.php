@@ -1,5 +1,4 @@
 <?php
-
 class FooterGroup extends Model {
     protected $table = 'footer_groups';
 
