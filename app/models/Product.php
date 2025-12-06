@@ -8,9 +8,7 @@ class Product extends Model {
                 WHERE product_id BETWEEN ? AND ?
                 ORDER BY product_id ASC";
 
-        $stmt = $this->connect()->prepare($sql);
-        $stmt->execute([$start, $end]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->selectAll($sql, [$start, $end]);
     }
 
     public function getProductsByCategory($cat_id) {
@@ -21,11 +19,11 @@ class Product extends Model {
     }
 
     public function getMaleProducts() {
-        $stmt = $this->connect()->prepare(
-            "SELECT * FROM products WHERE category_id = 1 ORDER BY product_id DESC"
-        );
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $sql = "SELECT * FROM products 
+                WHERE category_id = 1 
+                ORDER BY product_id DESC";
+
+        return $this->selectAll($sql);
     }
 
     public function getProductById($id) {
@@ -35,13 +33,8 @@ class Product extends Model {
         );
     }
 
-    // ✔ SỬA HÀM NÀY - dùng connect() thay vì $db
     public function getProductsByMaterial($material_id) {
-    $sql = "SELECT * FROM products WHERE material_id = ?";
-    $stmt = $this->connect()->prepare($sql);
-    $stmt->execute([$material_id]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $sql = "SELECT * FROM products WHERE material_id = ?";
+        return $this->selectAll($sql, [$material_id]);
     }
-
-
 }
