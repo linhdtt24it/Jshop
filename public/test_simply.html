@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Gửi OTP - JSHOP</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; }
+        input, button { padding: 10px; margin: 10px 0; width: 100%; box-sizing: border-box; }
+        #result { margin-top: 20px; padding: 15px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>📧 Test Gửi OTP Email - JSHOP</h2>
+        
+        <div>
+            <label>Tên:</label>
+            <input type="text" id="name" value="Nguyễn Văn Test">
+        </div>
+        
+        <div>
+            <label>Email nhận OTP:</label>
+            <input type="email" id="email" value="thithuylinhdinh003@gmail.com">
+        </div>
+        
+        <button onclick="sendOTP()">🚀 Gửi OTP</button>
+        
+        <div id="result"></div>
+        
+        <div style="margin-top: 30px; font-size: 12px; color: #666;">
+            <h4>📝 Debug Info:</h4>
+            <div id="debug"></div>
+        </div>
+    </div>
+    
+    <script>
+    // URL BASE cho project của bạn
+    const BASE_URL = ''; // Để trống nếu chạy từ thư mục gốc
+    
+    async function sendOTP() {
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const result = document.getElementById('result');
+        const debug = document.getElementById('debug');
+        
+        result.innerHTML = '<div class="warning">⏳ Đang gửi OTP...</div>';
+        debug.innerHTML = 'Đang kết nối...';
+        
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('email', email);
+        
+        // THỬ CÁC URL CÓ THỂ
+        const possibleURLs = [
+            `${BASE_URL}/app/controllers/SIMPLE_AuthController.php?action=register`,
+            `${BASE_URL}/controllers/SIMPLE_AuthController.php?action=register`,
+            `app/controllers/SIMPLE_AuthController.php?action=register`,
+            `controllers/SIMPLE_AuthController.php?action=register`,
+            `/app/controllers/SIMPLE_AuthController.php?action=register`,
+            `/controllers/SIMPLE_AuthController.php?action=register`
+        ];
+        
+        try {
+            // Thử URL đầu tiên
+            const url = possibleURLs[0];
+            debug.innerHTML = `Đang thử URL: <code>${url}</code>`;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                body: formData
+            });
+            
+            debug.innerHTML += `<br>Status: ${response.status}`;
+            
+            const data = await response.json();
+            console.log('Server response:', data);
+            
+            if (data.status === 'success') {
+                result.innerHTML = `<div class="success">
+                    ✅ <strong>Thành công!</strong><br>
+                    ${data.message}<br>
+                    <small>Email: ${data.email}</small>
+                </div>`;
+                
+                // Hiển thị OTP nếu có trong debug
+                if (data.debug && data.debug.includes('OTP:')) {
+                    const otp = data.debug.split('OTP: ')[1];
+                    alert(`🎉 MÃ OTP CỦA BẠN LÀ: ${otp}\n\nKiểm tra email: ${email}`);
+                }
+                
+            } else if (data.status === 'warning') {
+                result.innerHTML = `<div class="warning">
+                    ⚠️ <strong>Cảnh báo</strong><br>
+                    ${data.message}<br>
+                    ${data.otp ? `Mã OTP: <strong style="color:red;font-size:20px;">${data.otp}</strong>` : ''}
+                </div>`;
+                
+                if (data.otp) {
+                    alert(`🔑 MÃ OTP (gửi email thất bại): ${data.otp}`);
+                }
+                
+            } else {
+                result.innerHTML = `<div class="error">
+                    ❌ <strong>Lỗi</strong><br>
+                    ${data.message}
+                </div>`;
+            }
+            
+        } catch (error) {
+            console.error('Fetch error:', error);
+            result.innerHTML = `<div class="error">
+                ❌ <strong>Lỗi kết nối</strong><br>
+                ${error.message}<br>
+                <small>Kiểm tra Console (F12) để xem chi tiết</small>
+            </div>`;
+            debug.innerHTML += `<br>Lỗi: ${error.message}`;
+        }
+    }
+    
+    // Auto-test URL khi load trang
+    window.onload = function() {
+        const debug = document.getElementById('debug');
+        debug.innerHTML = `Đường dẫn hiện tại: ${window.location.href}<br>`;
+        debug.innerHTML += `Thư mục: ${window.location.pathname}<br>`;
+        
+        // Test kết nối đến SIMPLE_AuthController
+        testAuthController();
+    };
+    
+    async function testAuthController() {
+        const debug = document.getElementById('debug');
+        const testURLs = [
+            'app/controllers/SIMPLE_AuthController.php?action=test',
+            '/app/controllers/SIMPLE_AuthController.php?action=test',
+            '../app/controllers/SIMPLE_AuthController.php?action=test'
+        ];
+        
+        for (let url of testURLs) {
+            try {
+                debug.innerHTML += `<br>Testing: ${url}... `;
+                const response = await fetch(url);
+                if (response.ok) {
+                    const data = await response.json();
+                    debug.innerHTML += `<span style="color:green">✅ OK (${data.message})</span>`;
+                    return url.split('?')[0]; // Trả về URL đúng
+                } else {
+                    debug.innerHTML += `<span style="color:red">❌ ${response.status}</span>`;
+                }
+            } catch (error) {
+                debug.innerHTML += `<span style="color:red">❌ Error</span>`;
+            }
+        }
+        return null;
+    }
+    </script>
+</body>
+</html>
