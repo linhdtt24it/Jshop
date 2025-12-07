@@ -28,3 +28,50 @@
     background-color: #333;
     color: #fff;
 }
+
+
+/* FIX PASSWORD TOGGLE BUTTONS */
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: transparent;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.password-toggle:hover {
+    color: #0d6efd;
+}
+
+.position-relative input[type="password"],
+.position-relative input[type="text"] {
+    padding-right: 40px !important;
+}
+
+/* OTP INPUT STYLES */
+.otp-input {
+    width: 50px;
+    height: 60px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    margin: 0 5px;
+}
+
+.otp-input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    outline: none;
+}
+
+.otp-input.filled {
+    border-color: #198754;
+    background-color: rgba(25, 135, 84, 0.05);
+}

@@ -4,6 +4,23 @@ require_once __DIR__ . '/../../../config/constants.php';
 
 // Đảm bảo header UTF-8
 header('Content-Type: text/html; charset=UTF-8');
+
+// Kiểm tra xem có cần hiển thị OTP modal không
+$show_otp_modal = false;
+if (!isset($_SESSION['user_id']) && isset($_SESSION['otp_verified']) && $_SESSION['otp_verified'] === false) {
+    $show_otp_modal = true;
+}
+
+// Kiểm tra file tồn tại
+$loginRegisterPath = __DIR__ . '/../auth/login_register.php';
+$otpModalPath = __DIR__ . '/../auth/modal_otp.php';
+
+$hasLoginRegister = file_exists($loginRegisterPath);
+$hasOTPModal = file_exists($otpModalPath);
+
+// DEBUG
+error_log("Login Register Path: $loginRegisterPath - Exists: " . ($hasLoginRegister ? 'YES' : 'NO'));
+error_log("OTP Modal Path: $otpModalPath - Exists: " . ($hasOTPModal ? 'YES' : 'NO'));
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -28,13 +45,12 @@ header('Content-Type: text/html; charset=UTF-8');
     <!-- CSS CHÍNH -->
     <link href="<?= BASE_URL ?>assets/css/header.css" rel="stylesheet">
     <link href="<?= BASE_URL ?>assets/css/footer.css" rel="stylesheet">
-    <link href="<?= BASE_URL ?>assets/css/login.css" rel="stylesheet"> 
-    <link href="<?= BASE_URL ?>assets/css/otp_modal.css" rel="stylesheet"> 
-    <!-- AUTH JS -->
-    <script src="<?= BASE_URL ?>assets/js/auth.js" defer></script> 
-  
-    <script src="assets/js/auth.js"></script>
-    <script src="assets/js/otp_handlers.js"></script>
+    <link href="<?= BASE_URL ?>assets/css/login.css" rel="stylesheet">
+    <link href="<?= BASE_URL ?>assets/css/otp_modal.css" rel="stylesheet">
+
+    <!-- JS CHÍNH -->
+
+<script type="module" src="<?= BASE_URL ?>assets/js/auth.js"></script>
 </head>
 <body>
 
@@ -126,40 +142,56 @@ header('Content-Type: text/html; charset=UTF-8');
 </section>
 <?php endif; ?>
 
-<!-- INCLUDE MODAL AUTH CHỈ KHI CHƯA LOGIN -->
+<!-- MODAL LOGIN/REGISTER -->
 <?php if (!isset($_SESSION['user_id'])): ?>
-    <?php include_once __DIR__ . '/../auth/login_register.php'; ?>
+    <?php if ($hasLoginRegister): ?>
+        <?php include_once $loginRegisterPath; ?>
+    <?php else: ?>
+        <!-- Fallback modals -->
+        <div class="modal fade" id="loginModal" tabindex="-1"></div>
+        <div class="modal fade" id="registerModal" tabindex="-1"></div>
+    <?php endif; ?>
 <?php endif; ?>
 
-<!-- THÊM DÒNG NÀY NGAY SAU ĐÓ -->
-<?php include_once __DIR__ . '/../auth/modal_otp.php'; ?>
+<!-- MODAL OTP (luôn có, ẩn) -->
+<?php if ($hasOTPModal): ?>
+    <?php include_once $otpModalPath; ?>
+<?php else: ?>
+    <!-- Fallback OTP modal -->
+    <div class="modal fade" id="otpModal" tabindex="-1"></div>
+<?php endif; ?>
 
 <!-- BACK TO TOP -->
 <button id="backToTop" class="back-to-top" aria-label="Lên đầu trang">
-  <i class="bi bi-chevron-up"></i>
+    <i class="bi bi-chevron-up"></i>
 </button>
 
-<!-- JS -->
+<!-- JS LIÊN QUAN -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const backToTopButton = document.getElementById('backToTop');
-  window.addEventListener('scroll', function() {
-    backToTopButton.classList.toggle('show', window.pageYOffset > 300);
-  });
-  backToTopButton.addEventListener('click', function() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+    // Back to top
+    const backToTopButton = document.getElementById('backToTop');
+    window.addEventListener('scroll', function() {
+        backToTopButton.classList.toggle('show', window.pageYOffset > 300);
+    });
+    backToTopButton.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
-  <?php if ($is_home ?? false): ?>
-  const swiper = new Swiper('.mySwiper', {
-    loop: true,
-    pagination: { el: '.swiper-pagination', clickable: true },
-    autoplay: { delay: 5000, disableOnInteraction: false },
-    effect: 'fade', fadeEffect: { crossFade: true }
-  });
-  <?php endif; ?>
+    // Swiper
+    <?php if ($is_home ?? false): ?>
+    const swiper = new Swiper('.mySwiper', {
+        loop: true,
+        pagination: { el: '.swiper-pagination', clickable: true },
+        autoplay: { delay: 5000, disableOnInteraction: false },
+        effect: 'fade',
+        fadeEffect: { crossFade: true }
+    });
+    <?php endif; ?>
 });
 </script>
+</body>
+</html>
