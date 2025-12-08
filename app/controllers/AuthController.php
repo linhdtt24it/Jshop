@@ -396,10 +396,15 @@ if(($_GET['action'] ?? '') == 'cancelRegistration') {
 
 // ========== LOGOUT ==========
 if(($_GET['action'] ?? '') == 'logout') {
+    session_start();       // nếu chưa start session
+    session_unset();
     session_destroy();
-    echo json_encode(['status' => 'success', 'message' => 'Đã đăng xuất']);
+
+    // Chuyển thẳng về trang chủ
+    header("Location: /Jshop/public/");
     exit;
 }
+
 
 // ========== DEFAULT ==========
 echo json_encode(['status' => 'error', 'message' => 'Action không hợp lệ']);

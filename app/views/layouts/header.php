@@ -51,6 +51,8 @@ error_log("OTP Modal Path: $otpModalPath - Exists: " . ($hasOTPModal ? 'YES' : '
     <!-- JS CHÍNH -->
 
 <script type="module" src="<?= BASE_URL ?>assets/js/auth.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 
 
 </head>
@@ -81,8 +83,9 @@ error_log("OTP Modal Path: $otpModalPath - Exists: " . ($hasOTPModal ? 'YES' : '
               <li><a class="dropdown-item" href="<?= BASE_URL ?>profile"><i class="bi bi-person"></i> Tài khoản</a></li>
               <li><a class="dropdown-item" href="<?= BASE_URL ?>orders"><i class="bi bi-bag"></i> Đơn hàng</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="<?= BASE_URL ?>auth/logout"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a></li>
-            </ul>
+           <a class="dropdown-item" href="/Jshop/public/logout">Đăng xuất</a>
+
+         </ul>
           </div>
         <?php else: ?>
           <button class="btn btn-login" data-bs-toggle="modal" data-bs-target="#loginModal">

@@ -66,28 +66,27 @@ class App {
     }
 
     // ===== AUTH =====
-    private function handleAuthRoutes($url) {
-        $path = implode('/', $url);
-        $method = $_SERVER['REQUEST_METHOD'];
-
-        if ($method === 'POST') {
-            if ($path === 'auth/login') {
-                $this->callAuthController('login');
-                return true;
-            }
-            if ($path === 'auth/register') {
-                $this->callAuthController('register');
-                return true;
-            }
+  // ===== AUTH =====
+private function handleAuthRoutes($url) {
+    // Nếu muốn logout trực tiếp
+    if(!empty($url[0]) && $url[0] === "logout") {
+        session_start();
+        $_SESSION = [];
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
         }
-
-        if ($method === 'GET' && $path === 'auth/logout') {
-            $this->callAuthController('logout');
-            return true;
-        }
-
-        return false;
+        session_destroy();
+        header("Location: /Jshop/public/");
+        exit;
     }
+
+    return false;
+}
+
 
     private function callAuthController($action) {
         $controllerFile = __DIR__ . "/../controllers/AuthController.php";
