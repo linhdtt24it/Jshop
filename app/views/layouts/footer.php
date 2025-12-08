@@ -32,7 +32,6 @@ require_once __DIR__ . '/../../../config/constants.php';
   <?php endif; ?>
 <?php endforeach; ?>
 
-<!-- CỘT DỊCH VỤ KHÁCH HÀNG + TỔNG HỢP CHÍNH SÁCH -->
 <div class="footer-col">
   <?php foreach ($footer_groups ?? [] as $g): ?>
     <?php if (!empty($g['title']) && $g['title'] === 'DỊCH VỤ KHÁCH HÀNG'): ?>

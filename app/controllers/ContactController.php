@@ -1,7 +1,5 @@
 <?php
-// app/controllers/ContactController.php
 
-// QUAN TRỌNG: Include file Controller
 require_once __DIR__ . '/../core/Controller.php';
 
 class ContactController extends Controller

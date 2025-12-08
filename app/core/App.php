@@ -9,7 +9,7 @@ class App {
 
     public function run() {
         $url = $this->parseUrl();
-                    // ===== PAGE ROUTE (footer links) =====
+                    
         if (!empty($url[0]) && $url[0] === 'page' && !empty($url[1])) {
             $page = $url[1];
 

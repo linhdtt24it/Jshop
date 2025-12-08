@@ -37,4 +37,11 @@ class Product extends Model {
         $sql = "SELECT * FROM products WHERE material_id = ?";
         return $this->selectAll($sql, [$material_id]);
     }
+    public function count()
+    {
+        $sql = "SELECT COUNT(*) AS total FROM products";
+        $row = $this->selectOne($sql);
+        return $row['total'];
+    }
+
 }

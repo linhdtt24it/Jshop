@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../core/Model.php'; 
 class FooterLink extends Model {
     protected $table = 'footer_links';
 

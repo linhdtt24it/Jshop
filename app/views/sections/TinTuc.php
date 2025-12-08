@@ -1,78 +1,46 @@
 <section class="news-section">
   <div class="site-width">
     <h3 class="section-title text-uppercase">Tin tức & Sự kiện</h3>
-    <div class="news-slider">
+    
+    <div class="news-slider-container"> 
       <button class="news-prev">&#10094;</button>
       <button class="news-next">&#10095;</button>
+      
       <div class="news-track">
-        <!-- Card 1 -->
-        <div class="news-card">
-          <div class="news-image">
-            <img src="https://i.pinimg.com/736x/29/41/56/2941564481866668af66d5923d74de00.jpg" alt="Khai trương cửa hàng ">
+        <?php foreach ($newsList ?? [] as $news): // Sử dụng biến đã truyền ?>
+          <div class="news-card">
+            <div class="news-image">
+              <img src="<?= $news['image_url'] ?? 'default.jpg' ?>" alt="<?= htmlspecialchars($news['title']) ?>">
+            </div>
+            <div class="news-content">
+              <h4 class="news-title"><?= htmlspecialchars($news['title']) ?></h4>
+              <p class="news-desc"><?= htmlspecialchars($news['content'] ?? '') ?></p>
+              <a href="<?= BASE_URL ?>news/detail/<?= $news['news_id'] ?>" class="news-link">Đọc thêm →</a>
+            </div>
           </div>
-          <div class="news-content">
-            <h4 class="news-title">Khai trương cửa hàng JSHOP tại ĐÀ NẴNG</h4>
-            <p class="news-desc">JSHOP ra mắt cửa hàng mới với ưu đãi hấp dẫn dành cho khách hàng yêu trang sức.</p>
-            <a href="#" class="news-link">Đọc thêm →</a>
-          </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="news-card">
-          <div class="news-image">
-            <img src="https://cdn-i.vtcnews.vn/files/phuong.ly/2018/04/19/30849330_2028411657420994_250692551_o-2155565.jpg" alt="Bộ sưu tập kim cương mới">
-          </div>
-          <div class="news-content">
-            <h4 class="news-title">Bộ sưu tập Kim Cương "Diamond Shine"</h4>
-            <p class="news-desc">Khám phá vẻ đẹp lấp lánh từ bộ sưu tập Kim Cương 2025 của JSHOP.</p>
-            <a href="#" class="news-link">Đọc thêm →</a>
-          </div>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="news-card">
-          <div class="news-image">
-            <img src="https://i.pinimg.com/736x/a0/5b/72/a05b72d94ec78deb7c7cf01567530226.jpg" alt="Ưu đãi tháng 10">
-          </div>
-          <div class="news-content">
-            <h4 class="news-title">Ưu đãi “Tháng Vàng Yêu Thương”</h4>
-            <p class="news-desc">Cơ hội sở hữu trang sức cao cấp với mức giá ưu đãi đặc biệt trong tháng này.</p>
-            <a href="#" class="news-link">Đọc thêm →</a>
-          </div>
-        </div>
+        <?php endforeach; ?>
       </div>
     </div>
   </div>
 </section>
 
 <style>
-.news-section {
-  margin-top: 0;           /* không cách trên */
-  margin-bottom: 20px;     /* khoảng cách với footer */
-  position: relative;
-  overflow: hidden;
-}
-
+.news-section { margin-top: 0; margin-bottom: 20px; position: relative; overflow: hidden; }
 .news-section .section-title { text-align: center; font-size: 32px; font-weight: 800; color: #c2185b; margin-bottom: 50px; letter-spacing: 1px; }
-
 .site-width { max-width: 1200px; padding: 0 20px; margin: 0 auto; }
 
-.news-slider { position: relative; overflow: hidden; }
+.news-slider-container { position: relative; overflow: hidden; } /* Class mới */
 .news-track { display: flex; gap: 20px; transition: transform 0.5s ease; }
 
 .news-card {
-  flex: 0 0 calc((100% - 40px)/3); /* 3 card hiển thị + gap 20px */
-  display: flex;
-  flex-direction: column;
-  background: #fafafa;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+  flex: 0 0 calc((100% - 40px)/3); 
+  display: flex; flex-direction: column; 
+  background: #fafafa; border-radius: 16px; 
+  overflow: hidden; box-shadow: 0 3px 12px rgba(0,0,0,0.1); 
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .news-card:hover { transform: translateY(-8px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
 
-.news-image { flex: none; }
 .news-image img { width: 100%; height: 200px; object-fit: cover; display: block; transition: transform 0.3s ease; }
 .news-card:hover .news-image img { transform: scale(1.05); }
 
@@ -91,35 +59,72 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const track = document.querySelector('.news-track');
-  const slides = Array.from(document.querySelectorAll('.news-card'));
-  const prevBtn = document.querySelector('.news-prev');
-  const nextBtn = document.querySelector('.news-next');
+  const container = document.querySelector('.news-section .news-slider-container');
+  if (!container) return; 
+  
+  const track = container.querySelector('.news-track');
+  const slides = Array.from(container.querySelectorAll('.news-card'));
+  
+  if (slides.length <= 3) return; 
+
+  const prevBtn = container.querySelector('.news-prev');
+  const nextBtn = container.querySelector('.news-next');
+  
   const gap = 20;
-  const slideWidth = slides[0].offsetWidth + gap;
-  const cloneCount = slides.length; // clone đủ để loop
-
-  // clone đầu/cuối
-  slides.forEach(slide => track.appendChild(slide.cloneNode(true)));
-  slides.forEach(slide => track.insertBefore(slide.cloneNode(true), track.firstChild));
-
+  let cloneCount = slides.length; 
   let index = cloneCount;
+  let isAnimating = false;
+
+  slides.forEach((slide, i) => {
+    track.appendChild(slide.cloneNode(true)); 
+    track.insertBefore(slide.cloneNode(true), track.firstChild); 
+  });
+  
+  const allSlides = Array.from(track.querySelectorAll('.news-card'));
+  const slideWidth = allSlides[cloneCount].offsetWidth + gap;
+
+  // Thiết lập vị trí ban đầu
   track.style.transform = `translateX(${-index * slideWidth}px)`;
 
   function updateSlider(animate = true) {
+    if (isAnimating && animate) return;
+    isAnimating = true;
     track.style.transition = animate ? 'transform 0.5s ease' : 'none';
     track.style.transform = `translateX(${-index * slideWidth}px)`;
   }
 
-  nextBtn.addEventListener('click', () => { index++; updateSlider(); });
-  prevBtn.addEventListener('click', () => { index--; updateSlider(); });
+  function handleTransitionEnd() {
+    isAnimating = false;
+    if (index >= slides.length + cloneCount) { 
+      index = cloneCount; 
+      updateSlider(false); 
+    } else if (index < cloneCount) { 
+      index = slides.length + cloneCount - 1; 
+      updateSlider(false); 
+    }
+  }
 
-  track.addEventListener('transitionend', () => {
-    if (index >= slides.length + cloneCount) index = cloneCount;
-    if (index < cloneCount) index = slides.length + cloneCount - 1;
-    updateSlider(false);
+  function nextSlide() { if (isAnimating) return; index++; updateSlider(); }
+  function prevSlide() { if (isAnimating) return; index--; updateSlider(); }
+
+  nextBtn.addEventListener('click', nextSlide);
+  prevBtn.addEventListener('click', prevSlide);
+
+  track.addEventListener('transitionend', handleTransitionEnd);
+
+  // Auto-slide
+  setInterval(() => { if (!isAnimating) nextSlide(); }, 5000);
+
+  // Xử lý Resize
+  window.addEventListener('resize', () => { 
+    const firstRealSlide = allSlides[cloneCount];
+    if (firstRealSlide) {
+        const newSlideWidth = firstRealSlide.offsetWidth + gap;
+        if (slideWidth !== newSlideWidth) {
+            slideWidth = newSlideWidth;
+            updateSlider(false); 
+        }
+    }
   });
-
-  setInterval(() => { index++; updateSlider(); }, 5000);
 });
 </script>

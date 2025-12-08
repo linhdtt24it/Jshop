@@ -9,36 +9,53 @@ class HomeController extends Controller {
         // Lấy danh mục
         $categoryModel = $this->model("Category");
         $categories = $categoryModel->getAllCategories();
-
-        // Lấy sản phẩm
+        
         $productModel = $this->model("Product");
+        
+        // --- TẢI DỮ LIỆU SẢN PHẨM TRANG CHỦ ---
+        
+        // Dữ liệu theo Category ID (dùng cho TrangSucNam và TrangSucNu)
         $tsNam = $productModel->getProductsByCategory(1);
+        $tsNu = $productModel->getProductsByCategory(2); 
 
-        // ⬇️ LẤY FOOTER TỪ DATABASE
-        $groupModel = $this->model("FooterGroup");
-        $linkModel  = $this->model("FooterLink");
-        $assetModel = $this->model("FooterAsset");
+        // Dữ liệu theo Material ID (dùng cho Vang, Bac, KimCuong, v.v.)
+        $productsVang     = $productModel->getProductsByMaterial(1);
+        $productsBac      = $productModel->getProductsByMaterial(2);
+        $productsKimCuong = $productModel->getProductsByMaterial(3);
+        $productsDaQuy    = $productModel->getProductsByMaterial(4);
+        $productsNgoc     = $productModel->getProductsByMaterial(5);
+        $productsKhac     = $productModel->getProductsByMaterial(6);
 
-        $footer_groups = $groupModel->getAll();  // danh sách nhóm
+        // Dữ liệu theo dải ID (dùng cho SanPhamYeuThich, SanPhamMoi, DongHo)
+        $productsYeuThich = $productModel->getProductsByIdRange(28, 31);
+        $productsMoi      = $productModel->getProductsByIdRange(32, 37);
+        $productsDongHo   = $productModel->getProductsByIdRange(54, 60);
 
-        foreach ($footer_groups as &$g) {
-            $g['links'] = $linkModel->getByGroup($g['id']); // gán link vào từng nhóm
-        }
+        // Giả định: Tải News (ví dụ top 3) để thay thế data tĩnh trong TinTuc.php
+        $newsModel = $this->model("News");
+        $newsList = $newsModel->getLatestNews(3); 
 
-        $footer_assets = $assetModel->getAll(); // danh sách asset (logo thanh toán...)
-        unset($g);
-        // Truyền xuống view
+        // -------------------------------------
+
         $this->view('home/index', [
-            'page_title'    => 'JSHOP - Trang sức cao cấp',
-            'categories'    => $categories,
-            'tsNam'         => $tsNam,
-            'is_home'       => true,
-            'user'          => $_SESSION['user'] ?? null,
-            'cart_count'    => $_SESSION['cart_count'] ?? 0,
+            'page_title'        => 'JSHOP - Trang sức cao cấp',
+            'categories'        => $categories,        // DanhMucGoiY.php
+            'is_home'           => true,
+            'user'              => $_SESSION['user'] ?? null,
+            'cart_count'        => $_SESSION['cart_count'] ?? 0,
 
-            // ⬇️ TRUYỀN FOOTER XUỐNG VIEW
-            'footer_groups' => $footer_groups,
-            'footer_assets' => $footer_assets
+            'tsNam'             => $tsNam,
+            'tsNu'              => $tsNu,
+            'productsVang'      => $productsVang,
+            'productsBac'       => $productsBac,
+            'productsKimCuong'  => $productsKimCuong,
+            'productsDaQuy'     => $productsDaQuy,
+            'productsNgoc'      => $productsNgoc,
+            'productsKhac'      => $productsKhac,
+            'productsYeuThich'  => $productsYeuThich,
+            'productsMoi'       => $productsMoi,
+            'productsDongHo'    => $productsDongHo,
+            'newsList'          => $newsList           // TinTuc.php
         ]);
     }
 }

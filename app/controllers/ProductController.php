@@ -1,13 +1,15 @@
 <?php
 require_once __DIR__ . '/../../config/database.php';
 
-class ProductController {
-    private $db;
+require_once __DIR__ . '/../core/Controller.php'; 
 
+class ProductController extends Controller {
+    private $db;
     public function __construct() {
         $database = new Database();
-        $this->db = $database->connect();  
-    }
+        $this->db = $database->connect();
+   }
+
 
     public function index() {
         $page = max(1, (int)($_GET['page'] ?? 1));
@@ -18,33 +20,14 @@ class ProductController {
 
         $where = [];
         $params = [];
-
-        if ($search !== '') {
-            $where[] = "p.name LIKE ?";
-            $params[] = "%$search%";
-        }
-        if ($cat > 0) {
-            $where[] = "p.category_id = ?";
-            $params[] = $cat;
-        }
+        if ($search !== '') { $where[] = "p.name LIKE ?"; $params[] = "%$search%"; }
+        if ($cat > 0) { $where[] = "p.category_id = ?"; $params[] = $cat; }
         $gender = $_GET['gender'] ?? '';
         $material = $_GET['material'] ?? '';
         $purpose = $_GET['purpose'] ?? '';
-
-        if ($gender !== '') {
-            $where[] = "p.gender = ?";
-            $params[] = $gender;
-        }
-        if ($material !== '') {
-            $where[] = "p.material = ?";
-            $params[] = $material;
-        }
-        if ($purpose !== '') {
-            $where[] = "p.purpose = ?";
-            $params[] = $purpose;
-        }
-
-
+        if ($gender !== '') { $where[] = "p.gender = ?"; $params[] = $gender; }
+        if ($material !== '') { $where[] = "p.material = ?"; $params[] = $material; }
+        if ($purpose !== '') { $where[] = "p.purpose = ?"; $params[] = $purpose; }
         $whereSql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
 
         // COUNT
@@ -62,17 +45,27 @@ class ProductController {
             ORDER BY p.product_id DESC
             LIMIT $perPage OFFSET $offset
         ";
-
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $catStmt = $this->db->query("SELECT category_id, name FROM categories ORDER BY name");
         $cats = $catStmt->fetchAll(PDO::FETCH_KEY_PAIR);
+        
+        // ĐÃ XÓA: Logic lấy dữ liệu Footer
 
-        require_once __DIR__ . '/../views/products/list.php';
+        $data = [
+            'products' => $products,
+            'cats' => $cats,
+            'total' => $total,
+            'totalPages' => $totalPages,
+            // ĐÃ XÓA: 'footer_groups' => $footer_groups
+        ];
+        
+        // SỬ DỤNG $this->view() thay vì extract/require_once
+        $this->view('products/list', $data);
     }
 
-        public function detail($id) {
+    public function detail($id) {
         $id = (int)$id;
 
         $stmt = $this->db->prepare("
@@ -88,8 +81,16 @@ class ProductController {
             die("Không tìm thấy sản phẩm");
         }
         $product['images'] = [$product['image']]; 
+        
+        // ĐÃ XÓA: Logic lấy dữ liệu Footer
 
-        require_once __DIR__ . '/../views/products/detail.php';
+        $data = [
+            'product' => $product,
+            // ĐÃ XÓA: 'footer_groups' => $footer_groups
+        ];
+        
+        // SỬ DỤNG $this->view() thay vì extract/require_once
+        $this->view('products/detail', $data);
     }
 
 }

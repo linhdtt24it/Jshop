@@ -1,23 +1,20 @@
 <?php
-// app/models/User.php
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../core/Model.php'; 
 
-class User {
-    private $db;
-    
-    public function __construct() {
-        $this->db = (new Database())->connect();
-    }
-    
+class User extends Model { // Kế thừa Model
+*    
     public function findByEmail($email) {
         try {
             $stmt = $this->db->prepare("SELECT * FROM users WHERE email = ?");
             $stmt->execute([$email]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
+            // Giữ lại throw Exception hoặc xử lý lỗi
             throw new Exception("Database error: " . $e->getMessage());
         }
     }
+    
+   
     
     public function login($email, $password) {
         try {
@@ -60,4 +57,3 @@ class User {
         }
     }
 }
-?>

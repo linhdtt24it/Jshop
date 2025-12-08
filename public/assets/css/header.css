@@ -6,7 +6,6 @@ body {
   overflow-x: hidden;
   background-color: #ffffff !important;
   color: #000000;
-  /* Đảm bảo hiển thị tiếng Việt tốt */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

@@ -1,15 +1,14 @@
 <?php
-require_once __DIR__ . '/../../config/database.php';
+// app/models/Order.php
 
-class Order {
-    private $conn;
-    public function __construct() {
-        $this->conn = Database::connect();
-    }
+require_once __DIR__ . '/../core/Model.php'; 
 
+class Order extends Model { // Kế thừa Model
+  
     public function create($user_id, $total_amount) {
-        $stmt = $this->conn->prepare("INSERT INTO orders (user_id, total_amount) VALUES (?, ?)");
+        // Thay $this->conn bằng $this->db
+        $stmt = $this->db->prepare("INSERT INTO orders (user_id, total_amount) VALUES (?, ?)");
         $stmt->execute([$user_id, $total_amount]);
-        return $this->conn->lastInsertId();
+        return $this->db->lastInsertId();
     }
 }
