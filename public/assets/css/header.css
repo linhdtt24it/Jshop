@@ -1,4 +1,5 @@
 /* public/assets/css/header.css */
+
 body {
   font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   margin: 0;
@@ -16,6 +17,7 @@ body {
   font-family: inherit;
 }
 
+
 /* HEADER CHÍNH - Layout mới */
 .header-main {
   background-color: #ffffff;
@@ -31,23 +33,33 @@ body {
 }
 
 /* Tên shop - Trên cùng bên trái */
-.shop-name {
-  flex: 0 0 auto;
+/* --- LOGO JSHOP SANG TRỌNG --- */
+.shop-name a {
+    color: #000000 !important;
+    /* Dùng font Playfair Display cho giống Admin và các thương hiệu lớn */
+    font-family: 'Playfair Display', serif; 
+    font-weight: 800;       /* Chữ siêu đậm */
+    font-size: 36px;        /* Kích thước to rõ */
+    letter-spacing: 2px;    /* Giãn chữ ra cho sang */
+    text-decoration: none;
+    display: flex;          /* Để icon và chữ nằm ngang thẳng hàng */
+    align-items: center;
+    transition: opacity 0.3s;
 }
 
-.shop-name a {
-  color: #000000 !important;
-  font-weight: 700;
-  font-size: 28px;
-  letter-spacing: 0.5px;
-  text-decoration: none;
-  transition: color 0.2s ease;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
+/* Style riêng cho viên Kim Cương */
+.logo-icon {
+    color: #d4af37;         /* Màu Vàng Gold (Màu của Admin) */
+    font-size: 32px;        /* Kích thước icon */
+    margin-right: 10px;     /* Khoảng cách với chữ JSHOP */
+    /* Hiệu ứng bóng nhẹ cho kim cương lấp lánh */
+    text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3); 
 }
 
 .shop-name a:hover {
-  color: #333333 !important;
+    opacity: 0.8;
 }
+
 
 /* Tìm kiếm ở giữa */
 .search-center {
@@ -148,19 +160,23 @@ body {
   margin: 0;
 }
 
+/* NAVBAR CHÍNH - Menu chính */
 .main-menu .nav-link {
   color: #000000 !important;
-  font-size: 0.95rem;
-  font-weight: 500;
-  padding: 8px 20px;
+  font-size: 18px;          
+  font-weight: 550;         
+  text-transform: uppercase;
+  padding: 15px 25px;     
   transition: all 0.2s ease;
   text-decoration: none;
   border-radius: 4px;
   font-family: 'Inter', 'Segoe UI', sans-serif;
+  letter-spacing: 0.5px;    
 }
 
+
 .main-menu .nav-link:hover {
-  color: #666666 !important;
+  color: #d4af37 !important; 
   background-color: #f8f9fa;
 }
 
@@ -183,23 +199,23 @@ body {
   list-style: none;
 }
 
+/* Navbar Sub - Thanh danh mục */
 .sub-menu .nav-link {
-  color: #444444;
-  font-weight: 400;
-  font-size: 0.9rem;
+  color: #333333;
+  font-weight: 500;        
+  font-size: 16px;          
   text-transform: none;
   letter-spacing: normal;
   transition: all 0.2s ease;
-  padding: 6px 15px;
-  border-radius: 4px;
+  padding: 10px 20px;       
   text-decoration: none;
   font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
 .sub-menu .nav-link:hover {
   color: #000000;
-  background-color: #f0f0f0;
-}
+  background-color: #e9ecef;
+} 
 
 /* Slider - GIỮ NGUYÊN */
 .main-slider {

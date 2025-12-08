@@ -1,160 +1,337 @@
 <?php
 // app/views/collection/index.php
-$page_title = "Bộ Sưu Tập - JSHOP";
+$page_title = "Bộ Sưu Tập - JSHOP Luxury";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 
-<!-- HERO SECTION -->
-<section class="collection-hero py-5 text-white" style="background: linear-gradient(135deg, #966d45 0%, #b08d5f 100%);">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-8 mx-auto text-center">
-        <h1 class="display-4 fw-bold mb-3">Bộ Sưu Tập JSHOP</h1>
-        <p class="lead mb-0">Khám phá những bộ sưu tập trang sức độc đáo và tinh tế</p>
-      </div>
-    </div>
-  </div>
-</section>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
-<!-- COLLECTIONS GRID -->
-<div class="container my-5">
-  <div class="row g-4">
+<style>
+    /* Font chung */
+    .collection-page {
+        font-family: 'Be Vietnam Pro', sans-serif !important;
+        background-color: #fff;
+        color: #1a1a1a;
+    }
+
+    h1, h2, h3, h4, h5 {
+        font-family: 'Playfair Display', serif !important;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    /* BANNER HERO (Đen Trắng) */
+    .coll-hero {
+        background-color: #f9f9f9; 
+        padding: 80px 0;
+        text-align: center;
+        border-bottom: 1px solid #eeeeee;
+    }
     
-    <!-- BỘ SƯU TẬP NỔI BẬT -->
-    <div class="col-12">
-      <h2 class="text-center mb-4 text-warning">Bộ Sưu Tập Nổi Bật</h2>
-    </div>
+    .hero-title {
+        font-size: 3rem;
+        color: #000;
+        margin-bottom: 15px;
+    }
+    .hero-subtitle {
+        font-family: 'Playfair Display', serif;
+        font-style: italic;
+        color: #6c757d;
+        font-size: 1.1rem;
+    }
 
-    <!-- COLLECTION 1 -->
-    <div class="col-lg-4 col-md-6">
-      <div class="card collection-card shadow-lg border-0 h-100">
-        <div class="position-relative overflow-hidden">
-          <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?ixlib=rb-4.0.0&auto=format&fit=crop&w=500&q=80" 
-               class="card-img-top" alt="Bộ sưu tập Vàng 24K" style="height: 300px; object-fit: cover;">
-          <div class="position-absolute top-0 end-0 m-3">
-            <span class="badge bg-warning text-dark">Bán chạy</span>
-          </div>
-        </div>
-        <div class="card-body text-center">
-          <h4 class="card-title text-gold">Vàng 24K Tinh Khiết</h4>
-          <p class="card-text text-muted">Bộ sưu tập vàng nguyên chất với thiết kế tinh xảo</p>
-          <div class="d-flex justify-content-center gap-2 mb-3">
-            <span class="badge bg-light text-dark">Nhẫn</span>
-            <span class="badge bg-light text-dark">Dây chuyền</span>
-            <span class="badge bg-light text-dark">Lắc tay</span>
-          </div>
-          <a href="<?= BASE_URL ?>collection/vang-24k" class="btn btn-warning btn-lg w-100">
-            <i class="bi bi-gem"></i> Khám phá ngay
-          </a>
-        </div>
-      </div>
-    </div>
+    /* --- CARD CHÍNH (CÓ ĐỔ BÓNG NHẸ) --- */
+    .coll-card {
+        border: 1px solid #eee;
+        background: #fff;
+        height: 100%;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        /* THÊM ĐỔ BÓNG NHẸ Ở ĐÂY */
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .coll-card:hover {
+        border-color: #000; 
+        transform: translateY(-5px);
+        /* Hover thì bóng đậm hơn chút để tạo cảm giác nổi lên */
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
 
-    <!-- COLLECTION 2 -->
-    <div class="col-lg-4 col-md-6">
-      <div class="card collection-card shadow-lg border-0 h-100">
-        <div class="position-relative overflow-hidden">
-          <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?ixlib=rb-4.0.0&auto=format&fit=crop&w=500&q=80" 
-               class="card-img-top" alt="Bộ sưu tập Kim Cương" style="height: 300px; object-fit: cover;">
-          <div class="position-absolute top-0 end-0 m-3">
-            <span class="badge bg-danger">Mới</span>
-          </div>
-        </div>
-        <div class="card-body text-center">
-          <h4 class="card-title text-primary">Kim Cương Vĩnh Cửu</h4>
-          <p class="card-text text-muted">Vẻ đẹp vĩnh cửu với những viên kim cương tự nhiên</p>
-          <div class="d-flex justify-content-center gap-2 mb-3">
-            <span class="badge bg-light text-dark">Nhẫn cưới</span>
-            <span class="badge bg-light text-dark">Bông tai</span>
-            <span class="badge bg-light text-dark">Mặt dây</span>
-          </div>
-          <a href="<?= BASE_URL ?>collection/kim-cuong" class="btn btn-primary btn-lg w-100">
-            <i class="bi bi-diamond"></i> Khám phá ngay
-          </a>
-        </div>
-      </div>
-    </div>
+    .coll-img-wrap {
+        height: 350px;
+        overflow: hidden;
+        position: relative;
+    }
+    .coll-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.8s;
+    }
+    .coll-card:hover .coll-img { transform: scale(1.1); }
 
-    <!-- COLLECTION 3 -->
-    <div class="col-lg-4 col-md-6">
-      <div class="card collection-card shadow-lg border-0 h-100">
-        <div class="position-relative overflow-hidden">
-          <img src="https://images.unsplash.com/photo-1602173574767-37ac01994b2a?ixlib=rb-4.0.0&auto=format&fit=crop&w=500&q=80" 
-               class="card-img-top" alt="Bộ sưu tập Bạc" style="height: 300px; object-fit: cover;">
-        </div>
-        <div class="card-body text-center">
-          <h4 class="card-title text-secondary">Bạc Sterling</h4>
-          <p class="card-text text-muted">Phong cách trẻ trung với bạc nguyên chất 92.5%</p>
-          <div class="d-flex justify-content-center gap-2 mb-3">
-            <span class="badge bg-light text-dark">Vòng tay</span>
-            <span class="badge bg-light text-dark">Nhẫn nam</span>
-            <span class="badge bg-light text-dark">Dây chuyền</span>
-          </div>
-          <a href="<?= BASE_URL ?>collection/bac-sterling" class="btn btn-secondary btn-lg w-100">
-            <i class="bi bi-moon-stars"></i> Khám phá ngay
-          </a>
-        </div>
-      </div>
-    </div>
+    .coll-badge {
+        position: absolute; top: 15px; right: 15px;
+        background: #000; color: #fff;
+        padding: 5px 12px; text-transform: uppercase;
+        font-size: 0.75rem; font-weight: 600; letter-spacing: 1px;
+    }
 
-    <!-- CÁC BỘ SƯU TẬP KHÁC -->
-    <div class="col-12 mt-5">
-      <h3 class="text-center mb-4">Bộ Sưu Tập Khác</h3>
-      <div class="row g-3">
-        <?php 
-        $collections = [
-          ['name' => 'Ngọc Trai Biển', 'slug' => 'ngoc-trai', 'color' => 'info'],
-          ['name' => 'Đá Quý Phong Thủy', 'slug' => 'da-quy-phong-thuy', 'color' => 'success'],
-          ['name' => 'Trang Sức Cưới', 'slug' => 'trang-suc-cuoi', 'color' => 'danger'],
-          ['name' => 'Trang Sức Nam', 'slug' => 'trang-suc-nam', 'color' => 'dark'],
-          ['name' => 'Trang Sức Trẻ Em', 'slug' => 'trang-suc-tre-em', 'color' => 'warning'],
-          ['name' => 'Quà Tặng Đặc Biệt', 'slug' => 'qua-tang-dac-biet', 'color' => 'primary']
-        ];
-        foreach($collections as $collection): 
-        ?>
-        <div class="col-lg-4 col-md-6">
-          <div class="card border-0 shadow-sm h-100">
-            <div class="card-body text-center">
-              <div class="mb-3">
-                <i class="bi bi-gem display-6 text-<?= $collection['color'] ?>"></i>
-              </div>
-              <h5 class="card-title"><?= $collection['name'] ?></h5>
-              <a href="<?= BASE_URL ?>collection/<?= $collection['slug'] ?>" class="btn btn-outline-<?= $collection['color'] ?>">
-                Xem bộ sưu tập
-              </a>
+    .coll-body { 
+        padding: 30px 20px; 
+        text-align: center;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
+    }
+    
+    .coll-title { 
+        font-size: 1.5rem; margin-bottom: 10px; color: #000; 
+        font-family: 'Playfair Display', serif;
+    }
+    
+    .coll-desc { color: #666; font-size: 0.95rem; margin-bottom: 20px; }
+
+    .tag-pill {
+        display: inline-block;
+        border: 1px solid #eee;
+        padding: 4px 12px;
+        font-size: 0.8rem;
+        color: #555;
+        margin: 0 3px;
+        background: #fcfcfc;
+    }
+
+    /* NÚT KHÁM PHÁ (CÓ ICON) */
+    .btn-discover {
+        margin-top: auto;
+        border: 1px solid #000;
+        color: #000;
+        background: transparent;
+        padding: 12px 30px;
+        text-transform: uppercase;
+        font-weight: 600;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+        text-decoration: none;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .btn-discover:hover {
+        background: #000;
+        color: #fff;
+    }
+
+    /* --- MINI CARD (CÓ ĐỔ BÓNG NHẸ) --- */
+    .mini-card {
+        border: 1px solid #eee;
+        padding: 40px 20px;
+        text-align: center;
+        transition: all 0.3s;
+        height: 100%;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* THÊM ĐỔ BÓNG NHẸ Ở ĐÂY */
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .mini-card:hover {
+        border-color: #000;
+        background: #fcfcfc;
+        transform: translateY(-5px);
+        /* Hover thì bóng đậm hơn chút */
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    
+    .gem-icon {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        display: inline-block;
+    }
+
+    .mini-title { font-size: 1.2rem; margin-bottom: 15px; color: #000; }
+    
+    /* NÚT XEM CHI TIẾT (ĐÓNG KHUNG) */
+    .btn-detail {
+        margin-top: auto;
+        border: 1px solid #e0e0e0;
+        color: #555;
+        padding: 8px 20px;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-decoration: none;
+        letter-spacing: 1px;
+        transition: all 0.3s;
+    }
+    .mini-card:hover .btn-detail {
+        border-color: #000;
+        background: #000;
+        color: #fff;
+    }
+
+    /* STATS (Số liệu cuối trang) */
+    .stats-section {
+        background-color: #f9f9f9;
+        padding: 80px 0;
+        border-top: 1px solid #eee;
+        margin-top: 80px;
+    }
+    .stat-number { 
+        font-size: 2.5rem; 
+        font-weight: 400; 
+        color: #000; 
+        margin-bottom: 5px; 
+        font-family: 'Playfair Display', serif;
+    }
+    .stat-label { 
+        font-family: 'Be Vietnam Pro', sans-serif; 
+        color: #666; 
+        font-size: 0.9rem; 
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+</style>
+
+<div class="collection-page">
+    
+    <section class="coll-hero">
+        <div class="container">
+            <h1 class="hero-title">Bộ Sưu Tập Độc Bản</h1>
+            <p class="hero-subtitle">Tuyệt tác trang sức dành riêng cho bạn</p>
+        </div>
+    </section>
+
+    <div class="container my-5">
+        
+        <div class="text-center mb-5">
+            <h2 style="font-size: 2.5rem;">Nổi Bật Nhất</h2>
+            <div style="width: 60px; height: 1px; background: #000; margin: 20px auto;"></div>
+        </div>
+
+        <div class="row g-5">
+            <div class="col-lg-4 col-md-6">
+                <div class="coll-card">
+                    <div class="coll-img-wrap">
+                        <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=600" class="coll-img" alt="Gold">
+                        <span class="coll-badge">Best Seller</span>
+                    </div>
+                    <div class="coll-body">
+                        <h3 class="coll-title">Gold 24K</h3>
+                        <p class="coll-desc">Vẻ đẹp thuần khiết & quyền lực</p>
+                        <div class="mb-4">
+                            <span class="tag-pill">Nhẫn</span>
+                            <span class="tag-pill">Dây chuyền</span>
+                        </div>
+                        <a href="<?= BASE_URL ?>collection/vang-24k" class="btn-discover">
+                            <i class="bi bi-gem"></i> Khám phá ngay
+                        </a>
+                    </div>
+                </div>
             </div>
-          </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="coll-card">
+                    <div class="coll-img-wrap">
+                        <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=600" class="coll-img" alt="Diamond">
+                        <span class="coll-badge">New Arrival</span>
+                    </div>
+                    <div class="coll-body">
+                        <h3 class="coll-title">Diamond Luxury</h3>
+                        <p class="coll-desc">Sự vĩnh cửu trong từng giác cắt</p>
+                        <div class="mb-4">
+                            <span class="tag-pill">Nhẫn cưới</span>
+                            <span class="tag-pill">Bông tai</span>
+                        </div>
+                        <a href="<?= BASE_URL ?>collection/kim-cuong" class="btn-discover">
+                            <i class="bi bi-diamond"></i> Khám phá ngay
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="coll-card">
+                    <div class="coll-img-wrap">
+                        <img src="https://images.unsplash.com/photo-1602173574767-37ac01994b2a?q=80&w=600" class="coll-img" alt="Silver">
+                    </div>
+                    <div class="coll-body">
+                        <h3 class="coll-title">Sterling Silver</h3>
+                        <p class="coll-desc">Phong cách trẻ trung, hiện đại</p>
+                        <div class="mb-4">
+                            <span class="tag-pill">Vòng tay</span>
+                            <span class="tag-pill">Charm</span>
+                        </div>
+                        <a href="<?= BASE_URL ?>collection/bac-sterling" class="btn-discover">
+                            <i class="bi bi-moon-stars"></i> Khám phá ngay
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <?php endforeach; ?>
-      </div>
+
+        <div class="text-center mb-5 mt-5 pt-5">
+            <h2 style="font-size: 2.5rem;">Khám Phá Thêm</h2>
+            <div style="width: 60px; height: 1px; background: #000; margin: 20px auto;"></div>
+        </div>
+
+        <div class="row g-4">
+            <?php 
+            $collections = [
+                ['name' => 'Ngọc Trai Biển', 'slug' => 'ngoc-trai', 'color' => '#0dcaf0'],
+                ['name' => 'Đá Quý Phong Thủy', 'slug' => 'da-quy', 'color' => '#198754'],
+                ['name' => 'Trang Sức Cưới', 'slug' => 'cuoi', 'color' => '#dc3545'],
+                ['name' => 'Quý Ông Lịch Lãm', 'slug' => 'nam-gioi', 'color' => '#212529'],
+                ['name' => 'Trang Sức Trẻ Em', 'slug' => 'tre-em', 'color' => '#ffc107'],
+                ['name' => 'Quà Tặng', 'slug' => 'qua-tang', 'color' => '#6610f2']
+            ];
+            foreach($collections as $item): 
+            ?>
+            <div class="col-lg-4 col-md-6">
+                <div class="mini-card">
+                    <i class="bi bi-gem gem-icon" style="color: <?= $item['color'] ?>"></i>
+                    <h4 class="mini-title"><?= $item['name'] ?></h4>
+                    <a href="<?= BASE_URL ?>collection/<?= $item['slug'] ?>" class="btn-detail">
+                        Xem chi tiết
+                    </a>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+
     </div>
-  </div>
+
+    <section class="stats-section">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Bộ Sưu Tập</div>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <div class="stat-number">1000+</div>
+                    <div class="stat-label">Sản Phẩm</div>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <div class="stat-number">5★</div>
+                    <div class="stat-label">Đánh Giá</div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Khách Hàng</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
 </div>
-
-<!-- STATS SECTION -->
-<section class="bg-light py-5 mt-5">
-  <div class="container">
-    <div class="row text-center">
-      <div class="col-md-3">
-        <h3 class="text-warning fw-bold">50+</h3>
-        <p class="text-muted">Bộ Sưu Tập</p>
-      </div>
-      <div class="col-md-3">
-        <h3 class="text-warning fw-bold">1000+</h3>
-        <p class="text-muted">Sản Phẩm</p>
-      </div>
-      <div class="col-md-3">
-        <h3 class="text-warning fw-bold">5★</h3>
-        <p class="text-muted">Đánh Giá</p>
-      </div>
-      <div class="col-md-3">
-        <h3 class="text-warning fw-bold">10K+</h3>
-        <p class="text-muted">Khách Hàng</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

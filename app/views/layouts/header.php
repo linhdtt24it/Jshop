@@ -28,6 +28,8 @@ error_log("OTP Modal Path: $otpModalPath - Exists: " . ($hasOTPModal ? 'YES' : '
     <title><?= htmlspecialchars($page_title ?? 'JSHOP', ENT_QUOTES, 'UTF-8') ?> - Trang sức cao cấp</title>
 
     <!-- CSS -->
+     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet">
@@ -46,9 +48,12 @@ error_log("OTP Modal Path: $otpModalPath - Exists: " . ($hasOTPModal ? 'YES' : '
 <header class="header-main">
   <div class="container">
     <div class="header-top">
-      <div class="shop-name">
-        <a href="<?= BASE_URL ?>">JSHOP</a>
-      </div>
+  <div class="shop-name">
+    <a href="<?= BASE_URL ?>">
+        <i class="bi bi-gem me-2 logo-icon"></i> 
+        JSHOP
+    </a>
+</div>
       <div class="search-center">
         <form class="search-form" action="<?= BASE_URL ?>product" method="GET">
           <input class="form-control" type="search" name="q" placeholder="Tìm kiếm sản phẩm..." value="<?= htmlspecialchars($_GET['q'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
