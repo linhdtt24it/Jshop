@@ -1,5 +1,6 @@
 <?php
 // app/controllers/AuthController.php
+date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 ini_set('session.gc_maxlifetime', 7200);
 ini_set('session.cookie_lifetime', 7200);
@@ -292,7 +293,7 @@ if(($_GET['action'] ?? '') == 'verifyOTP') {
             'status' => 'success',
             'message' => 'Đăng ký thành công!',
             'verified' => true,
-            'redirect' => '/Jshop/'
+            'redirect' => '/Jshop/public/'
         ]);
         
     } catch(Exception $e) {

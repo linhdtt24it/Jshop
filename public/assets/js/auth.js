@@ -1,4 +1,6 @@
 // FILE: assets/js/auth.js
+console.log("⚠️ File auth.js đã được load!");
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🔧 Auth System đang khởi tạo...');
     

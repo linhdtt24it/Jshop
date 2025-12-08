@@ -112,6 +112,3 @@ require_once __DIR__ . '/../../../config/constants.php';
   });
 </script>
 <?php endif; ?>
-
-<!-- AUTH JS -->
-<script src="<?= BASE_URL ?>assets/js/auth.js"></script>

@@ -51,6 +51,8 @@ error_log("OTP Modal Path: $otpModalPath - Exists: " . ($hasOTPModal ? 'YES' : '
     <!-- JS CHÍNH -->
 
 <script type="module" src="<?= BASE_URL ?>assets/js/auth.js"></script>
+
+
 </head>
 <body>
 
