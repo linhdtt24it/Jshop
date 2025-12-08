@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../core/Model.php'; 
 
 class User extends Model { // Kế thừa Model
-*    
+  
     public function findByEmail($email) {
         try {
             $stmt = $this->db->prepare("SELECT * FROM users WHERE email = ?");
