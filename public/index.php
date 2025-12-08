@@ -1,6 +1,6 @@
 <?php
 // public/index.php
-session_start(); // ← BẮT BUỘC: cho login, giỏ hàng
+session_start(); 
 
 
 require_once "../config/constants.php";
