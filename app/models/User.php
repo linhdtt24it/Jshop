@@ -56,4 +56,40 @@ class User extends Model { // Kế thừa Model
             return 0;
         }
     }
+    // --- BỔ SUNG HÀM LẤY DANH SÁCH NHÂN VIÊN ---
+    public function getAllStaff() {
+        // Lấy admin và staff (hoặc employee nếu bạn chưa sửa DB)
+        // Lưu ý: Nếu bạn chưa sửa DB thì đổi chữ 'staff' dưới này thành 'employee' nhé
+        $sql = "SELECT * FROM users WHERE role IN ('admin', 'staff') ORDER BY created_at DESC";
+        
+        // Vì class của bạn kế thừa Model, chắc là biến $this->db có sẵn rồi
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    // --- BỔ SUNG HÀM TẠO NHÂN VIÊN (Cho bài sau) ---
+   public function createStaff($name, $email, $password, $role, $phone) { // <-- Thêm biến $phone
+    if ($this->findByEmail($email)) return false;
+
+    $hashPass = password_hash($password, PASSWORD_DEFAULT);
+    
+    // Thêm phone_number vào câu SQL
+    $sql = "INSERT INTO users (full_name, email, password, role, phone_number, is_verified, created_at) 
+            VALUES (?, ?, ?, ?, ?, 1, NOW())";
+    
+    $stmt = $this->db->prepare($sql);
+    // Thêm $phone vào danh sách execute
+    return $stmt->execute([$name, $email, $hashPass, $role, $phone]);
 }
+
+    public function deleteUser($id) {
+        try {
+            $stmt = $this->db->prepare("DELETE FROM users WHERE user_id = ?");
+            return $stmt->execute([$id]);
+        } catch (Exception $e) {
+            return false;
+        }}
+} // Kết thúc class
+
+

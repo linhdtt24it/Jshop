@@ -1,15 +1,4 @@
-<?php
-// app/views/staff/dashboard.php
-session_start();
-// Giả lập session Staff
-if (!isset($_SESSION['user'])) {
-    $_SESSION['user'] = [
-        'full_name' => 'Ngọc Nhân Viên', 
-        'role' => 'Nhân viên bán hàng', 
-        'avatar' => 'https://ui-avatars.com/api/?name=Ngoc+Nv&background=ffe4e6&color=be123c'
-    ];
-}
-?>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -19,7 +8,7 @@ if (!isset($_SESSION['user'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="/Jshop/public/assets/css/staff-dashboard.css">
+   <link rel="stylesheet" href="/Jshop/public/assets/css/staff-dashboard.css?v=<?= time() ?>">
 </head>
 <body>
 

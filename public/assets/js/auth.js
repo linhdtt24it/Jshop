@@ -225,17 +225,27 @@ function initAuthSystem() {
             try {
                 const result = await AuthUtils.callAPI('login', { email, password });
                 
-                if (result.status === 'success') {
-                    AuthUtils.showMessage('loginMessage', 'success', result.message);
-                    
-                    setTimeout(() => {
-                        AuthUtils.closeModal('loginModal');
-                        window.location.reload();
-                    }, 1000);
-                    
-                } else {
-                    AuthUtils.showMessage('loginMessage', 'error', result.message);
-                }
+          if (result.status === 'success') {
+    AuthUtils.showMessage('loginMessage', 'success', result.message);
+    
+    setTimeout(() => {
+        AuthUtils.closeModal('loginModal');
+        
+        // --- SỬA Ở ĐÂY ---
+        // Kiểm tra xem PHP có gửi link chuyển hướng không?
+        if (result.redirect) {
+            console.log("🚀 Đang chuyển hướng tới:", result.redirect);
+            window.location.href = result.redirect; // Chạy theo bản đồ PHP vẽ
+        } else {
+            window.location.reload(); // Nếu không có link thì mới reload
+        }
+        // -----------------
+        
+    }, 1000);
+    
+} else {
+    AuthUtils.showMessage('loginMessage', 'error', result.message);
+}
             } catch (error) {
                 AuthUtils.showMessage('loginMessage', 'error', 'Lỗi hệ thống');
             } finally {

@@ -1,13 +1,5 @@
-<?php
-// Giả lập session Admin
-if (session_status() === PHP_SESSION_NONE) session_start();
-$_SESSION['admin_user'] = [
-    'name' => 'Boss Admin',
-    'role' => 'Administrator',
-    'avatar' => 'https://ui-avatars.com/api/?name=Boss+Admin&background=000&color=d4af37'
-];
-$user = $_SESSION['admin_user'];
-?>
+
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -42,13 +34,19 @@ $user = $_SESSION['admin_user'];
             <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Đơn hàng toàn hệ thống</a></li>
 
             <li class="label">NHÂN SỰ & CÀI ĐẶT</li>
-            <li><a href="#"><i class="fas fa-users-cog"></i> Quản lý Nhân viên</a></li>
+          <li>
+    <a href="/Jshop/app/controllers/AdminController.php?action=staff_list">
+        <i class="fas fa-users-cog"></i> Quản lý Nhân viên
+    </a>
+</li>
             <li><a href="#"><i class="fas fa-cogs"></i> Cấu hình chung</a></li>
         </ul>
         
-        <div class="logout">
-            <a href="#"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
-        </div>
+      <div class="logout">
+    <a href="/Jshop/app/controllers/AuthController.php?action=logout" onclick="return confirm('Sếp muốn đăng xuất hả?');">
+        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+    </a>
+</div>
     </aside>
 
     <main class="main-content">
