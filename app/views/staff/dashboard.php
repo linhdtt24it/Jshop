@@ -1,4 +1,13 @@
+<?php
 
+$user_name = $_SESSION['user_name'] ?? 'Nhân viên';
+$user = ['full_name' => $user_name, 'avatar' => 'https://ui-avatars.com/api/?background=fce7f3&color=be123c&name=' . urlencode($user_name)];
+
+// KHẮC PHỤC LỖI BASE_URL TRỎ ĐẾN CONTROLLER BỊ SAI
+// BASE_URL được định nghĩa trong Controller trước khi load view.
+$ROOT_URL = str_replace('public/', '', BASE_URL);
+
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -25,7 +34,7 @@
 
         <ul class="sidebar-menu">
             <li class="menu-header">CÔNG VIỆC CỦA BẠN</li>
-            <li><a href="#" class="active"><i class="fas fa-home"></i> <span>Trang chủ</span></a></li>
+            <li><a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=dashboard" class="active"><i class="fas fa-home"></i> <span>Trang chủ</span></a></li>
             <li>
                 <a href="#">
                     <i class="fas fa-clipboard-list"></i> 
@@ -33,16 +42,16 @@
                     <span class="badge">5</span>
                 </a>
             </li>
-            <li><a href="#"><i class="fas fa-comments"></i> <span>Tin nhắn khách</span></a></li>
+            <li><a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=messages"><i class="fas fa-comments"></i> <span>Tin nhắn khách</span></a></li>
             <li><a href="#"><i class="fas fa-star"></i> <span>Đánh giá & KPI</span></a></li>
             
             <li class="menu-header">CÁ NHÂN</li>
-            <li><a href="#"><i class="fas fa-user-circle"></i> <span>Hồ sơ</span></a></li>
+            <li><a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=profile"><i class="fas fa-user-circle"></i> <span>Hồ sơ</span></a></li>
             <li><a href="#"><i class="fas fa-calendar-alt"></i> <span>Lịch làm việc</span></a></li>
         </ul>
 
         <div class="sidebar-footer">
-            <a href="#"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+            <a href="<?= $ROOT_URL ?>app/controllers/AuthController.php?action=logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
         </div>
     </aside>
 
@@ -56,10 +65,10 @@
             <div class="user-area">
                 <div class="notify-icon"><i class="far fa-bell"></i><span class="dot"></span></div>
                 <div class="user-profile">
-                    <img src="<?= $_SESSION['user']['avatar'] ?>" alt="Staff">
+                    <img src="<?= $user['avatar'] ?>" alt="Staff">
                     <div>
-                        <h4><?= $_SESSION['user']['full_name'] ?></h4>
-                        <small>SALES TEAM</small>
+                        <h4><?= $user['full_name'] ?></h4>
+                        <small>STAFF</small>
                     </div>
                 </div>
             </div>

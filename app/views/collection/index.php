@@ -213,71 +213,53 @@ require_once __DIR__ . '/../layouts/header.php';
     <div class="container my-5">
         
         <div class="text-center mb-5">
-            <h2 style="font-size: 2.5rem;">Nổi Bật Nhất</h2>
+            <h2 style="font-size: 2.5rem;">Tất cả Bộ Sưu Tập (<?= count($collections) ?>)</h2>
             <div style="width: 60px; height: 1px; background: #000; margin: 20px auto;"></div>
         </div>
 
         <div class="row g-5">
-            <div class="col-lg-4 col-md-6">
-                <div class="coll-card">
-                    <div class="coll-img-wrap">
-                        <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=600" class="coll-img" alt="Gold">
-                        <span class="coll-badge">Best Seller</span>
-                    </div>
-                    <div class="coll-body">
-                        <h3 class="coll-title">Gold 24K</h3>
-                        <p class="coll-desc">Vẻ đẹp thuần khiết & quyền lực</p>
-                        <div class="mb-4">
-                            <span class="tag-pill">Nhẫn</span>
-                            <span class="tag-pill">Dây chuyền</span>
+            <?php 
+            // Vòng lặp qua dữ liệu thực từ Controller
+            $featured_collections = array_slice($collections, 0, 3);
+            $tags = ['Nhẫn', 'Dây chuyền', 'Bông tai', 'Vòng tay', 'Trang sức cưới'];
+            $badges = ['Best Seller', 'New Arrival', 'Hot Deal'];
+            
+            foreach ($featured_collections as $index => $coll): 
+                // Tạo link chi tiết
+                $link = BASE_URL . 'collection/detail/' . htmlspecialchars($coll['slug']);
+            ?>
+                <div class="col-lg-4 col-md-6">
+                    <a href="<?= $link ?>" style="text-decoration:none;">
+                        <div class="coll-card">
+                            <div class="coll-img-wrap">
+                                <img src="<?= htmlspecialchars($coll['image'] ?? 'https://images.unsplash.com/photo-1548357194-9e1aace4e94d?q=80&w=600') ?>" 
+                                     class="coll-img" 
+                                     alt="<?= htmlspecialchars($coll['name']) ?>">
+                                     
+                                <?php if (isset($badges[$index])): ?>
+                                    <span class="coll-badge"><?= $badges[$index] ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="coll-body">
+                                <h3 class="coll-title"><?= htmlspecialchars($coll['name']) ?></h3>
+                                <p class="coll-desc">
+                                    <?= htmlspecialchars($coll['description'] ?? 'Bộ sưu tập trang sức độc đáo.') ?>
+                                </p>
+                                <div class="mb-4">
+                                    <span class="tag-pill"><?= $tags[$index % count($tags)] ?></span>
+                                    <span class="tag-pill"><?= $coll['product_count'] ?> SP</span>
+                                </div>
+                                <div class="btn-discover">
+                                    <i class="bi bi-gem"></i> Khám phá ngay
+                                </div>
+                            </div>
                         </div>
-                        <a href="<?= BASE_URL ?>collection/vang-24k" class="btn-discover">
-                            <i class="bi bi-gem"></i> Khám phá ngay
-                        </a>
-                    </div>
+                    </a>
                 </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="coll-card">
-                    <div class="coll-img-wrap">
-                        <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=600" class="coll-img" alt="Diamond">
-                        <span class="coll-badge">New Arrival</span>
-                    </div>
-                    <div class="coll-body">
-                        <h3 class="coll-title">Diamond Luxury</h3>
-                        <p class="coll-desc">Sự vĩnh cửu trong từng giác cắt</p>
-                        <div class="mb-4">
-                            <span class="tag-pill">Nhẫn cưới</span>
-                            <span class="tag-pill">Bông tai</span>
-                        </div>
-                        <a href="<?= BASE_URL ?>collection/kim-cuong" class="btn-discover">
-                            <i class="bi bi-diamond"></i> Khám phá ngay
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="coll-card">
-                    <div class="coll-img-wrap">
-                        <img src="https://images.unsplash.com/photo-1602173574767-37ac01994b2a?q=80&w=600" class="coll-img" alt="Silver">
-                    </div>
-                    <div class="coll-body">
-                        <h3 class="coll-title">Sterling Silver</h3>
-                        <p class="coll-desc">Phong cách trẻ trung, hiện đại</p>
-                        <div class="mb-4">
-                            <span class="tag-pill">Vòng tay</span>
-                            <span class="tag-pill">Charm</span>
-                        </div>
-                        <a href="<?= BASE_URL ?>collection/bac-sterling" class="btn-discover">
-                            <i class="bi bi-moon-stars"></i> Khám phá ngay
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <?php endforeach; ?>
         </div>
 
+        <?php if (count($collections) > 3): ?>
         <div class="text-center mb-5 mt-5 pt-5">
             <h2 style="font-size: 2.5rem;">Khám Phá Thêm</h2>
             <div style="width: 60px; height: 1px; background: #000; margin: 20px auto;"></div>
@@ -285,28 +267,26 @@ require_once __DIR__ . '/../layouts/header.php';
 
         <div class="row g-4">
             <?php 
-            $collections = [
-                ['name' => 'Ngọc Trai Biển', 'slug' => 'ngoc-trai', 'color' => '#0dcaf0'],
-                ['name' => 'Đá Quý Phong Thủy', 'slug' => 'da-quy', 'color' => '#198754'],
-                ['name' => 'Trang Sức Cưới', 'slug' => 'cuoi', 'color' => '#dc3545'],
-                ['name' => 'Quý Ông Lịch Lãm', 'slug' => 'nam-gioi', 'color' => '#212529'],
-                ['name' => 'Trang Sức Trẻ Em', 'slug' => 'tre-em', 'color' => '#ffc107'],
-                ['name' => 'Quà Tặng', 'slug' => 'qua-tang', 'color' => '#6610f2']
-            ];
-            foreach($collections as $item): 
+            $remaining_collections = array_slice($collections, 3);
+            $colors = ['#0dcaf0', '#198754', '#dc3545', '#212529', '#ffc107', '#6610f2'];
+            
+            foreach($remaining_collections as $index => $item): 
+                $link = BASE_URL . 'collection/detail/' . htmlspecialchars($item['slug']);
             ?>
             <div class="col-lg-4 col-md-6">
-                <div class="mini-card">
-                    <i class="bi bi-gem gem-icon" style="color: <?= $item['color'] ?>"></i>
-                    <h4 class="mini-title"><?= $item['name'] ?></h4>
-                    <a href="<?= BASE_URL ?>collection/<?= $item['slug'] ?>" class="btn-detail">
-                        Xem chi tiết
-                    </a>
-                </div>
+                <a href="<?= $link ?>" style="text-decoration:none;">
+                    <div class="mini-card">
+                        <i class="bi bi-gem gem-icon" style="color: <?= $colors[$index % count($colors)] ?>"></i>
+                        <h4 class="mini-title"><?= htmlspecialchars($item['name']) ?> (<?= $item['product_count'] ?>)</h4>
+                        <div class="btn-detail">
+                            Xem chi tiết
+                        </div>
+                    </div>
+                </a>
             </div>
             <?php endforeach; ?>
         </div>
-
+        <?php endif; ?>
     </div>
 
     <section class="stats-section">

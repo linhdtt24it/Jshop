@@ -14,7 +14,17 @@ class User extends Model { // Kế thừa Model
         }
     }
     
-   
+    // --- PHƯƠNG THỨC MỚI: Lấy thông tin user bằng ID (Dùng để kiểm tra mật khẩu)
+    public function getUserById($user_id) {
+        try {
+            // Sử dụng selectOne từ Model cơ sở (nếu có) hoặc viết truy vấn trực tiếp
+            $stmt = $this->db->prepare("SELECT * FROM users WHERE user_id = ?");
+            $stmt->execute([$user_id]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            throw new Exception("Database error fetching user by ID: " . $e->getMessage());
+        }
+    }
     
     public function login($email, $password) {
         try {
@@ -89,7 +99,49 @@ class User extends Model { // Kế thừa Model
             return $stmt->execute([$id]);
         } catch (Exception $e) {
             return false;
-        }}
+        }
+    }
+    
+    // --- PHƯƠNG THỨC MỚI: Cập nhật Mật khẩu (Dùng cho chức năng Đổi mật khẩu)
+    public function updatePassword($user_id, $new_password_hashed) {
+        try {
+            $stmt = $this->db->prepare("UPDATE users SET password = ? WHERE user_id = ?");
+            return $stmt->execute([$new_password_hashed, $user_id]);
+        } catch (Exception $e) {
+            throw new Exception("Database error updating password: " . $e->getMessage());
+        }
+    }
+
+    // --- PHƯƠNG THỨC MỚI: Cập nhật Hồ sơ (Đã được chỉnh sửa để hỗ trợ các trường mới)
+    public function updateProfile($user_id, $data) {
+        $fields = [];
+        $params = [];
+
+        // Các trường được phép cập nhật
+        $allowed_fields = ['full_name', 'email', 'phone_number', 'age', 'hometown', 'health_status'];
+
+        foreach ($allowed_fields as $field) {
+            if (isset($data[$field])) {
+                $fields[] = "`{$field}` = ?";
+                $params[] = $data[$field];
+            }
+        }
+        
+        if (empty($fields)) {
+            return false; // Không có gì để cập nhật
+        }
+
+        $sql = "UPDATE users SET " . implode(', ', $fields) . " WHERE user_id = ?";
+        $params[] = $user_id;
+
+        try {
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute($params);
+        } catch (Exception $e) {
+            // Ghi log lỗi và ném ra lỗi thân thiện
+            error_log("Database error updating profile: " . $e->getMessage());
+            throw new Exception("Lỗi cơ sở dữ liệu khi cập nhật hồ sơ.");
+        }
+    }
+
 } // Kết thúc class
-
-
