@@ -4,6 +4,7 @@ console.log("⚠️ File auth.js đã được load!");
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🔧 Auth System đang khởi tạo...');
     
+    // Chờ 100ms để đảm bảo DOM đã load xong
     setTimeout(initAuthSystem, 100);
 });
 

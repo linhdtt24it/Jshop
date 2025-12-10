@@ -14,7 +14,7 @@ class User extends Model { // Kế thừa Model
         }
     }
     
-    // --- PHƯƠNG THỨC MỚI: Lấy thông tin user bằng ID (Dùng để kiểm tra mật khẩu)
+    // --- PHƯƠNG THỨC MỚI: Lấy thông tin user bằng ID (Dùng để kiểm tra mật khẩu & lấy hồ sơ)
     public function getUserById($user_id) {
         try {
             // Sử dụng selectOne từ Model cơ sở (nếu có) hoặc viết truy vấn trực tiếp
@@ -102,7 +102,7 @@ class User extends Model { // Kế thừa Model
         }
     }
     
-    // --- PHƯƠNG THỨC MỚI: Cập nhật Mật khẩu (Dùng cho chức năng Đổi mật khẩu)
+    // --- PHƯƠNG THỨC MỚI: Cập nhật Mật khẩu
     public function updatePassword($user_id, $new_password_hashed) {
         try {
             $stmt = $this->db->prepare("UPDATE users SET password = ? WHERE user_id = ?");
@@ -112,7 +112,7 @@ class User extends Model { // Kế thừa Model
         }
     }
 
-    // --- PHƯƠNG THỨC MỚI: Cập nhật Hồ sơ (Đã được chỉnh sửa để hỗ trợ các trường mới)
+    // --- PHƯƠNG THỨC MỚI: Cập nhật Hồ sơ 
     public function updateProfile($user_id, $data) {
         $fields = [];
         $params = [];

@@ -2,7 +2,7 @@
 // app/controllers/CartController.php
 
 // ĐƯỜNG DẪN TUYỆT ĐỐI (CHẠY NGAY, KHÔNG LỖI)
-require_once 'C:/Users/thaib/Jshop/config/database.php';
+require_once 'C:/Users/LENOVO/Jshop/config/database.php';
 
 class CartController {
 

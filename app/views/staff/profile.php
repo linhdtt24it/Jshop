@@ -6,6 +6,7 @@ $user_name = $user_data['full_name'] ?? $_SESSION['user_name'] ?? 'Nhân viên';
 $user_id = $user_data['user_id'] ?? $_SESSION['user_id'] ?? 0;
 
 // Chuẩn bị dữ liệu hiển thị, sử dụng dữ liệu DB (nếu có)
+// Sử dụng toán tử null coalescing (??) để tránh lỗi nếu cột NULL
 $user_info = [
     'email' => $user_data['email'] ?? $_SESSION['email'] ?? 'Chưa cập nhật',
     'phone' => $user_data['phone_number'] ?? $_SESSION['phone_number'] ?? 'Chưa cập nhật', 
@@ -338,12 +339,16 @@ $new_messages_count = count(array_filter($messages ?? [], fn($m) => $m['status']
 
         // Hàm điền dữ liệu cũ vào form Chỉnh sửa
         function fillEditForm() {
-            // Tên đã được set trong value của input, chỉ cần set các trường khác
-            // Lưu ý: Các giá trị 'Chưa cập nhật' sẽ được thay bằng chuỗi rỗng để tránh lỗi input number
+            // Lấy giá trị hiện tại trên trang
+            const ageText = document.getElementById('profileAge').textContent.trim();
+            const hometownText = document.getElementById('profileHometown').textContent.trim();
+            const healthText = document.getElementById('profileHealth').textContent.trim();
             
-            document.getElementById('age').value = document.getElementById('profileAge').textContent.trim() !== 'Chưa cập nhật' ? document.getElementById('profileAge').textContent.trim() : '';
-            document.getElementById('hometown').value = document.getElementById('profileHometown').textContent.trim() !== 'Chưa cập nhật' ? document.getElementById('profileHometown').textContent.trim() : '';
-            document.getElementById('healthStatus').value = document.getElementById('profileHealth').textContent.trim() !== 'Chưa cập nhật' ? document.getElementById('profileHealth').textContent.trim() : '';
+            // Điền giá trị, nếu là 'Chưa cập nhật' thì điền chuỗi rỗng
+            document.getElementById('fullName').value = document.getElementById('profileFullName').textContent.trim();
+            document.getElementById('age').value = ageText !== 'Chưa cập nhật' ? ageText : '';
+            document.getElementById('hometown').value = hometownText !== 'Chưa cập nhật' ? hometownText : '';
+            document.getElementById('healthStatus').value = healthText !== 'Chưa cập nhật' ? healthText : '';
             document.getElementById('email').value = document.getElementById('profileEmail').textContent.trim();
             document.getElementById('phone').value = document.getElementById('profilePhone').textContent.trim();
         }

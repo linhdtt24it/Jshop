@@ -1,11 +1,15 @@
 <?php
+// Lấy dữ liệu user và khởi tạo ROOT_URL từ Controller (hoặc định nghĩa lại nếu Controller không truyền)
 
 $user_name = $_SESSION['user_name'] ?? 'Nhân viên';
-$user = ['full_name' => $user_name, 'avatar' => 'https://ui-avatars.com/api/?background=fce7f3&color=be123c&name=' . urlencode($user_name)];
+$user = [
+    'full_name' => $user_name, 
+    'avatar' => 'https://ui-avatars.com/api/?background=fce7f3&color=be123c&name=' . urlencode($user_name),
+    'new_messages_count' => $new_messages_count ?? 0 // Giả định Controller truyền biến này
+];
 
 // KHẮC PHỤC LỖI BASE_URL TRỎ ĐẾN CONTROLLER BỊ SAI
-// BASE_URL được định nghĩa trong Controller trước khi load view.
-$ROOT_URL = str_replace('public/', '', BASE_URL);
+$ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/'); 
 
 ?>
 <!DOCTYPE html>
@@ -42,7 +46,7 @@ $ROOT_URL = str_replace('public/', '', BASE_URL);
                     <span class="badge">5</span>
                 </a>
             </li>
-            <li><a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=messages"><i class="fas fa-comments"></i> <span>Tin nhắn khách</span></a></li>
+            <li><a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=messages"><i class="fas fa-comments"></i> <span>Tin nhắn khách</span> <span class="badge"><?= $user['new_messages_count'] ?></span></a></li>
             <li><a href="#"><i class="fas fa-star"></i> <span>Đánh giá & KPI</span></a></li>
             
             <li class="menu-header">CÁ NHÂN</li>
@@ -65,7 +69,7 @@ $ROOT_URL = str_replace('public/', '', BASE_URL);
             <div class="user-area">
                 <div class="notify-icon"><i class="far fa-bell"></i><span class="dot"></span></div>
                 <div class="user-profile">
-                    <img src="<?= $user['avatar'] ?>" alt="Staff">
+                    <img src="<?= $user['avatar'] ?>" alt="Staff"> 
                     <div>
                         <h4><?= $user['full_name'] ?></h4>
                         <small>STAFF</small>

@@ -1,17 +1,9 @@
-
 <?php
 
 require_once __DIR__ . '/../core/Controller.php';
 
 class ContactController extends Controller
 {
-    private $contactModel;
-
-    public function __construct() {
-        // [ĐÃ SỬA] Khởi tạo ContactModel
-        $this->contactModel = $this->model('ContactModel');
-    }
-
     public function index()
     {
         $data = [
@@ -33,7 +25,6 @@ class ContactController extends Controller
         $email = trim($_POST['email'] ?? '');
         $phone = trim($_POST['phone'] ?? '');
         $message = trim($_POST['message'] ?? '');
-        $subject = "Yêu cầu liên hệ từ khách hàng"; // Giả định subject
 
         // Validation
         if (!$name || !$email || !$message) {
@@ -46,14 +37,27 @@ class ContactController extends Controller
             exit;
         }
 
-        // [ĐÃ SỬA] Thay thế logic gửi email bằng cách lưu vào Database
-        if ($this->contactModel->saveMessage($name, $email, $phone, $subject, $message)) {
-            echo json_encode([
-                'success' => true,
-                'message' => 'Gửi thành công! Yêu cầu của bạn đã được ghi nhận. Chúng tôi sẽ phản hồi qua email sớm nhất.'
-            ]);
+        // Gửi email (có thể thay bằng database sau)
+        $to = "support@jshop.vn";
+        $subject = "Liên hệ từ $name - JSHOP";
+        $body = "
+        Thông tin liên hệ:
+        - Họ tên: $name
+        - Email: $email
+        - Điện thoại: $phone
+        
+        Nội dung:
+        $message
+        ";
+        
+        $headers = "From: $email\r\n";
+        $headers .= "Reply-To: $email\r\n";
+        $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+
+        if (mail($to, $subject, $body, $headers)) {
+            echo json_encode(['success' => true, 'message' => 'Gửi thành công! Chúng tôi sẽ liên hệ sớm nhất.']);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống khi lưu tin nhắn, vui lòng thử lại sau!']);
+            echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống, vui lòng thử lại sau!']);
         }
         exit;
     }

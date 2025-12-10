@@ -115,9 +115,9 @@ $ROOT_URL = str_replace('public/', '', BASE_URL);
                             </td>
                         </tr>
                         <?php endforeach; ?>
-                    </tbody>
+                    </tbody>   
                 </table>
-            </div>
+            </div>  
         </main>
     </div>
 </div>
