@@ -1,4 +1,5 @@
 <?php
+// Jshop/config/database.php
 class Database {
     private $host = "localhost";
     private $dbname = "jshop";
@@ -20,3 +21,5 @@ class Database {
         }
     }
 }
+// Đã xóa dấu đóng ngoặc nhọn thừa ở đây
+?>
