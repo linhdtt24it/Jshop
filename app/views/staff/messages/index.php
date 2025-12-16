@@ -6,6 +6,12 @@ $user = ['full_name' => $user_name, 'avatar' => 'https://ui-avatars.com/api/?bac
 // BASE_URL được định nghĩa trong Controller trước khi load view.
 $ROOT_URL = str_replace('public/', '', BASE_URL);
 
+// Số lượng tin nhắn mới
+$new_messages_count = count(array_filter($messages, fn($m) => $m['status'] === 'new'));
+
+// Thêm biến orders_total_pending để hiển thị số lượng (Giả định StaffController đã truyền biến này, hoặc dùng giá trị mặc định)
+$orders_total_pending = $data['orders_total_pending'] ?? 5;
+
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -53,13 +59,13 @@ $ROOT_URL = str_replace('public/', '', BASE_URL);
             <li class="menu-header">CÔNG VIỆC CỦA BẠN</li>
             <li><a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=dashboard"><i class="fas fa-home"></i> <span>Trang chủ</span></a></li>
              <li>
-                <a href="#">
+                <a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=orders_pending">
                     <i class="fas fa-clipboard-list"></i> 
                     <span>Đơn hàng chờ</span> 
-                    <span class="badge">5</span>
+                    <span class="badge"><?= $orders_total_pending ?></span>
                 </a>
             </li>
-            <li><a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=messages" class="active"><i class="fas fa-comments"></i> <span>Tin nhắn khách</span> <span class="badge"><?= count(array_filter($messages, fn($m) => $m['status'] === 'new')) ?></span></a></li>
+            <li><a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=messages" class="active"><i class="fas fa-comments"></i> <span>Tin nhắn khách</span> <span class="badge"><?= $new_messages_count ?></span></a></li>
             <li><a href="#"><i class="fas fa-star"></i> <span>Đánh giá & KPI</span></a></li>
             
             <li class="menu-header">CÁ NHÂN</li>

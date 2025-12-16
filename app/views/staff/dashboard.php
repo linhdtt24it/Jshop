@@ -2,10 +2,15 @@
 // Lấy dữ liệu user và khởi tạo ROOT_URL từ Controller (hoặc định nghĩa lại nếu Controller không truyền)
 
 $user_name = $_SESSION['user_name'] ?? 'Nhân viên';
+$orders_pending = $data['orders_pending'] ?? 0; // Đơn chờ xác nhận
+$orders_processing = $data['orders_processing'] ?? 0; // Đang đóng gói
+$completed_orders = $data['completed_orders'] ?? 0; // Đã hoàn thành
+$orders_total_pending = $data['orders_total_pending'] ?? 0; // Tổng chờ + xử lý
+
 $user = [
     'full_name' => $user_name, 
     'avatar' => 'https://ui-avatars.com/api/?background=fce7f3&color=be123c&name=' . urlencode($user_name),
-    'new_messages_count' => $new_messages_count ?? 0 // Giả định Controller truyền biến này
+    'new_messages_count' => $data['new_messages_count'] ?? 0 
 ];
 
 // KHẮC PHỤC LỖI BASE_URL TRỎ ĐẾN CONTROLLER BỊ SAI
@@ -40,10 +45,10 @@ $ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/');
             <li class="menu-header">CÔNG VIỆC CỦA BẠN</li>
             <li><a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=dashboard" class="active"><i class="fas fa-home"></i> <span>Trang chủ</span></a></li>
             <li>
-                <a href="#">
+                <a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=orders_pending">
                     <i class="fas fa-clipboard-list"></i> 
                     <span>Đơn hàng chờ</span> 
-                    <span class="badge">5</span>
+                    <span class="badge"><?= $orders_total_pending ?></span>
                 </a>
             </li>
             <li><a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=messages"><i class="fas fa-comments"></i> <span>Tin nhắn khách</span> <span class="badge"><?= $user['new_messages_count'] ?></span></a></li>
@@ -83,7 +88,7 @@ $ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/');
             <div class="page-header">
                 <div>
                     <h1>Danh sách công việc</h1>
-                    <p style="color: #64748b;">Bạn có 5 đơn hàng cần xử lý hôm nay.</p>
+                    <p style="color: #64748b;">Bạn có <?= $orders_total_pending ?> đơn hàng cần xử lý hôm nay.</p>
                 </div>
                 <button class="btn-primary"><i class="fas fa-plus"></i> Tạo đơn tại quầy</button>
             </div>
@@ -92,21 +97,21 @@ $ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/');
                 <div class="card stat-card">
                     <div class="stat-icon bg-primary-light"><i class="fas fa-clipboard-check"></i></div>
                     <div class="stat-info">
-                        <h3>05</h3>
+                        <h3><?= sprintf('%02d', $orders_pending) ?></h3>
                         <p>Đơn chờ xác nhận</p>
                     </div>
                 </div>
                 <div class="card stat-card">
                     <div class="stat-icon bg-blue-light"><i class="fas fa-box-open"></i></div>
                     <div class="stat-info">
-                        <h3>12</h3>
+                        <h3><?= sprintf('%02d', $orders_processing) ?></h3>
                         <p>Đang đóng gói</p>
                     </div>
                 </div>
                 <div class="card stat-card">
                     <div class="stat-icon bg-green-light"><i class="fas fa-check-circle"></i></div>
                     <div class="stat-info">
-                        <h3>28</h3>
+                        <h3><?= sprintf('%02d', $completed_orders) ?></h3>
                         <p>Đã hoàn thành</p>
                     </div>
                 </div>
@@ -115,7 +120,7 @@ $ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/');
             <div class="card">
                 <div class="card-header">
                     <h3>Đơn hàng cần xử lý gấp</h3>
-                    <a href="#">Xem tất cả</a>
+                    <a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=orders_pending">Xem tất cả</a>
                 </div>
                 <table class="table-minimal">
                     <thead>

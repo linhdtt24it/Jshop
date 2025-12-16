@@ -19,11 +19,13 @@ class StaffController extends Controller
 {
     private $contactModel;
     private $userModel;
+    private $orderModel; // KHAI BÁO MODEL MỚI
     private $ROOT_URL;
     
     public function __construct() {
         $this->contactModel = $this->model('ContactModel');
         $this->userModel = $this->model('User'); 
+        $this->orderModel = $this->model('Order'); // KHỞI TẠO MODEL MỚI
         
         // TÍNH TOÁN ROOT_URL ĐỂ DÙNG CHO REDIRECT ĐẾN CÁC FILE CONTROLLER BÊN NGOÀI PUBLIC/
         $this->ROOT_URL = str_replace('public/', '', BASE_URL);
@@ -58,23 +60,45 @@ class StaffController extends Controller
             'avatar'    => 'https://ui-avatars.com/api/?background=fce7f3&color=be123c&name=' . urlencode($user_name)
         ];
 
-        $orders_pending = 5;
-        $tasks_today = 12;
-        $completed_orders = 28;
+        // LẤY SỐ LƯỢNG THỰC TẾ TỪ MODEL MỚI
+        $orders_pending_count = $this->orderModel->countOrdersByStatus('pending'); 
+        $orders_processing_count = $this->orderModel->countOrdersByStatus('processing'); 
+        $orders_completed_count = $this->orderModel->countOrdersByStatus('completed');
         
+        // Tổng số đơn hàng chờ (pending + processing) cho hiển thị tổng quan
+        $orders_total_pending = $orders_pending_count + $orders_processing_count;
+
         $all_messages = $this->contactModel->getAllMessages();
         $new_messages_count = count(array_filter($all_messages, fn($m) => $m['status'] === 'new'));
 
         $data = [
             'user'               => $user, 
-            'orders_pending'     => $orders_pending,
-            'tasks_today'        => $tasks_today,
-            'completed_orders'   => $completed_orders,
+            'orders_pending'     => $orders_pending_count, // Đơn chờ xác nhận
+            'orders_processing'  => $orders_processing_count, // Đang đóng gói
+            'completed_orders'   => $orders_completed_count, // Đã hoàn thành
+            'orders_total_pending' => $orders_total_pending, // Tổng chờ + xử lý
             'new_messages_count' => $new_messages_count
         ];
 
         $this->view('staff/dashboard', $data);
     }
+
+    // PHƯƠNG THỨC MỚI: Xử lý hiển thị danh sách đơn hàng chờ
+    private function orders_pending()
+    {
+        // Lấy tất cả đơn hàng đang chờ và đang xử lý
+        $orders = $this->orderModel->getPendingOrders(); 
+        
+        $data = [
+            'page_title' => 'Quản lý Đơn hàng Chờ & Đang xử lý',
+            'orders' => $orders,
+            'BASE_URL' => BASE_URL // Truyền BASE_URL cho view để tạo liên kết
+        ];
+        
+        // Sử dụng view Jshop/app/views/staff/orders/index.php
+        $this->view('staff/orders/index', $data);
+    }
+    // KẾT THÚC PHƯƠNG THỨC orders_pending
 
     private function messages()
     {

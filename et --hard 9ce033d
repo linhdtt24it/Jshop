@@ -1,0 +1,32 @@
+[33m9ce033d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m update main
+[33m2687745[m[33m ([m[1;32mdemo1209[m[33m)[m update demo1209
+[33m3bc4ce2[m[33m ([m[1;31morigin/demo1209[m[33m)[m update
+[33m239dab4[m thêm, xóa, sửa nhân viên
+[33mac79212[m sửa lại giao diện+thêm giao diện admin, staff,..
+[33me97f647[m Gộp code
+[33m4dabcce[m Resolve merge conflict: keep demo1208 version
+[33m8ace4ef[m[33m ([m[1;31morigin/demo1208[m[33m)[m done đăng nhập/đki/đăng xuất
+[33m4b3952c[m Cập nhật controller, model, view và thêm News.php
+[33m1bf3b7b[m ĐKI + ĐNHAP THÀNH CÔNG
+[33m715b688[m[33m ([m[1;31morigin/demo1207[m[33m)[m đã lưu đc lên db nhưng mã nhanh hết hạn quá, lỗi toggle
+[33ma6ff9e6[m Fix merge conflict: keep current gold data
+[33m8dc411b[m update
+[33m5289fd2[m Merge feature: Thêm quản lý footer và cập nhật models
+[33mf04af84[m update all
+[33me6ff83b[m[33m ([m[1;31morigin/store_demo[m[33m, [m[1;31morigin/feature/auth-modal02[m[33m)[m update
+[33ma533fc1[m[33m ([m[1;31morigin/feature/auth-modal[m[33m)[m đã nhận được mail, đã hiện ajax otp, đã nhập nhưng bị lỗi
+[33ma0158ed[m Đăng kí (gửi mã otp), demo, lỗi vì ko hiện ajax nhập otp nhưng đã có mail gửi về, ch vetify
+[33mf93a1d2[m Mô tả thay đổi
+[33m608267f[m[33m ([m[1;31morigin/backup_main[m[33m)[m Add files via upload
+[33mf8c77df[m update
+[33m9cf05bf[m update all
+[33m2c6707e[m update
+[33m8be637b[m Add files via upload
+[33m84e31d9[m test product
+[33mddbbf2f[m redes header + back to top button
+[33m545eb07[m sua header
+[33m0d2b49b[m Cập nhật code của Thaib
+[33m0ef1dca[m cập nhạt giao diện giá vàng, liên hệ, đăng nhập,...
+[33m8ce553c[m test product
+[33mfb10cff[m Thêm toàn bộ code đồ án web
+[33mdd9a279[m[33m ([m[1;31morigin/HEre[m[33m)[m Thêm toàn bộ code đồ án web
