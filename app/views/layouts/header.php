@@ -83,12 +83,10 @@ error_log("OTP Modal Path: $otpModalPath - Exists: " . ($hasOTPModal ? 'YES' : '
         <?php endif; ?>
 
         <a href="<?= BASE_URL ?>cart" class="btn btn-cart position-relative">
-          <i class="bi bi-cart"></i> Giỏ hàng
-          <?php if (($cart_count ?? 0) > 0): ?>
-          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            <?= htmlspecialchars($cart_count, ENT_QUOTES, 'UTF-8') ?>
-          </span>
-          <?php endif; ?>
+        <i class="bi bi-cart"></i> Giỏ hàng
+          <span id="cart-count-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger <?= ($cart_count ?? 0) > 0 ? '' : 'd-none' ?>">
+          <?= htmlspecialchars($cart_count ?? 0, ENT_QUOTES, 'UTF-8') ?>
+            </span>
         </a>
       </div>
     </div>
@@ -182,7 +180,45 @@ document.addEventListener('DOMContentLoaded', function() {
         fadeEffect: { crossFade: true }
     });
     <?php endif; ?>
-});
+    <script>
+
+function addToCart(productId) {
+    // 1. Gửi yêu cầu đến CartController qua URL AJAX
+    // Chú ý: Đường dẫn này phải khớp với cách bạn đặt Route trong App.php
+    fetch('<?= BASE_URL ?>cart/add?id=' + productId)
+        .then(response => {
+            if (!response.ok) throw new Error('Kết nối máy chủ thất bại');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // 2. Cập nhật con số trên Badge giỏ hàng ngay lập tức
+                const badge = document.getElementById('cart-count-badge');
+                if (badge) {
+                    badge.innerText = data.cart_count;
+                    badge.classList.remove('d-none'); // Hiện badge lên nếu trước đó bằng 0
+                }
+                
+                // 3. Thông báo thành công (Bạn có thể dùng Toast thay alert nếu muốn đẹp hơn)
+                alert('Đã thêm sản phẩm vào giỏ hàng thành công!');
+            } else {
+                // 4. Xử lý khi người dùng chưa đăng nhập
+                if (data.message.includes('đăng nhập')) {
+                    alert('Vui lòng đăng nhập để mua hàng.');
+                    // Tự động mở Modal Đăng nhập có sẵn trong header
+                    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                    loginModal.show();
+                } else {
+                    alert(data.message);
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Lỗi AJAX:', error);
+            alert('Có lỗi xảy ra, vui lòng thử lại sau.');
+        });
+}
+</script>
 </script>
 </body>
 </html>

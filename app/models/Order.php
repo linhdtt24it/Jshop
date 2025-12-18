@@ -1,15 +1,62 @@
 <?php
-// app/models/Order.php
+// Jshop/app/models/Order.php
 
 require_once __DIR__ . '/../core/Model.php'; 
 
-class Order extends Model { // Kế thừa Model
+class Order extends Model { 
   
-    public function create($user_id, $total_amount) {
-        // Thay $this->conn bằng $this->db
-        $stmt = $this->db->prepare("INSERT INTO orders (user_id, total_amount) VALUES (?, ?)");
-        $stmt->execute([$user_id, $total_amount]);
-        return $this->db->lastInsertId();
+    /**
+     * Tạo đơn hàng mới với đầy đủ thông tin giao hàng
+     */
+    public function createOrder($data) {
+        $sql = "INSERT INTO orders (
+                    user_id, 
+                    receiver_name, 
+                    receiver_phone, 
+                    shipping_address, 
+                    total_amount, 
+                    payment_method, 
+                    payment_status, 
+                    order_status
+                ) VALUES (
+                    :user_id, 
+                    :receiver_name, 
+                    :receiver_phone, 
+                    :shipping_address, 
+                    :total_amount, 
+                    :payment_method, 
+                    :payment_status, 
+                    :order_status
+                )";
+
+        try {
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                ':user_id'         => $data['user_id'],
+                ':receiver_name'   => $data['receiver_name'],
+                ':receiver_phone'  => $data['receiver_phone'],
+                ':shipping_address'=> $data['shipping_address'],
+                ':total_amount'    => $data['total_amount'],
+                ':payment_method'  => $data['payment_method'],
+                ':payment_status'  => $data['payment_status'],
+                ':order_status'    => $data['order_status']
+            ]);
+            
+            return $this->db->lastInsertId();
+        } catch (PDOException $e) {
+            error_log("Lỗi Create Order: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Lấy thông tin đơn hàng theo ID
+     */
+    public function getOrderById($order_id) {
+        $sql = "SELECT * FROM orders WHERE order_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$order_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -33,14 +80,11 @@ class Order extends Model { // Kế thừa Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    /**
-     * Đếm số lượng đơn hàng theo trạng thái cụ thể.
-     * @param string $status Trạng thái đơn hàng (pending, processing, completed, etc.)
-     */
     public function countOrdersByStatus($status) {
         $sql = "SELECT COUNT(*) FROM orders WHERE order_status = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$status]);
         return $stmt->fetchColumn();
     }
+    
 }

@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function initAuthSystem() {
     const BASE_URL = '/Jshop/app/controllers/AuthController.php';
+    const CART_API = '/Jshop/app/controllers/CartController.php'; // Chèn thêm hằng số API giỏ hàng
     let isProcessing = false;
     
     console.log('🔍 Kiểm tra modal...');
@@ -110,6 +111,37 @@ function initAuthSystem() {
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
     };
+
+    // ================== CHỨC NĂNG GIỎ HÀNG (MỚI CHÈN) ==================
+    window.addToCart = async function(productId) {
+        console.log('🛒 Đang thêm sản phẩm:', productId);
+        try {
+            const response = await fetch(`${CART_API}?action=add&id=${productId}`);
+            const result = await response.json();
+
+            if (result.success) {
+                const badge = document.getElementById('cart-count-badge');
+                if (badge) {
+                    badge.innerText = result.cart_count;
+                    badge.classList.remove('d-none');
+                }
+                alert('Đã thêm sản phẩm vào giỏ hàng!');
+            } else {
+                if (result.message.includes('đăng nhập')) {
+                    alert('Vui lòng đăng nhập để mua hàng.');
+                    const loginModalElement = document.getElementById('loginModal');
+                    if (loginModalElement) {
+                        const m = new bootstrap.Modal(loginModalElement);
+                        m.show();
+                    }
+                } else {
+                    alert(result.message);
+                }
+            }
+        } catch (error) {
+            console.error('❌ Lỗi giỏ hàng:', error);
+        }
+    };
     
     // ================== ĐĂNG KÝ ==================
     const registerForm = document.getElementById('registerForm');
@@ -157,26 +189,21 @@ function initAuthSystem() {
                 if (result.status === 'success') {
                     AuthUtils.showMessage('registerMessage', 'success', result.message);
                     
-                    // Đóng modal đăng ký
                     setTimeout(() => {
                         AuthUtils.closeModal('registerModal');
                     }, 1000);
                     
-                    // Mở modal OTP
                     setTimeout(() => {
                         if (window.showOTPModal && typeof window.showOTPModal === 'function') {
                             window.showOTPModal(formData.email);
                         } else {
                             console.log('Mở OTP modal thủ công');
-                            // Fallback: mở modal OTP trực tiếp
                             const otpModal = document.getElementById('otpModal');
                             if (otpModal) {
                                 const emailInput = document.getElementById('otpEmail');
                                 if (emailInput) emailInput.value = formData.email;
-                                
                                 const emailDisplay = document.getElementById('otpEmailDisplay');
                                 if (emailDisplay) emailDisplay.textContent = `OTP đã gửi đến: ${formData.email}`;
-                                
                                 const modal = new bootstrap.Modal(otpModal);
                                 modal.show();
                             } else {
@@ -225,27 +252,22 @@ function initAuthSystem() {
             try {
                 const result = await AuthUtils.callAPI('login', { email, password });
                 
-          if (result.status === 'success') {
-    AuthUtils.showMessage('loginMessage', 'success', result.message);
-    
-    setTimeout(() => {
-        AuthUtils.closeModal('loginModal');
-        
-        // --- SỬA Ở ĐÂY ---
-        // Kiểm tra xem PHP có gửi link chuyển hướng không?
-        if (result.redirect) {
-            console.log("🚀 Đang chuyển hướng tới:", result.redirect);
-            window.location.href = result.redirect; // Chạy theo bản đồ PHP vẽ
-        } else {
-            window.location.reload(); // Nếu không có link thì mới reload
-        }
-        // -----------------
-        
-    }, 1000);
-    
-} else {
-    AuthUtils.showMessage('loginMessage', 'error', result.message);
-}
+                if (result.status === 'success') {
+                    AuthUtils.showMessage('loginMessage', 'success', result.message);
+                    
+                    setTimeout(() => {
+                        AuthUtils.closeModal('loginModal');
+                        if (result.redirect) {
+                            console.log("🚀 Đang chuyển hướng tới:", result.redirect);
+                            window.location.href = result.redirect;
+                        } else {
+                            window.location.reload();
+                        }
+                    }, 1000);
+                    
+                } else {
+                    AuthUtils.showMessage('loginMessage', 'error', result.message);
+                }
             } catch (error) {
                 AuthUtils.showMessage('loginMessage', 'error', 'Lỗi hệ thống');
             } finally {
@@ -500,7 +522,8 @@ function initAuthSystem() {
         document.querySelectorAll('.otp-input').forEach(input => {
             input.value = '';
         });
-        document.getElementById('fullOtp').value = '';
+        const fullOtpElement = document.getElementById('fullOtp');
+        if (fullOtpElement) fullOtpElement.value = '';
         
         // Mở modal
         const modal = new bootstrap.Modal(otpModal, { backdrop: 'static' });
