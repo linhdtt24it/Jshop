@@ -61,10 +61,7 @@ class CartController extends Controller {
         }
     }
 
-    /**
-     * Cập nhật số lượng sản phẩm (Tăng/Giảm)
-     * Được gọi từ các nút + / - trong view cart/index.php
-     */
+    
     public function update() {
         $user_id = $_SESSION['user_id'] ?? null;
         $product_id = (int)($_GET['id'] ?? 0);

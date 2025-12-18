@@ -156,69 +156,71 @@ error_log("OTP Modal Path: $otpModalPath - Exists: " . ($hasOTPModal ? 'YES' : '
     <i class="bi bi-chevron-up"></i>
 </button>
 
-<!-- JS LIÊN QUAN -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Back to top
-    const backToTopButton = document.getElementById('backToTop');
-    window.addEventListener('scroll', function() {
-        backToTopButton.classList.toggle('show', window.pageYOffset > 300);
-    });
-    backToTopButton.addEventListener('click', function() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    // Swiper
-    <?php if ($is_home ?? false): ?>
-    const swiper = new Swiper('.mySwiper', {
-        loop: true,
-        pagination: { el: '.swiper-pagination', clickable: true },
-        autoplay: { delay: 5000, disableOnInteraction: false },
-        effect: 'fade',
-        fadeEffect: { crossFade: true }
-    });
-    <?php endif; ?>
-    <script>
-
+// Đảm bảo hàm này nằm ở ngoài cùng, không bọc trong thẻ <script> nào khác
 function addToCart(productId) {
-    // 1. Gửi yêu cầu đến CartController qua URL AJAX
-    // Chú ý: Đường dẫn này phải khớp với cách bạn đặt Route trong App.php
-    fetch('<?= BASE_URL ?>cart/add?id=' + productId)
+    console.log('🛒 Đang thêm sản phẩm:', productId);
+    
+    // Sử dụng đường dẫn API dựa trên BASE_URL
+    const apiUrl = '<?= BASE_URL ?>cart/add?id=' + productId;
+
+    fetch(apiUrl)
         .then(response => {
-            if (!response.ok) throw new Error('Kết nối máy chủ thất bại');
+            if (!response.ok) throw new Error('Kết nối thất bại');
             return response.json();
         })
         .then(data => {
             if (data.success) {
-                // 2. Cập nhật con số trên Badge giỏ hàng ngay lập tức
                 const badge = document.getElementById('cart-count-badge');
                 if (badge) {
                     badge.innerText = data.cart_count;
-                    badge.classList.remove('d-none'); // Hiện badge lên nếu trước đó bằng 0
+                    badge.classList.remove('d-none');
                 }
-                
-                // 3. Thông báo thành công (Bạn có thể dùng Toast thay alert nếu muốn đẹp hơn)
-                alert('Đã thêm sản phẩm vào giỏ hàng thành công!');
+                alert('Đã thêm vào giỏ hàng thành công!');
             } else {
-                // 4. Xử lý khi người dùng chưa đăng nhập
-                if (data.message.includes('đăng nhập')) {
+                if (data.message && data.message.includes('đăng nhập')) {
                     alert('Vui lòng đăng nhập để mua hàng.');
-                    // Tự động mở Modal Đăng nhập có sẵn trong header
-                    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-                    loginModal.show();
+                    const loginModalEl = document.getElementById('loginModal');
+                    if (loginModalEl) {
+                        const modal = new bootstrap.Modal(loginModalEl);
+                        modal.show();
+                    }
                 } else {
-                    alert(data.message);
+                    alert(data.message || 'Lỗi khi thêm sản phẩm');
                 }
             }
         })
         .catch(error => {
-            console.error('Lỗi AJAX:', error);
+            console.error('Lỗi:', error);
             alert('Có lỗi xảy ra, vui lòng thử lại sau.');
         });
 }
-</script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Logic Back to top
+    const backToTopButton = document.getElementById('backToTop');
+    if (backToTopButton) {
+        window.addEventListener('scroll', function() {
+            backToTopButton.classList.toggle('show', window.pageYOffset > 300);
+        });
+        backToTopButton.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    // Logic Swiper cho trang chủ
+    <?php if ($is_home ?? false): ?>
+    new Swiper('.mySwiper', {
+        loop: true,
+        pagination: { el: '.swiper-pagination', clickable: true },
+        autoplay: { delay: 5000, disableOnInteraction: false },
+        effect: 'fade'
+    });
+    <?php endif; ?>
+});
 </script>
 </body>
 </html>

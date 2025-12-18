@@ -6,7 +6,7 @@ require_once "../app/controllers/CartController.php";
 session_start(); // ĐẢM BẢO SESSION ĐƯỢC BẮT ĐẦU
 
 // NẾU CHƯA ĐĂNG NHẬP → BẮT ĐĂNG NHẬP
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['user_id'])) {
     echo json_encode(['login_required' => true]);
     exit;
 }
