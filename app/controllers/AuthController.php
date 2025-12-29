@@ -10,11 +10,13 @@ header('Content-Type: application/json');
 
 // ========== DEBUG LOG ==========
 error_log("=== AUTH CONTROLLER ===");
-error_log("Action: " . ($_GET['action'] ?? 'none'));
+$action = $_GET['action'] ?? $_POST['action'] ?? '';
+
+error_log("Action: " . ($action ?: 'none'));
 // error_log("Session: " . json_encode($_SESSION)); // Tạm tắt cho đỡ rối log
 
 // ========== REGISTER ==========
-if(($_GET['action'] ?? '') == 'register') {
+if($action == 'register') {
     try {
         $full_name = $_POST['name'] ?? '';
         $email = $_POST['email'] ?? '';
@@ -111,7 +113,7 @@ if(($_GET['action'] ?? '') == 'register') {
 }
 
 // ========== RESEND OTP ==========
-if(($_GET['action'] ?? '') == 'resendOTP') {
+if($action == 'resendOTP') {
     // ... (Giữ nguyên logic Resend OTP của bạn nếu cần, hoặc copy từ bài trước) ...
     // Để code gọn, mình tạm ẩn chi tiết, bạn giữ nguyên code cũ của phần này nhé
     echo json_encode(['status' => 'error', 'message' => 'Chức năng đang cập nhật']);
@@ -119,7 +121,7 @@ if(($_GET['action'] ?? '') == 'resendOTP') {
 }
 
 // ========== VERIFY OTP ==========
-if(($_GET['action'] ?? '') == 'verifyOTP') {
+if($action == 'verifyOTP') {
     try {
         $email = $_POST['email'] ?? '';
         $otp = $_POST['otp'] ?? '';
@@ -168,7 +170,7 @@ if(($_GET['action'] ?? '') == 'verifyOTP') {
 }
 
 // ========== LOGIN (ĐÃ SỬA CHUẨN) ==========
-if(($_GET['action'] ?? '') == 'login') {
+if($action == 'login') {
     try {
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
@@ -227,7 +229,7 @@ if(($_GET['action'] ?? '') == 'login') {
 }
 
 // ========== CANCEL REGISTRATION ==========
-if(($_GET['action'] ?? '') == 'cancelRegistration') {
+if($action == 'cancelRegistration') {
     // ... (Giữ nguyên logic cũ) ...
     if(isset($_POST['email'])) {
         // Code xóa user tạm... (như cũ)
@@ -238,7 +240,7 @@ if(($_GET['action'] ?? '') == 'cancelRegistration') {
 }
 
 // ========== LOGOUT ==========
-if(($_GET['action'] ?? '') == 'logout') {
+if($action == 'logout') {
     session_unset();
     session_destroy();
     header("Location: /Jshop/public/");

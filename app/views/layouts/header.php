@@ -70,7 +70,7 @@ error_log("OTP Modal Path: $otpModalPath - Exists: " . ($hasOTPModal ? 'YES' : '
               <li><a class="dropdown-item" href="<?= BASE_URL ?>profile"><i class="bi bi-person"></i> Tài khoản</a></li>
               <li><a class="dropdown-item" href="<?= BASE_URL ?>orders"><i class="bi bi-bag"></i> Đơn hàng</a></li>
               <li><hr class="dropdown-divider"></li>
-              <a class="dropdown-item" href="/Jshop/public/logout">Đăng xuất</a>
+              <a class="dropdown-item" href="/Jshop/app/controllers/AuthController.php?action=logout">Đăng xuất</a>
             </ul>
           </div>
         <?php else: ?>

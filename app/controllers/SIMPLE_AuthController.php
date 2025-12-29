@@ -1,22 +1,19 @@
 <?php
-// Include PHPMailer TRƯỚC KHI dùng "use"
+
 require_once __DIR__ . '/../libs/PHPMailer/src/PHPMailer.php';
 require_once __DIR__ . '/../libs/PHPMailer/src/SMTP.php';
 require_once __DIR__ . '/../libs/PHPMailer/src/Exception.php';
 
-// Dùng "use" statement ngay sau include
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
-
-// Sau đó mới đến phần code khác
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 session_start();
 header('Content-Type: application/json');
 
-$action = $_GET['action'] ?? '';
+$action = $_GET['action'] ?? $_POST['action'] ?? '';
 
 // ====== TEST ======
 if ($action == 'test') {
@@ -28,7 +25,6 @@ if ($action == 'test') {
     exit;
 }
 
-// ====== SIMPLE REGISTER (không cần database) ======
 if ($action == 'register') {
     $email = $_POST['email'] ?? '';
     $name = $_POST['name'] ?? '';

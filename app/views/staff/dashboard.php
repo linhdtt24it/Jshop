@@ -6,6 +6,7 @@ $orders_pending = $data['orders_pending'] ?? 0; // Đơn chờ xác nhận
 $orders_processing = $data['orders_processing'] ?? 0; // Đang đóng gói
 $completed_orders = $data['completed_orders'] ?? 0; // Đã hoàn thành
 $orders_total_pending = $data['orders_total_pending'] ?? 0; // Tổng chờ + xử lý
+$recent_orders = $data['recent_orders'] ?? []; // Danh sách đơn hàng mới
 
 $user = [
     'full_name' => $user_name, 
@@ -94,32 +95,34 @@ $ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/');
             </div>
 
             <div class="stats-container">
-                <div class="card stat-card">
+                <a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=orders_pending" class="card stat-card" style="text-decoration: none; color: inherit;">
                     <div class="stat-icon bg-primary-light"><i class="fas fa-clipboard-check"></i></div>
                     <div class="stat-info">
                         <h3><?= sprintf('%02d', $orders_pending) ?></h3>
                         <p>Đơn chờ xác nhận</p>
                     </div>
-                </div>
-                <div class="card stat-card">
+                </a>
+                <a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=orders_pending" class="card stat-card" style="text-decoration: none; color: inherit;">
                     <div class="stat-icon bg-blue-light"><i class="fas fa-box-open"></i></div>
                     <div class="stat-info">
                         <h3><?= sprintf('%02d', $orders_processing) ?></h3>
                         <p>Đang đóng gói</p>
                     </div>
-                </div>
-                <div class="card stat-card">
+                </a>
+                <a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=orders_pending" class="card stat-card" style="text-decoration: none; color: inherit;">
                     <div class="stat-icon bg-green-light"><i class="fas fa-check-circle"></i></div>
                     <div class="stat-info">
                         <h3><?= sprintf('%02d', $completed_orders) ?></h3>
                         <p>Đã hoàn thành</p>
                     </div>
-                </div>
+                </a>
             </div>
 
             <div class="card">
                 <div class="card-header">
-                    <h3>Đơn hàng cần xử lý gấp</h3>
+                    <a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=orders_pending" style="text-decoration: none; color: inherit;">
+                        <h3>Đơn hàng cần xử lý</h3>
+                    </a>
                     <a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=orders_pending">Xem tất cả</a>
                 </div>
                 <table class="table-minimal">
@@ -127,26 +130,35 @@ $ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/');
                         <tr>
                             <th>Mã đơn</th>
                             <th>Khách hàng</th>
-                            <th>Sản phẩm</th>
+                            <th>Tổng tiền</th>
                             <th>Trạng thái</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><strong>#DH0921</strong></td>
-                            <td>Nguyễn Thị A <br><small style="color:#999">0987***123</small></td>
-                            <td>Nhẫn Bạc PNJ...</td>
-                            <td><span class="status-badge status-pending">Chờ duyệt</span></td>
-                            <td><a href="#" style="color: var(--color-primary); font-weight:bold">Xử lý ngay</a></td>
-                        </tr>
-                        <tr>
-                            <td><strong>#DH0922</strong></td>
-                            <td>Trần Văn B <br><small style="color:#999">0912***456</small></td>
-                            <td>Dây chuyền vàng...</td>
-                            <td><span class="status-badge status-shipping">Đang giao</span></td>
-                            <td><a href="#" style="color:#64748b">Chi tiết</a></td>
-                        </tr>
+                        <?php if (empty($recent_orders)): ?>
+                            <tr><td colspan="5" class="text-center text-muted py-3">Hiện không có đơn hàng nào cần xử lý.</td></tr>
+                        <?php else: ?>
+                            <?php foreach ($recent_orders as $order): ?>
+                            <tr>
+                                <td><strong>#<?= $order['order_id'] ?></strong></td>
+                                <td>
+                                    <?= htmlspecialchars($order['customer_name'] ?? $order['receiver_name'] ?? 'Khách lẻ') ?> 
+                                    <br><small style="color:#999"><?= htmlspecialchars($order['receiver_phone']) ?></small>
+                                </td>
+                                <td><?= number_format($order['total_amount']) ?>đ</td>
+                                <td>
+                                    <?php 
+                                        $stt = $order['order_status'];
+                                        if($stt=='pending') echo '<span class="badge bg-white text-dark">Chờ xác nhận</span>';
+                                        elseif($stt=='processing') echo '<span class="badge bg-primary">Đang đóng gói</span>';
+                                        else echo '<span class="badge bg-secondary">'.$stt.'</span>';
+                                    ?>
+                                </td>
+                                <td><a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=order_detail&id=<?= $order['order_id'] ?>" style="color: var(--color-primary); font-weight:bold">Chi tiết</a></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>

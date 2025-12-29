@@ -5,6 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 require_once __DIR__ . '/../../config/constants.php'; 
+require_once __DIR__ . '/../../config/database.php';
 
 require_once __DIR__ . '/../core/Controller.php';
 require_once __DIR__ . '/../libs/PHPMailer/src/PHPMailer.php';
@@ -20,12 +21,14 @@ class StaffController extends Controller
     private $contactModel;
     private $userModel;
     private $orderModel; // KHAI BÁO MODEL MỚI
+    private $orderItemModel;
     private $ROOT_URL;
     
     public function __construct() {
         $this->contactModel = $this->model('ContactModel');
         $this->userModel = $this->model('User'); 
         $this->orderModel = $this->model('Order'); // KHỞI TẠO MODEL MỚI
+        $this->orderItemModel = $this->model('OrderItem');
         
         // TÍNH TOÁN ROOT_URL ĐỂ DÙNG CHO REDIRECT ĐẾN CÁC FILE CONTROLLER BÊN NGOÀI PUBLIC/
         $this->ROOT_URL = str_replace('public/', '', BASE_URL);
@@ -71,13 +74,18 @@ class StaffController extends Controller
         $all_messages = $this->contactModel->getAllMessages();
         $new_messages_count = count(array_filter($all_messages, fn($m) => $m['status'] === 'new'));
 
+        // Lấy 5 đơn hàng mới nhất đang chờ xử lý để hiển thị Dashboard
+        $recent_orders = $this->orderModel->getPendingOrders();
+        $recent_orders = array_slice($recent_orders, 0, 5);
+
         $data = [
             'user'               => $user, 
             'orders_pending'     => $orders_pending_count, // Đơn chờ xác nhận
             'orders_processing'  => $orders_processing_count, // Đang đóng gói
             'completed_orders'   => $orders_completed_count, // Đã hoàn thành
             'orders_total_pending' => $orders_total_pending, // Tổng chờ + xử lý
-            'new_messages_count' => $new_messages_count
+            'new_messages_count' => $new_messages_count,
+            'recent_orders'      => $recent_orders
         ];
 
         $this->view('staff/dashboard', $data);
@@ -95,10 +103,65 @@ class StaffController extends Controller
             'BASE_URL' => BASE_URL // Truyền BASE_URL cho view để tạo liên kết
         ];
         
-        // Sử dụng view Jshop/app/views/staff/orders/index.php
         $this->view('staff/orders/index', $data);
     }
-    // KẾT THÚC PHƯƠNG THỨC orders_pending
+ 
+
+    // PHƯƠNG THỨC MỚI: Xem chi tiết đơn hàng
+    private function order_detail()
+    {
+        $order_id = (int)($_GET['id'] ?? 0);
+        
+        if ($order_id <= 0) {
+             header('Location: ' . $this->ROOT_URL . 'app/controllers/StaffController.php?action=orders_pending');
+             exit;
+        }
+
+        $order = $this->orderModel->getOrderById($order_id);
+        
+        if (!$order) {
+             header('Location: ' . $this->ROOT_URL . 'app/controllers/StaffController.php?action=orders_pending');
+             exit;
+        }
+
+        $items = $this->orderItemModel->getOrderItemsByOrderId($order_id);
+
+        // Lấy số lượng cho sidebar (Giống Dashboard)
+        $orders_pending_count = $this->orderModel->countOrdersByStatus('pending'); 
+        $orders_processing_count = $this->orderModel->countOrdersByStatus('processing'); 
+        $orders_total_pending = $orders_pending_count + $orders_processing_count;
+        $all_messages = $this->contactModel->getAllMessages();
+        $new_messages_count = count(array_filter($all_messages, fn($m) => $m['status'] === 'new'));
+
+        $data = [
+            'page_title' => 'Chi tiết đơn hàng #' . $order_id,
+            'order' => $order,
+            'items' => $items,
+            'BASE_URL' => BASE_URL,
+            'orders_total_pending' => $orders_total_pending,
+            'new_messages_count' => $new_messages_count
+        ];
+
+        $this->view('staff/orders/detail', $data);
+    }
+
+    // PHƯƠNG THỨC MỚI: Cập nhật trạng thái đơn hàng
+    private function update_order_status()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $order_id = (int)($_POST['order_id'] ?? 0);
+            $status = $_POST['status'] ?? '';
+            
+            if ($order_id > 0 && !empty($status)) {
+                $db = (new Database())->connect();
+                $stmt = $db->prepare("UPDATE orders SET order_status = ? WHERE order_id = ?");
+                $stmt->execute([$status, $order_id]);
+                $_SESSION['success_message'] = "Cập nhật đơn hàng #$order_id thành công!";
+            }
+            header('Location: ' . $this->ROOT_URL . 'app/controllers/StaffController.php?action=orders_pending');
+            exit;
+        }
+    }
 
     private function messages()
     {
@@ -207,9 +270,7 @@ class StaffController extends Controller
         header('Location: ' . $this->ROOT_URL . 'app/controllers/StaffController.php?action=profile');
         exit;
     }
-    // KẾT THÚC PHƯƠNG THỨC update_profile
 
-    // PHƯƠNG THỨC ĐÃ CẬP NHẬT: Xử lý đổi mật khẩu
     private function change_password()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

@@ -3,26 +3,23 @@
 $page_title = $data['page_title'] ?? 'Quản lý Đơn hàng Chờ & Đang xử lý';
 $orders = $data['orders'] ?? [];
 
-// Lấy thông tin cần thiết cho giao diện
 $user_name = $_SESSION['user_name'] ?? 'Nhân viên';
-$orders_total_pending = $data['orders_total_pending'] ?? 0; // Số lượng đơn hàng chờ + xử lý
+$orders_total_pending = $data['orders_total_pending'] ?? 0; 
 $new_messages_count = count(array_filter($data['messages'] ?? [], fn($m) => $m['status'] === 'new')); // Số lượng tin nhắn mới
 $user = ['full_name' => $user_name, 'avatar' => 'https://ui-avatars.com/api/?background=fce7f3&color=be123c&name=' . urlencode($user_name)];
 
-// KHẮC PHỤC LỖI BASE_URL TRỎ ĐẾN CONTROLLER BỊ SAI
 $ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/'); 
 
-// Hàm hỗ trợ hiển thị trạng thái với Bootstrap-like classes (Đồng bộ với messages)
 function displayStatus($status) {
     switch ($status) {
-        // Order Status
+       
         case 'pending': 
-            $badge_class = 'danger';
-            $text = 'Chờ duyệt';
+            $badge_class = 'white text-dark';
+            $text = 'Chờ xác nhận';
             break;
         case 'processing': 
-            $badge_class = 'primary';
-            $text = 'Đang xử lý'; 
+            $badge_class = 'pink';
+            $text = 'Đang đóng gói'; 
             break;
         case 'shipped': 
             $badge_class = 'info'; 
@@ -30,7 +27,7 @@ function displayStatus($status) {
             break;
         case 'completed': 
             $badge_class = 'success';
-            $text = 'Hoàn thành';
+            $text = 'Đã hoàn thành';
             break;
         case 'cancelled': 
             $badge_class = 'secondary'; 
@@ -72,16 +69,8 @@ function displayStatus($status) {
     return '<span class="badge bg-'. $badge_class .'">'. $text .'</span>';
 }
 
-// Hàm lấy class cho hàng (Row coloring giống messages)
 function getRowClass($status) {
-    switch ($status) {
-        case 'pending': 
-            return 'table-warning'; // Mới/Chờ duyệt
-        case 'processing': 
-            return 'table-info';    // Đang xử lý
-        default: 
-            return '';
-    }
+    return ''; 
 }
 ?>
 
@@ -93,6 +82,7 @@ function getRowClass($status) {
     <title><?= $page_title ?> • JSHOP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/Jshop/public/assets/css/staff-dashboard.css">
     
     <style>
@@ -165,6 +155,14 @@ function getRowClass($status) {
                 <a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=orders_pending" class="btn-primary"><i class="fas fa-redo"></i> Tải lại</a>
             </div>
 
+            <?php if (isset($_SESSION['success_message'])): ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i> <?= $_SESSION['success_message'] ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <?php unset($_SESSION['success_message']); ?>
+            <?php endif; ?>
+
             <div class="card p-4"> 
                 <div class="table-responsive">
                     <?php if (empty($orders)): ?>
@@ -213,5 +211,6 @@ function getRowClass($status) {
             </main>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
