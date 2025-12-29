@@ -25,7 +25,7 @@ include __DIR__ . "/../layouts/header.php";
                       <?= (($_GET['cat'] ?? 0) == $id ? 'selected' : '') ?>>
                       <?= htmlspecialchars($name) ?>
                     </option>
-                  <?php endforeach; ?>
+                  <?php endforeach; ?> 
               </select>
               <select name="gender" class="form-control mb-3">
                 <option value="">Giới tính</option>
@@ -33,19 +33,23 @@ include __DIR__ . "/../layouts/header.php";
                 <option value="nu"      <?= ($_GET['gender'] ?? '') == 'nu' ? 'selected' : '' ?>>Nữ</option>
                 <option value="unisex"  <?= ($_GET['gender'] ?? '') == 'unisex' ? 'selected' : '' ?>>Unisex</option>
               </select>
-              <select name="material" class="form-control mb-3">
-                <option value="">Chất liệu</option>
-                <option value="vang"      <?= ($_GET['material'] ?? '') == 'vang' ? 'selected' : '' ?>>Vàng</option>
-                <option value="bac"       <?= ($_GET['material'] ?? '') == 'bac' ? 'selected' : '' ?>>Bạc</option>
-                <option value="kimcuong"  <?= ($_GET['material'] ?? '') == 'kimcuong' ? 'selected' : '' ?>>Kim cương</option>
-                <option value="ngoc"      <?= ($_GET['material'] ?? '') == 'ngoc' ? 'selected' : '' ?>>Ngọc</option>
+              <select name="material_id" class="form-control mb-3">
+                  <option value="0">Chất liệu</option>
+                  <?php foreach ($materials as $id => $name): ?>
+                    <option value="<?= $id ?>" 
+                      <?= (($_GET['material_id'] ?? 0) == $id ? 'selected' : '') ?>>
+                      <?= htmlspecialchars($name) ?>
+                    </option>
+                  <?php endforeach; ?>
               </select>
-              <select name="purpose" class="form-control mb-3">
-                <option value="">Mục đích</option>
-                <option value="cuoi"      <?= ($_GET['purpose'] ?? '') == 'cuoi' ? 'selected' : '' ?>>Trang sức cưới</option>
-                <option value="phongthuy" <?= ($_GET['purpose'] ?? '') == 'phongthuy' ? 'selected' : '' ?>>Phong thủy</option>
-                <option value="mayman"    <?= ($_GET['purpose'] ?? '') == 'mayman' ? 'selected' : '' ?>>May mắn</option>
-                <option value="hoangdao"  <?= ($_GET['purpose'] ?? '') == 'hoangdao' ? 'selected' : '' ?>>Cung hoàng đạo</option>
+              <select name="purpose_id" class="form-control mb-3">
+                  <option value="0">Mục đích</option>
+                  <?php foreach ($purposes as $id => $name): ?>
+                    <option value="<?= $id ?>" 
+                      <?= (($_GET['purpose_id'] ?? 0) == $id ? 'selected' : '') ?>>
+                      <?= htmlspecialchars($name) ?>
+                    </option>
+                  <?php endforeach; ?>
               </select>
               <button class="btn btn-primary w-100">Lọc</button>
           </form>

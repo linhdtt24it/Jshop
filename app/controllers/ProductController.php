@@ -18,16 +18,27 @@ class ProductController extends Controller {
         $perPage = 12;
         $offset = ($page - 1) * $perPage;
 
+        $category = null;
+        if ($cat > 0) {
+            $catStmt = $this->db->prepare("SELECT * FROM categories WHERE category_id = ?");
+            $catStmt->execute([$cat]);
+            $category = $catStmt->fetch(PDO::FETCH_ASSOC);
+        }
+
         $where = [];
         $params = [];
         if ($search !== '') { $where[] = "p.name LIKE ?"; $params[] = "%$search%"; }
         if ($cat > 0) { $where[] = "p.category_id = ?"; $params[] = $cat; }
+        
         $gender = $_GET['gender'] ?? '';
-        $material = $_GET['material'] ?? '';
-        $purpose = $_GET['purpose'] ?? '';
         if ($gender !== '') { $where[] = "p.gender = ?"; $params[] = $gender; }
-        if ($material !== '') { $where[] = "p.material = ?"; $params[] = $material; }
-        if ($purpose !== '') { $where[] = "p.purpose = ?"; $params[] = $purpose; }
+
+        $material_id = (int)($_GET['material_id'] ?? 0);
+        if ($material_id > 0) { $where[] = "p.material_id = ?"; $params[] = $material_id; }
+
+        $purpose_id = (int)($_GET['purpose_id'] ?? 0);
+        if ($purpose_id > 0) { $where[] = "p.purpose_id = ?"; $params[] = $purpose_id; }
+
         $whereSql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
 
         $countSql = "SELECT COUNT(*) FROM products p $whereSql";
@@ -47,14 +58,24 @@ class ProductController extends Controller {
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
         $catStmt = $this->db->query("SELECT category_id, name FROM categories ORDER BY name");
         $cats = $catStmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+        $materialsStmt = $this->db->query("SELECT material_id, name FROM materials ORDER BY name");
+        $materials = $materialsStmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+        $purposesStmt = $this->db->query("SELECT purpose_id, name FROM purposes ORDER BY name");
+        $purposes = $purposesStmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
         $data = [
             'products' => $products,
             'cats' => $cats,
+            'materials' => $materials,
+            'purposes' => $purposes,
             'total' => $total,
             'totalPages' => $totalPages,
+            'category' => $category,
         ];
         
         $this->view('products/list', $data);
