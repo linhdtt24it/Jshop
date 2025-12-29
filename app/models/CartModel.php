@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../core/Model.php';
+require_once __DIR__ . '/Product.php';
 
 class CartModel extends Model {
     
@@ -37,21 +38,48 @@ class CartModel extends Model {
     }
 
     public function addToCart($user_id, $product_id, $quantity) {
-        $sql = "
-            INSERT INTO cart (user_id, product_id, quantity) 
-            VALUES (:user_id, :product_id, :quantity)
-            ON DUPLICATE KEY UPDATE 
-                quantity = quantity + :quantity_update
-        ";
-        
+        $this->db->beginTransaction();
+
         try {
-            return $this->db->prepare($sql)->execute([
+            // Get product stock
+            $product_model = new Product();
+            $product = $product_model->getProductById($product_id);
+
+            if (!$product) {
+                $this->db->rollBack();
+                return 'not_found';
+            }
+            
+            $stock = $product['stock'];
+
+            // Get current quantity in cart
+            $quantity_in_cart = $this->getCartItemQuantity($user_id, $product_id);
+
+            // Check if stock is sufficient
+            if ($stock < ($quantity_in_cart + $quantity)) {
+                $this->db->rollBack();
+                return 'out_of_stock';
+            }
+
+            $sql = "
+                INSERT INTO cart (user_id, product_id, quantity) 
+                VALUES (:user_id, :product_id, :quantity)
+                ON DUPLICATE KEY UPDATE 
+                    quantity = quantity + :quantity_update
+            ";
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
                 ':user_id' => $user_id,
                 ':product_id' => $product_id,
                 ':quantity' => $quantity,
                 ':quantity_update' => $quantity
             ]);
+
+            $this->db->commit();
+            return true;
         } catch (PDOException $e) {
+            $this->db->rollBack();
             error_log("Lỗi thêm vào giỏ hàng: " . $e->getMessage());
             return false;
         }

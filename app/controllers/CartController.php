@@ -36,7 +36,7 @@ class CartController extends Controller {
         }       
         $result = $this->cartModel->addToCart($user_id, $product_id, 1);
 
-        if ($result) {
+        if ($result === true) {
             $items = $this->cartModel->getCartItemsByUserId($user_id);
             $total_count = 0;
             foreach ($items as $item) {
@@ -44,9 +44,18 @@ class CartController extends Controller {
             }
             $_SESSION['cart_count'] = $total_count;
 
-            echo json_encode(['success' => true, 'cart_count' => $total_count]);
+            echo json_encode(['success' => true, 'cart_count' => $total_count, 'message' => 'Đã thêm vào giỏ hàng!']);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Lỗi khi thêm vào giỏ']);
+            $message = 'Lỗi khi thêm vào giỏ';
+            switch ($result) {
+                case 'out_of_stock':
+                    $message = 'Sản phẩm đã hết hàng.';
+                    break;
+                case 'not_found':
+                    $message = 'Sản phẩm không tồn tại.';
+                    break;
+            }
+            echo json_encode(['success' => false, 'message' => $message]);
         }
     }
 

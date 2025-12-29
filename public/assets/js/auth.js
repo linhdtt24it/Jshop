@@ -5,55 +5,10 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('🔧 Auth System đang khởi tạo...');
     setTimeout(initAuthSystem, 100);
 });
-window.addToCart = async function(productId) {
-    const CART_API = '/Jshop/app/views/cart/add_to_cart.php'; 
-    
-    console.log('🛒 Đang thêm sản phẩm:', productId);
-    try {
-        const response = await fetch(`${CART_API}?action=add&id=${productId}`);
-        const result = await response.json();
-
-        if (result.success) {
-            const badge = document.getElementById('cart-count-badge');
-            if (badge) {
-                badge.innerText = result.cart_count;
-                badge.classList.remove('d-none');
-            }
-            alert('Đã thêm sản phẩm vào giỏ hàng!');
-        } else {
-            if (result.login_required || (result.message && result.message.includes('đăng nhập'))) {
-                alert('Vui lòng đăng nhập để mua hàng.');
-                const loginModalElement = document.getElementById('loginModal');
-                if (loginModalElement) {
-                    const m = new bootstrap.Modal(loginModalElement);
-                    m.show();
-                }
-            } else {
-                alert(result.message || 'Lỗi khi thêm vào giỏ');
-            }
-        }
-    } catch (error) {
-        console.error('❌ Lỗi giỏ hàng:', error);
-    }
-};
-
-console.log("⚠️ File auth.js đã được load!");
-
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔧 Auth System đang khởi tạo...');
-    setTimeout(initAuthSystem, 100);
-});
 
 function initAuthSystem() {
     const BASE_URL = '/Jshop/app/controllers/AuthController.php';
-    let isProcessing = false;
-    
-    
-    console.log('✅ Auth System đã sẵn sàng');
-}
-function initAuthSystem() {
-    const BASE_URL = '/Jshop/app/controllers/AuthController.php';
-    const CART_API = '/Jshop/app/controllers/CartController.php'; 
+    const CART_API = '/Jshop/public/cart/add'; // CORRECTED AND SECURE ROUTE
     let isProcessing = false;
     
     console.log('🔍 Kiểm tra modal...');
@@ -157,18 +112,43 @@ function initAuthSystem() {
     window.addToCart = async function(productId) {
         console.log('🛒 Đang thêm sản phẩm:', productId);
         try {
-            const response = await fetch(`${CART_API}?action=add&id=${productId}`);
-            const result = await response.json();
+            // Correctly construct the URL for a GET request
+            const url = new URL(window.location.origin + CART_API);
+            url.searchParams.append('id', productId);
+
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error("Server trả về lỗi: " + response.status);
+            }
+
+            const text = await response.text();
+            if (!text) {
+                // Show a generic success message even if the response is empty, but log a warning
+                console.warn("Server không trả về dữ liệu, nhưng yêu cầu thành công.");
+                alert('Đã thêm sản phẩm vào giỏ hàng!');
+                // We might want to refresh cart count from the server here in a real app
+                return;
+            }
+
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch (e) {
+                console.error("❌ JSON không hợp lệ:", e, text);
+                alert("Lỗi dữ liệu từ server.");
+                return;
+            }
 
             if (result.success) {
                 const badge = document.getElementById('cart-count-badge');
-                if (badge) {
+                if (badge && result.cart_count) {
                     badge.innerText = result.cart_count;
                     badge.classList.remove('d-none');
                 }
-                alert('Đã thêm sản phẩm vào giỏ hàng!');
+                alert(result.message || 'Đã thêm sản phẩm vào giỏ hàng!');
             } else {
-                if (result.message.includes('đăng nhập')) {
+                 if (result.message && result.message.includes('đăng nhập')) {
                     alert('Vui lòng đăng nhập để mua hàng.');
                     const loginModalElement = document.getElementById('loginModal');
                     if (loginModalElement) {
@@ -176,14 +156,15 @@ function initAuthSystem() {
                         m.show();
                     }
                 } else {
-                    alert(result.message);
+                    alert(result.message || "Có lỗi xảy ra.");
                 }
             }
         } catch (error) {
             console.error('❌ Lỗi giỏ hàng:', error);
+            alert('Không thể thêm sản phẩm. Vui lòng thử lại.');
         }
     };
-    
+
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         console.log('✅ Đăng ký form - Đã kết nối');
@@ -416,7 +397,7 @@ function initAuthSystem() {
             e.preventDefault();
             
             const registerModal = document.getElementById('registerModal');
-            if (registerModal) {
+if (registerModal) {
                 const modalInstance = bootstrap.Modal.getInstance(registerModal);
                 if (modalInstance) modalInstance.hide();
             }
