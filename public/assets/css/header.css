@@ -1,5 +1,3 @@
-/* public/assets/css/header.css */
-
 body {
   font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   margin: 0;
@@ -12,13 +10,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Đảm bảo tất cả phần tử kế thừa font chữ */
 * {
   font-family: inherit;
 }
 
 
-/* HEADER CHÍNH - Layout mới */
 .header-main {
   background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
@@ -32,27 +28,22 @@ body {
   position: relative;
 }
 
-/* Tên shop - Trên cùng bên trái */
-/* --- LOGO JSHOP SANG TRỌNG --- */
 .shop-name a {
     color: #000000 !important;
-    /* Dùng font Playfair Display cho giống Admin và các thương hiệu lớn */
     font-family: 'Playfair Display', serif; 
-    font-weight: 800;       /* Chữ siêu đậm */
-    font-size: 36px;        /* Kích thước to rõ */
-    letter-spacing: 2px;    /* Giãn chữ ra cho sang */
+    font-weight: 800;
+    font-size: 36px;
+    letter-spacing: 2px;
     text-decoration: none;
-    display: flex;          /* Để icon và chữ nằm ngang thẳng hàng */
+    display: flex;
     align-items: center;
     transition: opacity 0.3s;
 }
 
-/* Style riêng cho viên Kim Cương */
 .logo-icon {
-    color: #d4af37;         /* Màu Vàng Gold (Màu của Admin) */
-    font-size: 32px;        /* Kích thước icon */
-    margin-right: 10px;     /* Khoảng cách với chữ JSHOP */
-    /* Hiệu ứng bóng nhẹ cho kim cương lấp lánh */
+    color: #d4af37;
+    font-size: 32px;
+    margin-right: 10px;
     text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3); 
 }
 
@@ -61,7 +52,6 @@ body {
 }
 
 
-/* Tìm kiếm ở giữa */
 .search-center {
   position: absolute;
   left: 50%;
@@ -108,7 +98,6 @@ body {
   color: #000000;
 }
 
-/* User actions - Góc phải */
 .user-actions {
   flex: 0 0 auto;
   display: flex;
@@ -138,7 +127,6 @@ body {
   text-decoration: none;
 }
 
-/* NAVBAR CHÍNH - Menu chính */
 .navbar-main {
   background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
@@ -160,13 +148,12 @@ body {
   margin: 0;
 }
 
-/* NAVBAR CHÍNH - Menu chính */
 .main-menu .nav-link {
   color: #000000 !important;
-  font-size: 18px;          
-  font-weight: 550;         
+  font-size: 18px;
+  font-weight: 550;
   text-transform: uppercase;
-  padding: 15px 25px;     
+  padding: 15px 25px;
   transition: all 0.2s ease;
   text-decoration: none;
   border-radius: 4px;
@@ -180,7 +167,6 @@ body {
   background-color: #f8f9fa;
 }
 
-/* Navbar Sub - Thanh danh mục - GIỮ NGUYÊN */
 .navbar-sub {
   background-color: #fafafa !important;
   border-top: 1px solid #eeeeee;
@@ -199,15 +185,14 @@ body {
   list-style: none;
 }
 
-/* Navbar Sub - Thanh danh mục */
 .sub-menu .nav-link {
   color: #333333;
-  font-weight: 500;        
-  font-size: 16px;          
+  font-weight: 500;
+  font-size: 16px;
   text-transform: none;
   letter-spacing: normal;
   transition: all 0.2s ease;
-  padding: 10px 20px;       
+  padding: 10px 20px;
   text-decoration: none;
   font-family: 'Inter', 'Segoe UI', sans-serif;
 }
@@ -217,7 +202,6 @@ body {
   background-color: #e9ecef;
 } 
 
-/* Slider - GIỮ NGUYÊN */
 .main-slider {
   width: 100%;
   height: 75vh;
@@ -244,7 +228,6 @@ body {
   transform: scale(1.02);
 }
 
-/* Cards và collections - Màu trắng hoàn toàn */
 .news-hero {
   background: #ffffff;
 }
@@ -274,7 +257,6 @@ body {
   box-shadow: 0 6px 20px rgba(0,0,0,0.08) !important;
 }
 
-/* Hiệu ứng ảnh */
 .collection-card img {
   transition: all 0.4s ease;
 }
@@ -283,13 +265,11 @@ body {
   transform: scale(1.05);
 }
 
-/* Badge giỏ hàng */
 .badge.bg-danger {
   background-color: #dc3545 !important;
   font-size: 0.7rem;
 }
 
-/* Form controls */
 .form-control {
   border: 1px solid #dddddd;
   border-radius: 4px;
@@ -303,7 +283,6 @@ body {
   box-shadow: 0 0 0 0.1rem rgba(0, 0, 0, 0.1);
 }
 
-/* Modal */
 .modal-content {
   border: 1px solid #eeeeee;
   background: #ffffff;
@@ -323,7 +302,6 @@ body {
   font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
-/* Text colors */
 .text-muted {
   color: #666666 !important;
 }
@@ -332,7 +310,6 @@ body {
   color: #000000 !important;
 }
 
-/* NÚT BACK TO TOP */
 .back-to-top {
   position: fixed;
   bottom: 30px;
@@ -371,7 +348,6 @@ body {
   transform: translateY(0);
 }
 
-/* Responsive */
 @media (max-width: 1200px) {
   .search-center {
     width: 400px;
@@ -448,7 +424,6 @@ body {
     font-size: 0.85rem;
   }
   
-  /* Responsive cho Back to Top */
   .back-to-top {
     bottom: 20px;
     right: 20px;
@@ -494,7 +469,6 @@ body {
     padding: 4px 10px;
   }
   
-  /* Responsive cho Back to Top */
   .back-to-top {
     bottom: 15px;
     right: 15px;

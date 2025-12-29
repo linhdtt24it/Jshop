@@ -1,9 +1,8 @@
-// Jshop/public/assets/js/admin-collection.js
+
 const modalElement = document.getElementById('collectionModal');
 const collectionModal = new bootstrap.Modal(modalElement);
 const form = document.getElementById('collectionForm');
 
-// Sử dụng biến global ADMIN_CONTROLLER_URL được định nghĩa trong view
 const apiUrl = ADMIN_CONTROLLER_URL; 
 
 function openCollectionModal() {

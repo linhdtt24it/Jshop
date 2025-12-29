@@ -1,5 +1,3 @@
-/* public/assets/css/footer.css */
-
 .footer {
   background: #fff;
   padding: 60px 0 40px;
@@ -84,7 +82,6 @@
   background: #006ddb;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .footer-top {
     grid-template-columns: 1fr 1fr;

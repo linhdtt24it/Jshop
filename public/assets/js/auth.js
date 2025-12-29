@@ -37,7 +37,6 @@ window.addToCart = async function(productId) {
     }
 };
 
-// 2. GIỮ NGUYÊN TOÀN BỘ CODE CŨ CỦA BẠN DƯỚI ĐÂY
 console.log("⚠️ File auth.js đã được load!");
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -49,14 +48,12 @@ function initAuthSystem() {
     const BASE_URL = '/Jshop/app/controllers/AuthController.php';
     let isProcessing = false;
     
-    // ... (Giữ nguyên toàn bộ phần AuthUtils, xử lý Login, Register, OTP của bạn ở đây) ...
-    // ... KHÔNG XÓA BẤT KỲ DÒNG CODE NÀO TRONG HÀM NÀY CỦA BẠN ...
     
     console.log('✅ Auth System đã sẵn sàng');
 }
 function initAuthSystem() {
     const BASE_URL = '/Jshop/app/controllers/AuthController.php';
-    const CART_API = '/Jshop/app/controllers/CartController.php'; // Chèn thêm hằng số API giỏ hàng
+    const CART_API = '/Jshop/app/controllers/CartController.php'; 
     let isProcessing = false;
     
     console.log('🔍 Kiểm tra modal...');
@@ -64,7 +61,6 @@ function initAuthSystem() {
     console.log('Register Modal:', document.getElementById('registerModal') ? '✅ Tìm thấy' : '❌ Không tìm thấy');
     console.log('OTP Modal:', document.getElementById('otpModal') ? '✅ Tìm thấy' : '❌ Không tìm thấy');
     
-    // ================== TIỆN ÍCH ==================
     const AuthUtils = {
         showMessage(elementId, type, message, duration = 5000) {
             const element = document.getElementById(elementId);
@@ -158,7 +154,6 @@ function initAuthSystem() {
         }
     };
 
-    // ================== CHỨC NĂNG GIỎ HÀNG (MỚI CHÈN) ==================
     window.addToCart = async function(productId) {
         console.log('🛒 Đang thêm sản phẩm:', productId);
         try {
@@ -189,7 +184,6 @@ function initAuthSystem() {
         }
     };
     
-    // ================== ĐĂNG KÝ ==================
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         console.log('✅ Đăng ký form - Đã kết nối');
@@ -205,7 +199,6 @@ function initAuthSystem() {
                 confirm: document.getElementById('registerConfirm').value
             };
             
-            // Validate
             if (!formData.name || !formData.email || !formData.password || !formData.confirm) {
                 AuthUtils.showMessage('registerMessage', 'error', 'Vui lòng điền đầy đủ thông tin');
                 return;
@@ -271,7 +264,6 @@ function initAuthSystem() {
         console.log('⚠️ Đăng ký form - Không tìm thấy');
     }
     
-    // ================== ĐĂNG NHẬP ==================
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         console.log('✅ Đăng nhập form - Đã kết nối');
@@ -324,7 +316,6 @@ function initAuthSystem() {
         console.log('⚠️ Đăng nhập form - Không tìm thấy');
     }
     
-    // ================== XỬ LÝ OTP ==================
     const otpForm = document.getElementById('otpForm');
     if (otpForm) {
         console.log('✅ OTP form - Đã kết nối');
@@ -371,7 +362,6 @@ function initAuthSystem() {
         console.log('⚠️ OTP form - Không tìm thấy');
     }
     
-    // ================== GỬI LẠI OTP ==================
     const resendBtn = document.getElementById('resendOTPBtn');
     if (resendBtn) {
         console.log('✅ Nút gửi lại OTP - Đã kết nối');
@@ -401,8 +391,6 @@ function initAuthSystem() {
         });
     }
     
-    // ================== CHUYỂN MODAL ==================
-    // Login -> Register
     document.querySelectorAll('.switch-to-register').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -423,7 +411,6 @@ function initAuthSystem() {
         });
     });
     
-    // Register -> Login
     document.querySelectorAll('.switch-to-login').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -444,7 +431,6 @@ function initAuthSystem() {
         });
     });
     
-    // ================== TOGGLE PASSWORD ==================
     function initPasswordToggles() {
         const toggles = [
             { input: 'loginPassword', toggle: 'toggleLoginPassword' },
@@ -473,7 +459,6 @@ function initAuthSystem() {
     
     initPasswordToggles();
     
-    // ================== OTP INPUT HANDLER ==================
     function initOTPInputs() {
         const otpInputs = document.querySelectorAll('.otp-input');
         
@@ -481,27 +466,22 @@ function initAuthSystem() {
             input.addEventListener('input', function(e) {
                 const value = this.value;
                 
-                // Chỉ cho phép số
                 if (!/^\d*$/.test(value)) {
                     this.value = '';
                     return;
                 }
                 
-                // Giới hạn 1 ký tự
                 if (value.length > 1) {
                     this.value = value.charAt(0);
                 }
                 
-                // Chuyển sang ô tiếp theo
                 if (value.length === 1 && index < otpInputs.length - 1) {
                     otpInputs[index + 1].focus();
                 }
                 
-                // Cập nhật OTP đầy đủ
                 updateFullOTP();
             });
             
-            // Xử lý backspace
             input.addEventListener('keydown', function(e) {
                 if (e.key === 'Backspace' && this.value === '' && index > 0) {
                     e.preventDefault();
@@ -509,7 +489,6 @@ function initAuthSystem() {
                 }
             });
             
-            // Paste
             input.addEventListener('paste', function(e) {
                 e.preventDefault();
                 const pasted = e.clipboardData.getData('text').trim();
@@ -548,7 +527,6 @@ function initAuthSystem() {
     
     initOTPInputs();
     
-    // ================== GLOBAL FUNCTIONS ==================
     window.showOTPModal = function(email) {
         console.log('📧 Mở OTP modal cho:', email);
         
@@ -571,11 +549,9 @@ function initAuthSystem() {
         const fullOtpElement = document.getElementById('fullOtp');
         if (fullOtpElement) fullOtpElement.value = '';
         
-        // Mở modal
         const modal = new bootstrap.Modal(otpModal, { backdrop: 'static' });
         modal.show();
         
-        // Focus vào ô đầu tiên
         setTimeout(() => {
             const firstInput = document.querySelector('.otp-input');
             if (firstInput) firstInput.focus();

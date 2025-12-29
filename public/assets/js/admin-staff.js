@@ -1,4 +1,4 @@
-// public/assets/js/admin-staff.js
+
 const modalElement = document.getElementById('staffModal');
 const staffModal = new bootstrap.Modal(modalElement);
 const form = document.getElementById('staffForm');
@@ -25,7 +25,6 @@ function editStaff(id) {
                 document.getElementById('fullName').value = data.full_name;
                 document.getElementById('email').value = data.email;
                 
-                // [ĐÃ SỬA] Điền SĐT vào form
                 document.getElementById('phone').value = data.phone_number || ''; 
 
                 document.getElementById('role').value = data.role;

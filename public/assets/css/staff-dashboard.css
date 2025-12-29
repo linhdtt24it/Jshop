@@ -1,11 +1,8 @@
-/* --- 1. CẤU HÌNH GIAO DIỆN (STAFF THEME) --- */
 :root {
-    /* --- MÀU SẮC RIÊNG CHO STAFF --- */
-    --bg-sidebar: #1e293b;       /* Xanh xám tối (Dark Slate) */
-    --color-accent: #f43f5e;     /* Hồng Ruby */
-    --color-accent-bg: rgba(244, 63, 94, 0.15); /* Nền hồng mờ */
+    --bg-sidebar: #1e293b;
+    --color-accent: #f43f5e;
+    --color-accent-bg: rgba(244, 63, 94, 0.15);
     
-    /* --- KÍCH THƯỚC CHUNG (Y HỆT ADMIN) --- */
     --sidebar-width: 260px;
     --header-height: 70px;
     --content-padding: 30px;
@@ -13,15 +10,13 @@
     --border-radius: 16px;
     --shadow-soft: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
     
-    /* Màu chung */
     --bg-body: #f1f5f9;
     --bg-white: #ffffff;
     --text-main: #1e293b;
-    --text-sidebar: #cbd5e1;     /* Chữ Sidebar sáng hơn chút vì nền khác */
+    --text-sidebar: #cbd5e1;
     --text-light: #64748b;
 }
 
-/* --- 2. RESET & TYPOGRAPHY --- */
 * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
 
 body {
@@ -36,7 +31,6 @@ body {
 a { text-decoration: none; transition: 0.2s; }
 ul { list-style: none; }
 
-/* --- 3. SIDEBAR (COPY STRUCTURE) --- */
 .wrapper { display: flex; width: 100%; min-height: 100vh; }
 
 .sidebar {
@@ -71,9 +65,8 @@ ul { list-style: none; }
 }
 .sidebar-menu li a i { width: 30px; font-size: 18px; }
 
-/* Hover Staff */
 .sidebar-menu li a:hover, .sidebar-menu li a.active {
-    background: var(--color-accent); /* Staff full nền hồng cho nổi */
+    background: var(--color-accent);
     color: #fff;
     box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
 }
@@ -86,7 +79,6 @@ ul { list-style: none; }
 .sidebar-footer { padding: 20px 25px; border-top: 1px solid rgba(255,255,255,0.05); }
 .sidebar-footer a { color: #ef4444; font-weight: 700; display: flex; align-items: center; gap: 10px; }
 
-/* --- 4. MAIN PANEL --- */
 .main-panel {
     margin-left: var(--sidebar-width);
     width: calc(100% - var(--sidebar-width));
@@ -98,7 +90,6 @@ ul { list-style: none; }
     height: var(--header-height);
     display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;
 }
-/* Style cho search bar của Staff */
 .top-bar h4 { font-size: 16px; color: var(--text-main); font-weight: 700; }
 
 .user-profile img { 
@@ -108,9 +99,8 @@ ul { list-style: none; }
 .user-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; }
 .user-profile small { color: var(--color-accent); font-weight: 700; font-size: 11px; background: #fff1f2; padding: 3px 10px; border-radius: 20px; }
 
-/* --- 5. CARDS & GRID --- */
 .stats-container {
-    display: grid; grid-template-columns: repeat(3, 1fr); /* Staff thường ít thẻ hơn nên để 3 cột */
+    display: grid; grid-template-columns: repeat(3, 1fr);
     gap: 24px; margin-bottom: 30px;
 }
 
@@ -130,7 +120,6 @@ ul { list-style: none; }
     display: flex; align-items: center; justify-content: center;
     font-size: 22px; background: #f1f5f9;
 }
-/* Màu icon Staff */
 .bg-primary-light { background: #fff1f2; color: var(--color-accent); }
 .bg-blue-light { background: #eff6ff; color: #3b82f6; }
 .bg-green-light { background: #f0fdf4; color: #22c55e; }
@@ -138,7 +127,6 @@ ul { list-style: none; }
 .stat-info h3 { font-size: 22px; font-weight: 800; margin-bottom: 2px; color: var(--text-main); }
 .stat-info p { color: var(--text-light); font-size: 13px; font-weight: 600; }
 
-/* --- 6. TABLES --- */
 .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
 .page-header h1 { font-size: 24px; font-weight: 800; color: var(--text-main); }
 
@@ -163,7 +151,6 @@ ul { list-style: none; }
 .status-pending { background: #fff7ed; color: #f97316; }
 .status-shipping { background: #eff6ff; color: #3b82f6; }
 
-/* Responsive */
 @media (max-width: 1200px) {
     .stats-container { grid-template-columns: repeat(2, 1fr); }
 }
