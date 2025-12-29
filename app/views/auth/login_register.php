@@ -7,7 +7,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="loginForm">
+                <form id="loginForm" action="/Jshop/app/controllers/AuthController.php?action=login" method="POST">
                     <div class="mb-3">
                         <label class="form-label">Email</label>
                         <input type="email" name="email" class="form-control" required>
@@ -43,7 +43,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="registerForm">
+                <form id="registerForm" action="/Jshop/app/controllers/AuthController.php?action=register" method="POST">
                     <div class="mb-3">
                         <label class="form-label">Họ tên</label>
                         <input type="text" name="name" class="form-control" required>

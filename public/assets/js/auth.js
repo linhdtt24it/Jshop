@@ -1,17 +1,11 @@
-// FILE: assets/js/auth.js
+
 console.log("⚠️ File auth.js đã được load!");
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🔧 Auth System đang khởi tạo...');
-    
-    // Chờ 100ms để đảm bảo DOM đã load xong
     setTimeout(initAuthSystem, 100);
 });
-// FILE: Jshop/public/assets/js/auth.js
-
-// 1. ĐƯA HÀM NÀY RA NGOÀI CÙNG ĐỂ KHÔNG BỊ LỖI "NOT DEFINED"
 window.addToCart = async function(productId) {
-    // Lưu ý: Đường dẫn nên trỏ về file xử lý trung gian bạn đã tạo
     const CART_API = '/Jshop/app/views/cart/add_to_cart.php'; 
     
     console.log('🛒 Đang thêm sản phẩm:', productId);
@@ -27,7 +21,6 @@ window.addToCart = async function(productId) {
             }
             alert('Đã thêm sản phẩm vào giỏ hàng!');
         } else {
-            // Kiểm tra nếu server yêu cầu đăng nhập
             if (result.login_required || (result.message && result.message.includes('đăng nhập'))) {
                 alert('Vui lòng đăng nhập để mua hàng.');
                 const loginModalElement = document.getElementById('loginModal');

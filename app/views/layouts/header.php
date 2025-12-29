@@ -39,9 +39,6 @@ error_log("OTP Modal Path: $otpModalPath - Exists: " . ($hasOTPModal ? 'YES' : '
     <link href="<?= BASE_URL ?>assets/css/login.css" rel="stylesheet">
     <link href="<?= BASE_URL ?>assets/css/otp_modal.css" rel="stylesheet">
 
-    <!-- JS -->
-    <script type="module" src="<?= BASE_URL ?>assets/js/auth.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 
