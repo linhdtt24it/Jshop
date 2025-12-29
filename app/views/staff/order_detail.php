@@ -10,16 +10,13 @@ $ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title ?? 'Chi tiết đơn hàng') ?></title>
-    <!-- Bootstrap cho layout nội dung đơn hàng -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- CSS Dashboard -->
     <link rel="stylesheet" href="/Jshop/public/assets/css/staff-dashboard.css?v=<?= time() ?>">
 </head>
 <body>
 <div class="wrapper">
-    <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-brand">
             <i class="fas fa-gem brand-icon"></i>
@@ -39,7 +36,6 @@ $ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/');
                     <span class="badge"><?= $orders_total_pending ?></span>
                 </a>
             </li>
-            <!-- Mục mới: Chi tiết đơn hàng (Active) -->
             <li class="active">
                 <a href="#">
                     <i class="fas fa-edit"></i> 
@@ -73,13 +69,11 @@ $ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/');
             </div>
         </header>
 
-        <main class="content">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <a href="StaffController.php?action=orders_pending" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay lại danh sách</a>
             </div>
 
             <div class="row">
-                <!-- Thông tin người nhận -->
                 <div class="col-md-6">
                     <div class="card mb-4 shadow-sm">
                         <div class="card-header bg-primary text-white">
@@ -109,7 +103,6 @@ $ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/');
                     </div>
                 </div>
 
-                <!-- Thông tin thanh toán / Ghi chú -->
                 <div class="col-md-6">
                     <div class="card mb-4 shadow-sm">
                         <div class="card-header bg-info text-white">
@@ -183,7 +176,6 @@ $ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/');
                 </div>
             </div>
             
-            <!-- Nút hành động (Duyệt / Hủy) -->
             <div class="mt-4 text-end">
                 <?php $stt = strtolower($order['order_status'] ?? ''); ?>
                 <?php if ($stt == 'pending'): ?>

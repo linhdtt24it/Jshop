@@ -1,4 +1,4 @@
-<!-- MODAL OTP - ĐẶT TRƯỚC </body> -->
+
 <div class="modal fade" id="otpModal" tabindex="-1" aria-labelledby="otpModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0">
@@ -23,7 +23,7 @@
                     <div class="mb-4">
                         <label class="form-label fw-bold text-dark mb-3">Nhập mã OTP 6 số:</label>
                         
-                        <!-- 6 ô OTP riêng biệt -->
+                        
                         <div class="otp-container d-flex justify-content-between mb-3">
                             <input type="text" 
                                    class="otp-input form-control text-center fw-bold" 
@@ -51,7 +51,6 @@
                                    data-index="6">
                         </div>
                         
-                        <!-- Input ẩn để submit -->
                         <input type="hidden" name="otp" id="fullOtp">
                         
                         <div class="form-text text-secondary">Nhập từng số vào ô tương ứng</div>

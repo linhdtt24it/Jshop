@@ -5,7 +5,6 @@ require_once __DIR__ . '/../../../config/constants.php';
 <footer class="footer">
   <div class="container footer-top">
 
-    <!-- CỘT THÔNG TIN CÔNG TY -->
     <div class="footer-col company-info">
       <img src="<?= BASE_URL ?>images/logo.png" alt="JSHOP" class="footer-logo">
       <p>© 2025 Công Ty Trang Sức JSHOP</p>
@@ -18,7 +17,6 @@ require_once __DIR__ . '/../../../config/constants.php';
       <p><strong>Khiếu nại: <a href="tel:1900XXXX">1900 XXXX</a></strong></p>
     </div>
 
-      <!-- CỘT VỀ JSHOP -->
 <?php foreach ($footer_groups ?? [] as $g): ?>
   <?php if (!empty($g['title']) && $g['title'] === 'VỀ JSHOP'): ?>
     <div class="footer-col">
@@ -56,7 +54,6 @@ require_once __DIR__ . '/../../../config/constants.php';
   <?php endforeach; ?>
 </div>
 
-    <!-- SOCIAL + ZALO + PAYMENT + CERTIFY -->
     <div class="footer-col">
       <h5>KẾT NỐI VỚI CHÚNG TÔI</h5>
       <div class="social-links">
@@ -94,7 +91,6 @@ require_once __DIR__ . '/../../../config/constants.php';
   <p class="mb-0">© 2025 JSHOP - All rights reserved.</p>
 </footer>
 
-<!-- JS CHUNG -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="<?= BASE_URL ?>assets/js/auth.js"></script>

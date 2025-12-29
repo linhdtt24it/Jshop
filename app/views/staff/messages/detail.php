@@ -2,13 +2,8 @@
 $user_name = $_SESSION['user_name'] ?? 'Nhân viên';
 $user = ['full_name' => $user_name, 'avatar' => 'https://ui-avatars.com/api/?background=fce7f3&color=be123c&name=' . urlencode($user_name)];
 
-// KHẮC PHỤC LỖI BASE_URL TRỎ ĐẾN CONTROLLER BỊ SAI
-// BASE_URL được định nghĩa trong Controller trước khi load view.
 $ROOT_URL = str_replace('public/', '', BASE_URL);
-
-// LẤY SỐ LƯỢNG TIN NHẮN MỚI TỪ BIẾN $messages ĐƯỢC TRUYỀN VÀO TỪ CONTROLLER
 $new_messages_count = count(array_filter($messages ?? [], fn($m) => $m['status'] === 'new'));
-
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -29,7 +24,6 @@ $new_messages_count = count(array_filter($messages ?? [], fn($m) => $m['status']
             background-color: #f7fafc;
         }
 
-        /* Bubble cho Khách hàng (Trái) */
         .chat-area .bubble-customer {
             background-color: #fff;
             border: 1px solid #cbd5e0;
@@ -41,7 +35,6 @@ $new_messages_count = count(array_filter($messages ?? [], fn($m) => $m['status']
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
         }
 
-        /* Bubble cho Staff (Phải) */
         .chat-area .bubble-staff {
             background-color: #2563eb;
             color: #fff;
@@ -67,7 +60,6 @@ $new_messages_count = count(array_filter($messages ?? [], fn($m) => $m['status']
             color: rgba(255, 255, 255, 0.75);
         }
 
-        /* Nút hành động trong form */
         .action-buttons a {
             margin-left: 10px;
         }

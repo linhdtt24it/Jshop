@@ -14,7 +14,6 @@ class ContactController extends Controller
 
     public function send()
     {
-        // Xử lý POST (AJAX)
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             echo json_encode(['success' => false, 'message' => 'Phương thức không được phép']);
@@ -26,7 +25,6 @@ class ContactController extends Controller
         $phone = trim($_POST['phone'] ?? '');
         $message = trim($_POST['message'] ?? '');
 
-        // Validation
         if (!$name || !$email || !$message) {
             echo json_encode(['success' => false, 'message' => 'Vui lòng điền đầy đủ các trường bắt buộc!']);
             exit;
@@ -37,7 +35,6 @@ class ContactController extends Controller
             exit;
         }
 
-        // Gửi email (có thể thay bằng database sau)
         $to = "support@jshop.vn";
         $subject = "Liên hệ từ $name - JSHOP";
         $body = "

@@ -1,5 +1,4 @@
 <?php
-// Jshop/app/views/admin/product/edit.php
 
 $user = [
     'name' => $_SESSION['user_name'] ?? 'Admin', 
@@ -10,7 +9,6 @@ $user = [
 $BASE_URL = '/Jshop/public/'; 
 $ADMIN_URL = '/Jshop/app/controllers/AdminController.php'; 
 
-// Dữ liệu được truyền từ AdminController
 $product = $data['product'] ?? null;
 $categories = $data['categories'] ?? [];
 $materials = $data['materials'] ?? [];
@@ -119,7 +117,6 @@ $action_label = $is_editing ? "Cập nhật Sản phẩm" : "Thêm mới";
                                     <select class="form-select" id="collection_id" name="collection_id">
                                         <option value="">-- Chọn Bộ sưu tập --</option>
                                         <?php foreach ($collections as $coll): 
-                                            // Fallback tên nếu trường name rỗng (từ DB)
                                             $coll_name = $coll['name'] ?: (str_replace('-', ' ', $coll['slug']));
                                         ?>
                                             <option value="<?= $coll['collection_id'] ?>" <?= (isset($product['collection_id']) && $product['collection_id'] == $coll['collection_id']) ? 'selected' : '' ?>>
@@ -214,17 +211,11 @@ $action_label = $is_editing ? "Cập nhật Sản phẩm" : "Thêm mới";
 
     document.getElementById('productForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        
-        // Tạo FormData để gửi dữ liệu form
         const form = e.target;
         const formData = new FormData(form);
-        
-        // Cập nhật preview khi submit
         const imageUrl = document.getElementById('image').value;
         const previewDiv = document.getElementById('imagePreview');
         previewDiv.innerHTML = imageUrl ? `<img src="${imageUrl}" alt="Preview">` : `<i class="fas fa-image text-muted fs-3"></i>`;
-
-        // Gửi AJAX
         fetch(ADMIN_CONTROLLER_URL + '?action=save_product_ajax', {
             method: 'POST',
             body: formData
@@ -233,7 +224,6 @@ $action_label = $is_editing ? "Cập nhật Sản phẩm" : "Thêm mới";
         .then(res => {
             if (res.status === 'success') {
                 alert(res.message);
-                // Chuyển hướng về trang danh sách sản phẩm sau khi lưu thành công
                 window.location.href = ADMIN_CONTROLLER_URL + '?action=product_list';
             } else {
                 alert('Lỗi khi lưu sản phẩm: ' + res.message);
@@ -242,7 +232,6 @@ $action_label = $is_editing ? "Cập nhật Sản phẩm" : "Thêm mới";
         .catch(err => alert('Lỗi hệ thống: Không thể kết nối đến server.'));
     });
 
-    // Cập nhật preview khi thay đổi URL hình ảnh
     document.getElementById('image').addEventListener('input', function() {
         const url = this.value;
         const previewDiv = document.getElementById('imagePreview');

@@ -1,8 +1,4 @@
 <?php
-/**
- * File: Jshop/app/views/checkout/mock_redirect.php
- * Chức năng: Giả lập cổng thanh toán QR Code cho MoMo và ZaloPay
- */
 $page_title = $data['page_title'] ?? 'Cổng Thanh Toán';
 include __DIR__ . "/../layouts/header.php";
 

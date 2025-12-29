@@ -29,7 +29,7 @@ class App {
             return; 
         }
 
-        // ADMIN
+        
         if (!empty($url[0]) && $url[0] === "admin") {
 
             require_once __DIR__ . "/../controllers/AdminController.php";
@@ -48,8 +48,7 @@ class App {
             return;
         }
 
-        // ===== CONTROLLER BÌNH THƯỜNG =====
-        // Ví dụ: /category → CategoryController
+        
         $controllerName = !empty($url[0]) ? ucfirst($url[0]) . 'Controller' : $this->controller;
         $controllerFile = __DIR__ . "/../controllers/{$controllerName}.php";
 
@@ -62,8 +61,7 @@ class App {
             return;
         }
 
-        // ===== METHOD =====
-        // Nếu URL không có method → mặc định “index”
+        
         $method = !empty($url[1]) ? $url[1] : $this->method;
 
         if (method_exists($this->controller, $method)) {
@@ -74,16 +72,14 @@ class App {
             return;
         }
 
-        // ===== PARAMS =====
+        
         $this->params = $url ? array_values($url) : [];
 
         call_user_func_array([$this->controller, $this->method], $this->params);
     }
 
-    // ===== AUTH =====
-  // ===== AUTH =====
+    
 private function handleAuthRoutes($url) {
-    // Nếu muốn logout trực tiếp
     if(!empty($url[0]) && $url[0] === "logout") {
         session_start();
         $_SESSION = [];

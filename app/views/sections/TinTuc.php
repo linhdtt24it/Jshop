@@ -7,7 +7,7 @@
       <button class="news-next">&#10095;</button>
       
       <div class="news-track">
-        <?php foreach ($newsList ?? [] as $news): // Sử dụng biến đã truyền ?>
+        <?php foreach ($newsList ?? [] as $news): ?>
           <div class="news-card">
             <div class="news-image">
               <img src="<?= $news['image_url'] ?? 'default.jpg' ?>" alt="<?= htmlspecialchars($news['title']) ?>">
@@ -29,7 +29,7 @@
 .news-section .section-title { text-align: center; font-size: 32px; font-weight: 800; color: #c2185b; margin-bottom: 50px; letter-spacing: 1px; }
 .site-width { max-width: 1200px; padding: 0 20px; margin: 0 auto; }
 
-.news-slider-container { position: relative; overflow: hidden; } /* Class mới */
+.news-slider-container { position: relative; overflow: hidden; }
 .news-track { display: flex; gap: 20px; transition: transform 0.5s ease; }
 
 .news-card {
@@ -50,7 +50,6 @@
 .news-link { text-decoration: none; font-weight: 600; color: #c2185b; margin-top: 10px; }
 .news-link:hover { color: #a3154c; }
 
-/* nút prev/next */
 .news-prev, .news-next { position: absolute; top: 50%; transform: translateY(-50%); background: none; font-size: 32px; border: none; cursor: pointer; z-index: 5; color: rgba(0,0,0,0.3); transition: color 0.3s ease; }
 .news-prev:hover, .news-next:hover { color: rgba(0,0,0,0.7); }
 .news-prev { left: 0; }
@@ -83,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const allSlides = Array.from(track.querySelectorAll('.news-card'));
   const slideWidth = allSlides[cloneCount].offsetWidth + gap;
 
-  // Thiết lập vị trí ban đầu
   track.style.transform = `translateX(${-index * slideWidth}px)`;
 
   function updateSlider(animate = true) {
@@ -112,10 +110,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   track.addEventListener('transitionend', handleTransitionEnd);
 
-  // Auto-slide
   setInterval(() => { if (!isAnimating) nextSlide(); }, 5000);
 
-  // Xử lý Resize
   window.addEventListener('resize', () => { 
     const firstRealSlide = allSlides[cloneCount];
     if (firstRealSlide) {

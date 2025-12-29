@@ -1,5 +1,4 @@
 <?php
-// Jshop/app/controllers/CheckoutController.php
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -97,24 +96,20 @@ class CheckoutController extends Controller {
         $order_id = (int)$order_id;
         $user_id = $_SESSION['user_id'];
         
-        // 1. Lấy lại sản phẩm từ đơn hàng
         $items = $this->orderItemModel->getOrderItemsByOrderId($order_id);
         
         if (!empty($items)) {
             foreach ($items as $item) {
-                // 2. Khôi phục lại giỏ hàng
                 $p_id = (int)$item['product_id'];
                 $qty = (int)$item['quantity'];
                 $this->cartModel->addToCart($user_id, $p_id, $qty);
             }
 
-            // 3. Cập nhật trạng thái đơn hàng (cancelled)
             $db = (new Database())->connect();
             $sql = "UPDATE orders SET order_status = 'cancelled', payment_status = 'cancelled' WHERE order_id = ? AND user_id = ?";
             $stmt = $db->prepare($sql);
             $stmt->execute([$order_id, $user_id]);
 
-            // 4. Đồng bộ lại số lượng giỏ hàng trên Header
             $cart_items = $this->cartModel->getCartItemsByUserId($user_id);
             $_SESSION['cart_count'] = count($cart_items);
             

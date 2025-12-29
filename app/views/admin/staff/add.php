@@ -14,7 +14,7 @@
             padding: 30px;
             border-radius: 10px;
             max-width: 600px;
-            margin: 20px auto; /* Căn giữa */
+            margin: 20px auto; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
         .form-group { margin-bottom: 20px; }

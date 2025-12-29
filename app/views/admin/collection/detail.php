@@ -1,11 +1,8 @@
 <?php 
-// Jshop/app/views/admin/collection/detail.php
 
-// Dữ liệu được truyền từ AdminController thông qua $data['collection'] và $data['products']
 $collection = $data['collection'] ?? [];
 $products = $data['products'] ?? [];
 
-// Lấy user info cho header
 $user_name = $_SESSION['user_name'] ?? 'Admin';
 $user = [
     'full_name' => $user_name, 
@@ -13,7 +10,6 @@ $user = [
     'avatar' => 'https://ui-avatars.com/api/?background=000&color=d4af37&name=' . urlencode($user_name)
 ];
 
-// Định nghĩa URL cơ sở (giống các file admin khác)
 $BASE_URL = '/Jshop/public/';
 $ADMIN_URL = '/Jshop/app/controllers/AdminController.php';
 

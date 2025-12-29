@@ -1,5 +1,4 @@
 <?php
-// app/views/contact/index.php
 $page_title = "Liên hệ - JSHOP";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
@@ -13,19 +12,16 @@ require_once __DIR__ . '/../layouts/header.php';
 
   
     .contact-page {
-        /* Be Vietnam Pro: Font quốc dân cho web Việt, bao đẹp, bao chuẩn dấu */
+        
         font-family: 'Be Vietnam Pro', sans-serif !important; 
         color: #1a1a1a;
     }
     
-    /* Tiêu đề dùng Playfair Display cho sang */
     h1, h2, h3, h4, h5, .card-header, .btn-dark-luxury {
         font-family: 'Playfair Display', serif !important;
         font-weight: 700;
         letter-spacing: 0.5px;
     }
-
-    /* --- CÁC STYLE KHÁC GIỮ NGUYÊN --- */
     .contact-hero {
         background-color: #f9f9f9;
         padding: 80px 0;

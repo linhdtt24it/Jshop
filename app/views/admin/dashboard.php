@@ -1,17 +1,12 @@
 <?php
-// Jshop/app/views/admin/dashboard.php
 
-// Giả định các biến này được định nghĩa từ AdminController.php
-// Định nghĩa URL cơ sở cho các hành động Admin (AdminController.php)
 $ADMIN_URL = '/Jshop/app/controllers/AdminController.php';
 
-// Giả định dữ liệu người dùng được truyền vào view
 $user = $user ?? [
     'name' => $_SESSION['user_name'] ?? 'Admin', 
     'role' => 'Administrator',
     'avatar' => 'https://ui-avatars.com/api/?background=000&color=d4af37&name=' . urlencode($_SESSION['user_name'] ?? 'Admin')
 ];
-// Giả định dữ liệu thống kê
 $stats = $stats ?? [
     'revenue' => '1.25 Tỷ', 
     'orders' => 1240, 

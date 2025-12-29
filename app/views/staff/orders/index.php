@@ -1,11 +1,9 @@
 <?php 
-// Jshop/app/views/staff/orders/index.php
-$page_title = $data['page_title'] ?? 'Quản lý Đơn hàng Chờ & Đang xử lý';
 $orders = $data['orders'] ?? [];
 
 $user_name = $_SESSION['user_name'] ?? 'Nhân viên';
 $orders_total_pending = $data['orders_total_pending'] ?? 0; 
-$new_messages_count = count(array_filter($data['messages'] ?? [], fn($m) => $m['status'] === 'new')); // Số lượng tin nhắn mới
+$new_messages_count = count(array_filter($data['messages'] ?? [], fn($m) => $m['status'] === 'new'));
 $user = ['full_name' => $user_name, 'avatar' => 'https://ui-avatars.com/api/?background=fce7f3&color=be123c&name=' . urlencode($user_name)];
 
 $ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/'); 
@@ -34,7 +32,6 @@ function displayStatus($status) {
             $text = 'Đã hủy';
             break;
         
-        // Payment Status
         case 'paid':
             $badge_class = 'success';
             $text = 'Đã TT';
@@ -44,7 +41,6 @@ function displayStatus($status) {
             $text = 'Thất bại';
             break;
         
-        // Payment Method
         case 'COD':
             $badge_class = 'dark';
             $text = 'COD';
@@ -86,7 +82,6 @@ function getRowClass($status) {
     <link rel="stylesheet" href="/Jshop/public/assets/css/staff-dashboard.css">
     
     <style>
-        /* CSS để đồng bộ giao diện bảng Order với Message */
         #order-table thead th {
             border-bottom: 2px solid #a0aec0;
             padding-top: 1rem !important;
@@ -99,7 +94,7 @@ function getRowClass($status) {
         #order-table td {
             padding-left: 1.25rem !important;
             padding-right: 1.25rem !important;
-            vertical-align: middle; 
+            vertical-align: middle;
         }
         
         #order-table th:first-child,
@@ -110,7 +105,6 @@ function getRowClass($status) {
         #order-table td:last-child a.btn {
             white-space: nowrap;
         }
-        /* Thêm style cho badge màu đen và xám để khớp với payment method */
         .badge.bg-dark { background-color: #4a5568 !important; color: #fff; }
         .badge.bg-secondary { background-color: #a0aec0 !important; color: #fff; }
     </style>

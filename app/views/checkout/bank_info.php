@@ -1,22 +1,16 @@
 <?php
-/**
- * File: Jshop/app/views/checkout/mock_redirect.php
- * Chức năng: Giả lập cổng thanh toán MoMo/ZaloPay, tự động kiểm tra trạng thái và khôi phục giỏ hàng khi hủy.
- */
 $page_title = $data['page_title'] ?? 'Cổng Thanh Toán';
 include __DIR__ . "/../layouts/header.php";
 
 $order_id = $data['order_id'] ?? 0;
 $method = $data['method'] ?? 'Ví điện tử';
 
-// Cấu hình logo và màu sắc theo ví
 if ($method === 'MOMO') {
     $logo = 'https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png';
-    $main_color = '#ae136e'; // Màu hồng MoMo
+    $main_color = '#ae136e';
 } else {
-    // Logo ZaloPay chuẩn
     $logo = 'https://img.mservice.io/momo-payment/2020/03/9216790b-6029-4d69-82f5-f5b9d368e7d2.png'; 
-    $main_color = '#008fe5'; // Màu xanh ZaloPay
+    $main_color = '#008fe5';
 }
 ?>
 
@@ -56,13 +50,11 @@ if ($method === 'MOMO') {
 <script>
     const orderId = <?= $order_id ?>;
     
-    // Cứ 2 giây gửi yêu cầu hỏi Server xem trạng thái đơn hàng đã là 'paid' chưa
     const checkPaymentStatus = setInterval(function() {
         fetch('<?= BASE_URL ?>checkout/checkStatus/' + orderId)
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'paid') {
-                    // Nếu Server phản hồi đã thanh toán
                     clearInterval(checkPaymentStatus); 
                     window.location.href = '<?= BASE_URL ?>checkout/success'; 
                 }

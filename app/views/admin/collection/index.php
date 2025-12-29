@@ -1,5 +1,4 @@
 <?php
-// Jshop/app/views/admin/collection/index.php
 
 $user = [
     'name' => $_SESSION['user_name'] ?? 'Admin', 
@@ -7,7 +6,6 @@ $user = [
     'avatar' => 'https://ui-avatars.com/api/?background=000&color=d4af37&name=' . urlencode($_SESSION['user_name'] ?? 'Admin')
 ];
 
-// Định nghĩa URL cơ sở
 $BASE_URL = '/Jshop/public/';
 $ADMIN_URL = '/Jshop/app/controllers/AdminController.php'; 
 ?>

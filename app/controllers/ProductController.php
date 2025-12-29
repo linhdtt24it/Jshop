@@ -30,7 +30,6 @@ class ProductController extends Controller {
         if ($purpose !== '') { $where[] = "p.purpose = ?"; $params[] = $purpose; }
         $whereSql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
 
-        // COUNT
         $countSql = "SELECT COUNT(*) FROM products p $whereSql";
         $countStmt = $this->db->prepare($countSql);
         $countStmt->execute($params);
@@ -50,18 +49,14 @@ class ProductController extends Controller {
         $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $catStmt = $this->db->query("SELECT category_id, name FROM categories ORDER BY name");
         $cats = $catStmt->fetchAll(PDO::FETCH_KEY_PAIR);
-        
-        // ĐÃ XÓA: Logic lấy dữ liệu Footer
 
         $data = [
             'products' => $products,
             'cats' => $cats,
             'total' => $total,
             'totalPages' => $totalPages,
-            // ĐÃ XÓA: 'footer_groups' => $footer_groups
         ];
         
-        // SỬ DỤNG $this->view() thay vì extract/require_once
         $this->view('products/list', $data);
     }
 
@@ -82,14 +77,10 @@ class ProductController extends Controller {
         }
         $product['images'] = [$product['image']]; 
         
-        // ĐÃ XÓA: Logic lấy dữ liệu Footer
-
         $data = [
             'product' => $product,
-            // ĐÃ XÓA: 'footer_groups' => $footer_groups
         ];
         
-        // SỬ DỤNG $this->view() thay vì extract/require_once
         $this->view('products/detail', $data);
     }
 

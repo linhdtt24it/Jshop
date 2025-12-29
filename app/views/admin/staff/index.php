@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="/Jshop/public/assets/css/admin-dashboard.css">
     
     <style>
-        /* CSS Bảng */
+       
         .table-container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th { text-align: left; padding: 15px; border-bottom: 2px solid #eee; color: #666; font-weight: 700; }
@@ -19,12 +19,9 @@
         .role-badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
         .role-admin { background: #000; color: #d4af37; }
         .role-staff { background: #e0f2fe; color: #0284c7; }
-
-        /* Nút màu Xanh Đậm (Navy) */
         .btn-navy { background-color: #0f172a; color: white !important; padding: 10px 20px; border-radius: 5px; font-weight: bold; border: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
         .btn-navy:hover { background-color: #1e293b; box-shadow: 0 4px 10px rgba(15, 23, 42, 0.4); }
 
-        /* Nút Hành động */
         .btn-action { display: inline-flex; justify-content: center; align-items: center; width: 35px; height: 35px; border-radius: 5px; color: white; margin: 0 3px; border: none; cursor: pointer; text-decoration: none; }
         .btn-edit { background: #3b82f6; } 
         .btn-delete { background: #ef4444; } 

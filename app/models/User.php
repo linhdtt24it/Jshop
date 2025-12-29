@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../core/Model.php'; 
 
-class User extends Model { // Kế thừa Model
+class User extends Model {
   
     public function findByEmail($email) {
         try {
@@ -9,15 +9,12 @@ class User extends Model { // Kế thừa Model
             $stmt->execute([$email]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
-            // Giữ lại throw Exception hoặc xử lý lỗi
             throw new Exception("Database error: " . $e->getMessage());
         }
     }
     
-    // --- PHƯƠNG THỨC MỚI: Lấy thông tin user bằng ID (Dùng để kiểm tra mật khẩu & lấy hồ sơ)
     public function getUserById($user_id) {
         try {
-            // Sử dụng selectOne từ Model cơ sở (nếu có) hoặc viết truy vấn trực tiếp
             $stmt = $this->db->prepare("SELECT * FROM users WHERE user_id = ?");
             $stmt->execute([$user_id]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -41,12 +38,10 @@ class User extends Model { // Kế thừa Model
     
     public function register($name, $email, $password) {
         try {
-            // Check if email exists
             if ($this->findByEmail($email)) {
                 return false;
             }
             
-            // Insert new user
             $hash = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $this->db->prepare("INSERT INTO users (full_name, email, password, created_at) VALUES (?, ?, ?, NOW())");
             
@@ -66,30 +61,23 @@ class User extends Model { // Kế thừa Model
             return 0;
         }
     }
-    // --- BỔ SUNG HÀM LẤY DANH SÁCH NHÂN VIÊN ---
     public function getAllStaff() {
-        // Lấy admin và staff (hoặc employee nếu bạn chưa sửa DB)
-        // Lưu ý: Nếu bạn chưa sửa DB thì đổi chữ 'staff' dưới này thành 'employee' nhé
         $sql = "SELECT * FROM users WHERE role IN ('admin', 'staff') ORDER BY created_at DESC";
         
-        // Vì class của bạn kế thừa Model, chắc là biến $this->db có sẵn rồi
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    // --- BỔ SUNG HÀM TẠO NHÂN VIÊN (Cho bài sau) ---
-   public function createStaff($name, $email, $password, $role, $phone) { // <-- Thêm biến $phone
+   public function createStaff($name, $email, $password, $role, $phone) {
     if ($this->findByEmail($email)) return false;
 
     $hashPass = password_hash($password, PASSWORD_DEFAULT);
     
-    // Thêm phone_number vào câu SQL
     $sql = "INSERT INTO users (full_name, email, password, role, phone_number, is_verified, created_at) 
             VALUES (?, ?, ?, ?, ?, 1, NOW())";
     
     $stmt = $this->db->prepare($sql);
-    // Thêm $phone vào danh sách execute
     return $stmt->execute([$name, $email, $hashPass, $role, $phone]);
 }
 
@@ -102,7 +90,6 @@ class User extends Model { // Kế thừa Model
         }
     }
     
-    // --- PHƯƠNG THỨC MỚI: Cập nhật Mật khẩu
     public function updatePassword($user_id, $new_password_hashed) {
         try {
             $stmt = $this->db->prepare("UPDATE users SET password = ? WHERE user_id = ?");
@@ -112,12 +99,10 @@ class User extends Model { // Kế thừa Model
         }
     }
 
-    // --- PHƯƠNG THỨC MỚI: Cập nhật Hồ sơ 
     public function updateProfile($user_id, $data) {
         $fields = [];
         $params = [];
 
-        // Các trường được phép cập nhật
         $allowed_fields = ['full_name', 'email', 'phone_number', 'age', 'hometown', 'health_status'];
 
         foreach ($allowed_fields as $field) {
@@ -128,7 +113,7 @@ class User extends Model { // Kế thừa Model
         }
         
         if (empty($fields)) {
-            return false; // Không có gì để cập nhật
+            return false;
         }
 
         $sql = "UPDATE users SET " . implode(', ', $fields) . " WHERE user_id = ?";
@@ -138,10 +123,9 @@ class User extends Model { // Kế thừa Model
             $stmt = $this->db->prepare($sql);
             return $stmt->execute($params);
         } catch (Exception $e) {
-            // Ghi log lỗi và ném ra lỗi thân thiện
             error_log("Database error updating profile: " . $e->getMessage());
             throw new Exception("Lỗi cơ sở dữ liệu khi cập nhật hồ sơ.");
         }
     }
 
-} // Kết thúc class
+}

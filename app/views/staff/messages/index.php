@@ -2,16 +2,9 @@
 $user_name = $_SESSION['user_name'] ?? 'Nhân viên';
 $user = ['full_name' => $user_name, 'avatar' => 'https://ui-avatars.com/api/?background=fce7f3&color=be123c&name=' . urlencode($user_name)];
 
-// KHẮC PHỤC LỖI BASE_URL TRỎ ĐẾN CONTROLLER BỊ SAI
-// BASE_URL được định nghĩa trong Controller trước khi load view.
 $ROOT_URL = str_replace('public/', '', BASE_URL);
-
-// Số lượng tin nhắn mới
 $new_messages_count = count(array_filter($messages, fn($m) => $m['status'] === 'new'));
-
-// Thêm biến orders_total_pending để hiển thị số lượng (Giả định StaffController đã truyền biến này, hoặc dùng giá trị mặc định)
 $orders_total_pending = $data['orders_total_pending'] ?? 5;
-
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -23,21 +16,19 @@ $orders_total_pending = $data['orders_total_pending'] ?? 5;
     <link rel="stylesheet" href="/Jshop/public/assets/css/staff-dashboard.css">
     
     <style>
-        /* Tăng padding và đường viền dày hơn cho hàng tiêu đề */
         #message-table thead th {
-            border-bottom: 2px solid #a0aec0; /* Đường phân cách dày hơn */
+            border-bottom: 2px solid #a0aec0;
             padding-top: 1rem !important;
             padding-bottom: 1rem !important;
             font-weight: 700;
-            color: #2d3748; /* Màu tiêu đề đậm hơn */
+            color: #2d3748;
         }
         
-        /* Tăng padding ngang cho tất cả ô trong bảng */
         #message-table th,
         #message-table td {
             padding-left: 1.25rem !important;
             padding-right: 1.25rem !important;
-            vertical-align: middle; /* Căn giữa theo chiều dọc */
+            vertical-align: middle;
         }
         
         #message-table th:first-child,

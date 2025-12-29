@@ -1,5 +1,4 @@
 <?php
-// app/views/staff/orders/detail.php
 $ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/');
 $user_name = $_SESSION['user_name'] ?? 'Nhân viên';
 $orders_total_pending = $data['orders_total_pending'] ?? 0;
@@ -24,7 +23,6 @@ $user = [
 <body>
 
 <div class="wrapper">
-    <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-brand">
             <a href="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=dashboard" style="text-decoration: none; color: inherit; display: flex; align-items: center;">
@@ -86,9 +84,7 @@ $user = [
                 </div>
             </div>
 
-            <!-- Content -->
             <div class="row">
-                <!-- Thông tin đơn hàng -->
                 <div class="col-md-8">
                     <div class="card mb-4 shadow-sm">
                         <div class="card-header bg-white fw-bold">
@@ -143,7 +139,6 @@ $user = [
 
                
                 <div class="col-md-4">
-                    <!-- Cập nhật trạng thái -->
                     <div class="card mb-4 shadow-sm">
                         <div class="card-header bg-white fw-bold">
                             Cập nhật trạng thái
@@ -165,7 +160,6 @@ $user = [
                         </div>
                     </div>
 
-                    <!-- Thông tin khách hàng -->
                     <div class="card mb-4 shadow-sm">
                         <div class="card-header bg-white fw-bold">
                             Thông tin khách hàng

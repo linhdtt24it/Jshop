@@ -1,8 +1,6 @@
 <?php
-// Jshop/app/controllers/AdminController.php
 session_start();
 
-// 1. Check quyền Admin
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
         echo json_encode(['status' => 'error', 'message' => 'Hết phiên đăng nhập']); exit;
@@ -13,7 +11,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../models/Collection.php'; 
 require_once __DIR__ . '/../models/Product.php';
-// Models cho Dropdown
 require_once __DIR__ . '/../models/Category.php';
 require_once __DIR__ . '/../models/Material.php';
 require_once __DIR__ . '/../models/Purpose.php';
@@ -22,7 +19,6 @@ require_once __DIR__ . '/../models/Fengshui.php';
 $userModel = new User();
 $collectionModel = new Collection();
 $productModel = new Product();
-// Khởi tạo các models cho form
 $categoryModel = new Category();
 $materialModel = new Material();
 $purposeModel = new Purpose();
@@ -30,8 +26,6 @@ $fengshuiModel = new Fengshui();
 
 
 $action = $_GET['action'] ?? 'dashboard';
-
-// --- PHẦN GIAO DIỆN (VIEW RENDERING) ---
 
 if ($action == 'dashboard') {
     $user = [
@@ -48,25 +42,21 @@ elseif ($action == 'staff_list') {
     require_once __DIR__ . '/../views/admin/staff/index.php';
 }
 
-// 1. Quản lý Bộ sưu tập (Collections)
 elseif ($action == 'collections_list') {
     $collections = $collectionModel->getAllCollections();
     require_once __DIR__ . '/../views/admin/collection/index.php'; 
 }
 
-// 2. Quản lý Sản phẩm (Products)
 elseif ($action == 'product_list') {
     $products = $productModel->getAllProductsWithDetails();
     require_once __DIR__ . '/../views/admin/product/index.php'; 
 }
 
-// 3. Quản lý Kho hàng (Inventory)
 elseif ($action == 'inventory_list') {
     $products = $productModel->getAllProductsWithDetails();
     require_once __DIR__ . '/../views/admin/inventory/index.php'; 
 }
 
-// 4. Chỉnh sửa chi tiết Sản phẩm (bao gồm Thêm mới)
 elseif ($action == 'edit_product' || $action == 'add_product') {
     $product_id = $_GET['id'] ?? null;
     $product = null;
@@ -79,7 +69,6 @@ elseif ($action == 'edit_product' || $action == 'add_product') {
         }
     }
     
-    // Lấy tất cả dữ liệu cần thiết cho dropdown
     $data = [
         'product' => $product,
         'categories' => $categoryModel->getAllCategories(),
@@ -93,9 +82,6 @@ elseif ($action == 'edit_product' || $action == 'add_product') {
 }
 
 
-// --- PHẦN XỬ LÝ AJAX (JSON ACTIONS) ---
-
-// 1. Lấy chi tiết nhân viên (để sửa)
 elseif ($action == 'get_staff_detail') {
     header('Content-Type: application/json');
     $id = $_GET['id'] ?? 0;
@@ -111,7 +97,6 @@ elseif ($action == 'get_staff_detail') {
     exit;
 }
 
-// 2. Lưu nhân viên (Thêm hoặc Sửa)
 elseif ($action == 'save_staff_ajax') {
     header('Content-Type: application/json');
     
@@ -156,7 +141,6 @@ elseif ($action == 'save_staff_ajax') {
     exit;
 }
 
-// 3. Xóa nhân viên
 elseif ($action == 'delete_staff_ajax') {
     header('Content-Type: application/json');
     $id = $_GET['id'] ?? 0;
@@ -168,7 +152,6 @@ elseif ($action == 'delete_staff_ajax') {
     exit;
 }
 
-// 4. Lấy chi tiết Bộ sưu tập (để sửa)
 elseif ($action == 'get_collection_detail') {
     header('Content-Type: application/json');
     $id = $_GET['id'] ?? 0;
@@ -177,7 +160,6 @@ elseif ($action == 'get_collection_detail') {
     exit;
 }
 
-// 5. Lưu Bộ sưu tập (Thêm hoặc Sửa)
 elseif ($action == 'save_collection_ajax') {
     header('Content-Type: application/json');
     
@@ -210,7 +192,6 @@ elseif ($action == 'save_collection_ajax') {
     exit;
 }
 
-// 6. Xóa Bộ sưu tập
 elseif ($action == 'delete_collection_ajax') {
     header('Content-Type: application/json');
     $id = $_GET['id'] ?? 0;
@@ -229,7 +210,6 @@ elseif ($action == 'delete_collection_ajax') {
     exit;
 }
 
-// 7. Lấy chi tiết Sản phẩm (dùng cho việc cập nhật kho hàng)
 elseif ($action == 'get_product_detail') {
     header('Content-Type: application/json');
     $id = $_GET['id'] ?? 0;
@@ -238,7 +218,6 @@ elseif ($action == 'get_product_detail') {
     exit;
 }
 
-// 8. Xóa Sản phẩm
 elseif ($action == 'delete_product_ajax') {
     header('Content-Type: application/json');
     $id = $_GET['id'] ?? 0;
@@ -257,7 +236,6 @@ elseif ($action == 'delete_product_ajax') {
     exit;
 }
 
-// 9. Cập nhật Tồn kho
 elseif ($action == 'update_stock_ajax') {
     header('Content-Type: application/json');
     
@@ -280,7 +258,6 @@ elseif ($action == 'update_stock_ajax') {
     exit;
 }
 
-// 10. Lưu Sản phẩm (Thêm hoặc Sửa)
 elseif ($action == 'save_product_ajax') {
     header('Content-Type: application/json');
     
@@ -303,7 +280,6 @@ elseif ($action == 'save_product_ajax') {
         echo json_encode(['status' => 'error', 'message' => 'Tên và Giá sản phẩm là bắt buộc.']); exit;
     }
 
-    // Xử lý giá
     $data['price'] = str_replace(['.', ',', ' '], '', $data['price']);
     $data['price'] = is_numeric($data['price']) ? (float)$data['price'] : 0;
     

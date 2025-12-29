@@ -1,9 +1,7 @@
 <?php
-// Jshop/app/views/checkout/success.php
 $page_title = "Đặt Hàng Thành Công - JSHOP Luxury";
 require_once __DIR__ . '/../layouts/header.php';
 
-// Lấy thông tin đơn hàng từ Controller gửi qua
 $order = $data['order'] ?? null;
 ?>
 

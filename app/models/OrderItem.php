@@ -1,13 +1,10 @@
 <?php
-// Jshop/app/models/OrderItem.php
-
 require_once __DIR__ . '/../core/Model.php'; 
 
 class OrderItem extends Model { 
 
     public function getOrderItemsByOrderId($order_id) {
     try {
-        // Sử dụng dấu hỏi ? và truyền tham số kiểu mảng để PDO tự xử lý
         $sql = "SELECT product_id, quantity FROM order_items WHERE order_id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([(int)$order_id]);
@@ -18,9 +15,6 @@ class OrderItem extends Model {
     }
 }
 
-    /**
-     * Thêm hàng loạt sản phẩm từ giỏ hàng vào chi tiết đơn hàng
-     */
     public function addOrderItems($order_id, $cart_items) {
         try {
             if (!$this->db->inTransaction()) {

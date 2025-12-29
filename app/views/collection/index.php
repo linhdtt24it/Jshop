@@ -1,14 +1,11 @@
 <?php
-// app/views/collection/index.php
 $page_title = "Bộ Sưu Tập - JSHOP Luxury";
 require_once __DIR__ . '/../layouts/header.php';
 
-// Helper function to convert slug to readable title
 function slugToTitle($slug) {
     return ucwords(str_replace('-', ' ', $slug));
 }
 
-// Dummy data for featured badges and details, since DB data is minimal
 $featured_details = [
     'mua-xuan-2025' => ['tags' => ['Xuân', 'Đá Quý'], 'badge' => 'New Arrival', 'icon' => 'bi-flower1', 'desc' => 'Sắc xuân rạng ngời trong từng thiết kế.'],
     'tinh-yeu-vinh-cuu' => ['tags' => ['Nhẫn Cưới', 'Kim Cương'], 'badge' => 'Best Seller', 'icon' => 'bi-heart-fill', 'desc' => 'Biểu tượng của tình yêu và sự vĩnh cửu.'],
@@ -21,7 +18,6 @@ $featured_details = [
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
 <style>
-/* Font chung */
 .collection-page {
     font-family: 'Be Vietnam Pro', sans-serif !important;
     color: #1a1a1a;
@@ -33,7 +29,6 @@ h1, h2, h3, h4, h5 {
     letter-spacing: 0.5px;
 }
 
-/* BANNER HERO (Đen Trắng) */
 .coll-hero {
     background-color: #f9f9f9; 
     padding: 80px 0;
@@ -53,7 +48,6 @@ h1, h2, h3, h4, h5 {
     font-size: 1.1rem;
 }
 
-/* --- CARD CHÍNH (CÓ ĐỔ BÓNG NHẸ) --- */
 .coll-card {
     border: 1px solid #eee;
     background: #fff;
@@ -63,13 +57,11 @@ h1, h2, h3, h4, h5 {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    /* THÊM ĐỔ BÓNG NHẸ Ở ĐÂY */
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 .coll-card:hover {
     border-color: #000; 
     transform: translateY(-5px);
-    /* Hover thì bóng đậm hơn chút để tạo cảm giác nổi lên */
     box-shadow: 0 15px 30px rgba(0,0,0,0.1);
 }
 
@@ -119,7 +111,6 @@ h1, h2, h3, h4, h5 {
     background: #fcfcfc;
 }
 
-/* NÚT KHÁM PHÁ (CÓ ICON) */
 .btn-discover {
     margin-top: auto;
     border: 1px solid #000;
@@ -141,7 +132,6 @@ h1, h2, h3, h4, h5 {
     color: #fff;
 }
 
-/* STATS (Số liệu cuối trang) */
 .stats-section {
     background-color: #f9f9f9;
     padding: 80px 0;
@@ -194,7 +184,7 @@ h1, h2, h3, h4, h5 {
             ];
             
             $title = $coll['name'] ?: slugToTitle($slug);
-            // Sử dụng hình ảnh từ DB hoặc hình ảnh mặc định
+            
             $image = $coll['image'] ?: 'https://images.unsplash.com/photo-1548357194-9e1aace4e94d?q=80&w=600';
             $badge_color = $colors[$i % count($colors)];
             $i++;

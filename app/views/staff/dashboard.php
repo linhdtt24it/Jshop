@@ -1,12 +1,10 @@
 <?php
-// Lấy dữ liệu user và khởi tạo ROOT_URL từ Controller (hoặc định nghĩa lại nếu Controller không truyền)
-
 $user_name = $_SESSION['user_name'] ?? 'Nhân viên';
-$orders_pending = $data['orders_pending'] ?? 0; // Đơn chờ xác nhận
-$orders_processing = $data['orders_processing'] ?? 0; // Đang đóng gói
-$completed_orders = $data['completed_orders'] ?? 0; // Đã hoàn thành
-$orders_total_pending = $data['orders_total_pending'] ?? 0; // Tổng chờ + xử lý
-$recent_orders = $data['recent_orders'] ?? []; // Danh sách đơn hàng mới
+$orders_pending = $data['orders_pending'] ?? 0;
+$orders_processing = $data['orders_processing'] ?? 0;
+$completed_orders = $data['completed_orders'] ?? 0;
+$orders_total_pending = $data['orders_total_pending'] ?? 0;
+$recent_orders = $data['recent_orders'] ?? [];
 
 $user = [
     'full_name' => $user_name, 
@@ -14,9 +12,7 @@ $user = [
     'new_messages_count' => $data['new_messages_count'] ?? 0 
 ];
 
-// KHẮC PHỤC LỖI BASE_URL TRỎ ĐẾN CONTROLLER BỊ SAI
-$ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/'); 
-
+$ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/');
 ?>
 <!DOCTYPE html>
 <html lang="vi">

@@ -1,12 +1,7 @@
 <?php 
-/**
- * File: Jshop/app/views/checkout/index.php
- * Chức năng: Hiển thị trang thanh toán và Modal thông báo thành công.
- */
 $page_title = $data['page_title'] ?? 'Thanh Toán'; 
 include __DIR__ . "/../layouts/header.php"; 
 
-// Khởi tạo dữ liệu từ Controller
 $user_info = $data['user_info'] ?? [];
 $cart_items = $data['cart_items'] ?? [];
 $total_price = $data['total_price'] ?? 0;

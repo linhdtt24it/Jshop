@@ -1,4 +1,3 @@
-<!-- 🔹 DANH MỤC GỢI Ý -->
 <section class="category-section py-5">
   <div class="container text-center">
     <h3 class="fw-bold mb-4" style="color:#003366;">Bạn đang tìm gì hôm nay?</h3>

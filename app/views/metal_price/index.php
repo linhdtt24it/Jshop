@@ -1,11 +1,7 @@
 <?php
-// app/views/metal_price/index.php
 $page_title = "Giá vàng hôm nay - JSHOP";
 require_once __DIR__ . '/../layouts/header.php';
 
-// ============================================================
-// 1. PHP LOGIC: GIỮ NGUYÊN (KHÔNG ĐỤNG VÀO)
-// ============================================================
 function getGoldDataFrom24h() {
     $cache_dir = __DIR__ . '/../../cache';
     $cache_file = $cache_dir . '/gold_data_24h.json';
@@ -122,21 +118,18 @@ $data = getGoldDataFrom24h();
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
 <style>
-    /* Font chung */
     .gold-page {
         font-family: 'Be Vietnam Pro', sans-serif !important;
         color: #1a1a1a;
         background-color: #fff;
     }
 
-    /* Tiêu đề dùng Playfair */
     h1, h2, h3, h4, h5 {
         font-family: 'Playfair Display', serif !important;
         font-weight: 700;
         letter-spacing: 0.5px;
     }
 
-    /* HERO SECTION - Copy y hệt Contact */
     .gold-hero {
         background-color: #f9f9f9;
         padding: 80px 0;
@@ -144,16 +137,15 @@ $data = getGoldDataFrom24h();
         margin-bottom: 50px;
     }
 
-    /* CARD STYLE - Copy y hệt Contact */
     .luxury-card {
         border: 1px solid #eeeeee;
-        border-radius: 0; /* Vuông vức */
+        border-radius: 0;
         box-shadow: none;
         transition: all 0.3s ease;
         background: #fff;
         margin-bottom: 30px;
     }
-    
+     
     .luxury-card:hover {
         box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         border-color: #dddddd;
@@ -175,7 +167,6 @@ $data = getGoldDataFrom24h();
         letter-spacing: 1px;
     }
 
-    /* TABLE STYLE */
     .table-luxury {
         width: 100%;
         border-collapse: collapse;
@@ -190,7 +181,7 @@ $data = getGoldDataFrom24h();
         text-transform: uppercase;
         font-size: 0.8rem;
         padding: 15px 20px;
-        border-bottom: 1px solid #000; /* Viền đen thay vì xám */
+        border-bottom: 1px solid #000;
         text-align: center;
         letter-spacing: 0.5px;
     }
@@ -201,11 +192,9 @@ $data = getGoldDataFrom24h();
         vertical-align: middle;
     }
 
-    /* Zebra Striping nhẹ */
     .table-luxury tbody tr:nth-child(even) { background-color: #fafafa; }
     .table-luxury tbody tr:hover { background-color: #fcfcfc; }
 
-    /* Typography Bảng */
     .brand-name {
         font-family: 'Playfair Display', serif;
         font-weight: 700;
@@ -223,11 +212,10 @@ $data = getGoldDataFrom24h();
     .price-sub {
         font-family: 'Be Vietnam Pro', sans-serif;
         font-weight: 400;
-        color: #999; /* Xám nhạt cho giá hôm qua */
+        color: #999;
         font-size: 0.9rem;
     }
 
-    /* Biến động giá */
     .diff {
         display: block;
         font-size: 0.75rem;
@@ -237,7 +225,6 @@ $data = getGoldDataFrom24h();
     .up { color: #15803d; }
     .down { color: #b91c1c; }
 
-    /* Responsive */
     @media (max-width: 992px) {
         .table-luxury thead { display: none; }
         .table-luxury tbody tr {
@@ -358,7 +345,6 @@ $data = getGoldDataFrom24h();
 document.addEventListener('DOMContentLoaded', function () {
     const ctx = document.getElementById('goldChart').getContext('2d');
     
-    // Gradient vàng sang trọng
     let gradient = ctx.createLinearGradient(0, 0, 0, 400);
     gradient.addColorStop(0, 'rgba(212, 175, 55, 0.4)'); 
     gradient.addColorStop(1, 'rgba(212, 175, 55, 0.0)'); 
@@ -371,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 {
                     label: 'Giá Bán (Triệu đồng)',
                     data: <?= json_encode($data['chart']['sell']) ?>,
-                    borderColor: '#d4af37', // Vàng Gold nổi bật
+                    borderColor: '#d4af37',
                     backgroundColor: gradient,
                     borderWidth: 2,
                     pointBackgroundColor: '#fff',
@@ -383,7 +369,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 {
                     label: 'Giá Mua (Triệu đồng)',
                     data: <?= json_encode($data['chart']['buy']) ?>,
-                    borderColor: '#1a1a1a', // Đen nổi bật
+                    borderColor: '#1a1a1a',
                     backgroundColor: 'transparent',
                     borderWidth: 2,
                     pointBackgroundColor: '#fff',
@@ -391,7 +377,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     pointRadius: 4,
                     fill: false,
                     tension: 0.4,
-                    borderDash: [5, 5] // Nét đứt
+                    borderDash: [5, 5]
                 }
             ]
         },

@@ -1,13 +1,8 @@
 <?php
-// app/views/home/index.php
 $page_title = "JSHOP - Trang sức cao cấp";
 $is_home = true;
-
-// INCLUDE TRỰC TIẾP HEADER VÀ FOOTER
 require_once __DIR__ . '/../layouts/header.php';
 ?>
-
-<!-- === CÁC SECTION TRANG CHỦ === -->
 <?php include __DIR__ . '/../sections/DanhMucGoiY.php'; ?>
 <?php include __DIR__ . '/../sections/SanPhamYeuThich.php'; ?>
 <?php include __DIR__ . '/../sections/SanPhamMoi.php'; ?>

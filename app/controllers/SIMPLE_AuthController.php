@@ -15,7 +15,6 @@ header('Content-Type: application/json');
 
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
 
-// ====== TEST ======
 if ($action == 'test') {
     echo json_encode([
         'status' => 'success',
@@ -34,10 +33,8 @@ if ($action == 'register') {
         exit;
     }
     
-    // Tạo OTP
     $otp = rand(100000, 999999);
     
-    // Gửi email
     $emailSent = sendOTPEmail($email, $name, $otp);
     
     if ($emailSent) {
@@ -58,17 +55,15 @@ if ($action == 'register') {
     exit;
 }
 
-// ====== HÀM GỬI EMAIL ======
 function sendOTPEmail($to_email, $name, $otp) {
     try {
         $mail = new PHPMailer(true);
         
-        // Gmail của BẠN
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
         $mail->Username = 'thithuylinhdinh003@gmail.com';
-        $mail->Password = 'woxmcvkbzsevhdjp'; // App Password
+        $mail->Password = 'woxmcvkbzsevhdjp';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
         $mail->CharSet = 'UTF-8';

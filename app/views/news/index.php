@@ -1,15 +1,11 @@
 <?php
-// app/views/news/index.php
 $page_title = "Tin tức - JSHOP Luxury";
 require_once __DIR__ . '/../layouts/header.php';
 
-// ============================================================
-// 1. PHP LOGIC: CÀO TIN TỪ NLD.COM.VN
-// ============================================================
 function getNldNews() {
     $cache_dir = __DIR__ . '/../../cache';
     $cache_file = $cache_dir . '/news_nld.json';
-    $cache_time = 1800; // 30 phút
+    $cache_time = 1800;
 
     if (!is_dir($cache_dir)) mkdir($cache_dir, 0755, true);
 
@@ -18,7 +14,6 @@ function getNldNews() {
         if ($data) return $data;
     }
 
-    // URL NLD
     $url = 'https://nld.com.vn/thi-truong-vang-trang-suc.html';
     
     $ch = curl_init();
@@ -43,11 +38,9 @@ function getNldNews() {
         $dom->loadHTML($html);
         $xpath = new DOMXPath($dom);
 
-        // NLD thường dùng class 'news-item' hoặc cấu trúc trong div cate-content
         $articles = $xpath->query('//div[contains(@class, "news-item")] | //div[@class="item"]');
 
         foreach ($articles as $index => $article) {
-            // Tiêu đề & Link
             $titleNode = $xpath->query('.//h3/a | .//h2/a | .//a[@class="title"]', $article)->item(0);
             
             if ($titleNode) {
@@ -55,16 +48,13 @@ function getNldNews() {
                 $link = $titleNode->getAttribute('href');
                 if (strpos($link, 'http') === false) $link = 'https://nld.com.vn' . $link;
 
-                // Ảnh
                 $imgNode = $xpath->query('.//img', $article)->item(0);
                 $image = '';
                 if ($imgNode) {
                     $image = $imgNode->getAttribute('data-src') ?: $imgNode->getAttribute('src');
                 }
-                // Fallback ảnh
                 if (empty($image)) $image = 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=800';
 
-                // Mô tả
                 $descNode = $xpath->query('.//p[contains(@class, "sapo")] | .//div[@class="sapo"]', $article)->item(0);
                 $desc = $descNode ? trim($descNode->textContent) : '';
 
@@ -73,7 +63,7 @@ function getNldNews() {
                     'link' => $link,
                     'image' => $image,
                     'desc' => $desc,
-                    'date' => date('d/m/Y') // Giả lập ngày
+                    'date' => date('d/m/Y')
                 ];
 
                 if ($index === 0) {
@@ -85,7 +75,6 @@ function getNldNews() {
         }
     }
 
-    // DỮ LIỆU DỰ PHÒNG (NẾU WEB CHẶN)
     if (!$featured) {
         $featured = [
             'title' => 'Giá vàng hôm nay tiếp tục phá đỉnh lịch sử',
@@ -119,7 +108,6 @@ $list = $data['list'];
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
 <style>
-    /* GLOBAL STYLE */
     .news-wrapper {
         font-family: 'Be Vietnam Pro', sans-serif !important;
         background-color: #fff;
@@ -132,7 +120,6 @@ $list = $data['list'];
         letter-spacing: 0.5px;
     }
 
-    /* HERO SECTION (Giống Contact) */
     .news-hero {
         background-color: #f9f9f9;
         padding: 80px 0;
@@ -141,22 +128,20 @@ $list = $data['list'];
     .hero-title { font-size: 3rem; color: #000; margin-bottom: 15px; }
     .hero-text { font-family: 'Playfair Display', serif; font-style: italic; color: #666; font-size: 1.1rem; }
 
-    /* CARD CUSTOMIZATION (Luxury Style) */
     .card {
         border: 1px solid #e5e5e5;
-        border-radius: 0 !important; /* Vuông vức */
+        border-radius: 0 !important;
         background: #fff;
         transition: all 0.3s ease;
     }
     .card:hover {
         box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
-        border-color: #d4af37; /* Viền vàng khi hover */
+        border-color: #d4af37;
         transform: translateY(-2px);
     }
     
     .card-img-top { border-radius: 0 !important; }
 
-    /* Typography trong Card */
     .card-title {
         font-size: 1.25rem;
         line-height: 1.4;
@@ -167,7 +152,6 @@ $list = $data['list'];
 
     .card-text { font-size: 0.9rem; color: #555; }
 
-    /* Buttons & Badges */
     .badge-lux {
         background-color: #000;
         color: #d4af37;
@@ -192,7 +176,6 @@ $list = $data['list'];
         color: #fff;
     }
 
-    /* SIDEBAR STYLE */
     .card-header-lux {
         background-color: #fff;
         border-bottom: 2px solid #000;
@@ -217,7 +200,7 @@ $list = $data['list'];
     }
     .sidebar-link:hover { color: #d4af37; }
 </style>
-
+   
 <div class="news-wrapper">
     
     <section class="news-hero">
@@ -284,7 +267,6 @@ $list = $data['list'];
                     </div>
                     <div class="list-group list-group-flush">
                         <?php 
-                        // Lấy 5 tin đầu làm sidebar
                         $sidebar_news = array_slice($list, 0, 5);
                         foreach($sidebar_news as $item): 
                         ?>

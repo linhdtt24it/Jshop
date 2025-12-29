@@ -20,17 +20,16 @@ class StaffController extends Controller
 {
     private $contactModel;
     private $userModel;
-    private $orderModel; // KHAI BÁO MODEL MỚI
+    private $orderModel;
     private $orderItemModel;
     private $ROOT_URL;
     
     public function __construct() {
         $this->contactModel = $this->model('ContactModel');
         $this->userModel = $this->model('User'); 
-        $this->orderModel = $this->model('Order'); // KHỞI TẠO MODEL MỚI
+        $this->orderModel = $this->model('Order');
         $this->orderItemModel = $this->model('OrderItem');
         
-        // TÍNH TOÁN ROOT_URL ĐỂ DÙNG CHO REDIRECT ĐẾN CÁC FILE CONTROLLER BÊN NGOÀI PUBLIC/
         $this->ROOT_URL = str_replace('public/', '', BASE_URL);
     }
 
@@ -63,27 +62,24 @@ class StaffController extends Controller
             'avatar'    => 'https://ui-avatars.com/api/?background=fce7f3&color=be123c&name=' . urlencode($user_name)
         ];
 
-        // LẤY SỐ LƯỢNG THỰC TẾ TỪ MODEL MỚI
         $orders_pending_count = $this->orderModel->countOrdersByStatus('pending'); 
         $orders_processing_count = $this->orderModel->countOrdersByStatus('processing'); 
         $orders_completed_count = $this->orderModel->countOrdersByStatus('completed');
         
-        // Tổng số đơn hàng chờ (pending + processing) cho hiển thị tổng quan
         $orders_total_pending = $orders_pending_count + $orders_processing_count;
 
         $all_messages = $this->contactModel->getAllMessages();
         $new_messages_count = count(array_filter($all_messages, fn($m) => $m['status'] === 'new'));
 
-        // Lấy 5 đơn hàng mới nhất đang chờ xử lý để hiển thị Dashboard
         $recent_orders = $this->orderModel->getPendingOrders();
         $recent_orders = array_slice($recent_orders, 0, 5);
 
         $data = [
             'user'               => $user, 
-            'orders_pending'     => $orders_pending_count, // Đơn chờ xác nhận
-            'orders_processing'  => $orders_processing_count, // Đang đóng gói
-            'completed_orders'   => $orders_completed_count, // Đã hoàn thành
-            'orders_total_pending' => $orders_total_pending, // Tổng chờ + xử lý
+            'orders_pending'     => $orders_pending_count,
+            'orders_processing'  => $orders_processing_count,
+            'completed_orders'   => $orders_completed_count,
+            'orders_total_pending' => $orders_total_pending,
             'new_messages_count' => $new_messages_count,
             'recent_orders'      => $recent_orders
         ];
@@ -91,23 +87,20 @@ class StaffController extends Controller
         $this->view('staff/dashboard', $data);
     }
 
-    // PHƯƠNG THỨC MỚI: Xử lý hiển thị danh sách đơn hàng chờ
     private function orders_pending()
     {
-        // Lấy tất cả đơn hàng đang chờ và đang xử lý
         $orders = $this->orderModel->getPendingOrders(); 
         
         $data = [
             'page_title' => 'Quản lý Đơn hàng Chờ & Đang xử lý',
             'orders' => $orders,
-            'BASE_URL' => BASE_URL // Truyền BASE_URL cho view để tạo liên kết
+            'BASE_URL' => BASE_URL
         ];
         
         $this->view('staff/orders/index', $data);
     }
  
 
-    // PHƯƠNG THỨC MỚI: Xem chi tiết đơn hàng
     private function order_detail()
     {
         $order_id = (int)($_GET['id'] ?? 0);
@@ -126,7 +119,6 @@ class StaffController extends Controller
 
         $items = $this->orderItemModel->getOrderItemsByOrderId($order_id);
 
-        // Lấy số lượng cho sidebar (Giống Dashboard)
         $orders_pending_count = $this->orderModel->countOrdersByStatus('pending'); 
         $orders_processing_count = $this->orderModel->countOrdersByStatus('processing'); 
         $orders_total_pending = $orders_pending_count + $orders_processing_count;
@@ -145,7 +137,6 @@ class StaffController extends Controller
         $this->view('staff/orders/detail', $data);
     }
 
-    // PHƯƠNG THỨC MỚI: Cập nhật trạng thái đơn hàng
     private function update_order_status()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -201,22 +192,19 @@ class StaffController extends Controller
     {
         $user_id = $_SESSION['user_id'] ?? 0;
         
-        // Lấy thông tin Staff chi tiết từ Database
         $staff_data = $this->userModel->getUserById($user_id);
 
-        // Lấy số lượng tin nhắn mới để hiển thị trên sidebar
         $all_messages = $this->contactModel->getAllMessages();
 
         $data = [
             'page_title' => 'Hồ sơ Cá nhân Staff',
             'messages' => $all_messages,
-            'staff_data' => $staff_data // Truyền dữ liệu chi tiết vào View
+            'staff_data' => $staff_data
         ];
         
         $this->view('staff/profile', $data);
     }
     
-    // PHƯƠNG THỨC ĐÃ CẬP NHẬT: Xử lý chỉnh sửa hồ sơ
     private function update_profile()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -224,7 +212,6 @@ class StaffController extends Controller
             exit;
         }
 
-        // Lấy dữ liệu từ form
         $user_id = (int)($_POST['user_id'] ?? 0);
         $full_name = trim($_POST['full_name'] ?? '');
         $email = trim($_POST['email'] ?? '');
@@ -233,14 +220,12 @@ class StaffController extends Controller
         $hometown = trim($_POST['hometown'] ?? '');
         $health_status = trim($_POST['health_status'] ?? '');
 
-        // Kiểm tra quyền truy cập và xác thực cơ bản
         if ($user_id != ($_SESSION['user_id'] ?? 0) || empty($full_name) || empty($email)) {
             $_SESSION['error_message'] = 'Lỗi xác thực hoặc dữ liệu không hợp lệ.';
             header('Location: ' . $this->ROOT_URL . 'app/controllers/StaffController.php?action=profile');
             exit;
         }
 
-        // Chuẩn bị dữ liệu cập nhật
         $update_data = [
             'full_name' => $full_name,
             'email' => $email,
@@ -254,7 +239,6 @@ class StaffController extends Controller
             $update_success = $this->userModel->updateProfile($user_id, $update_data);
             
             if ($update_success) {
-                // Cập nhật Session sau khi lưu thành công
                 $_SESSION['user_name'] = $full_name; 
                 $_SESSION['email'] = $email;
                 $_SESSION['phone_number'] = $phone_number;
@@ -266,7 +250,6 @@ class StaffController extends Controller
             $_SESSION['error_message'] = 'Lỗi cập nhật hồ sơ: ' . $e->getMessage();
         }
 
-        // Chuyển hướng trở lại trang hồ sơ
         header('Location: ' . $this->ROOT_URL . 'app/controllers/StaffController.php?action=profile');
         exit;
     }
@@ -283,27 +266,21 @@ class StaffController extends Controller
         $new_password = $_POST['new_password'] ?? '';
         $confirm_password = $_POST['confirm_password'] ?? '';
         
-        // 1. Xác thực cơ bản
         if ($user_id != ($_SESSION['user_id'] ?? 0)) {
             $_SESSION['error_message'] = 'Lỗi xác thực người dùng.';
             header('Location: ' . $this->ROOT_URL . 'app/controllers/StaffController.php?action=profile');
             exit;
         }
 
-        // 2. Xác thực mật khẩu mới có khớp không
         if ($new_password !== $confirm_password) {
             $_SESSION['error_message'] = 'Mật khẩu mới và xác nhận mật khẩu không khớp.';
             header('Location: ' . $this->ROOT_URL . 'app/controllers/StaffController.php?action=profile');
             exit;
         }
 
-        // 3. Kiểm tra mật khẩu cũ và cập nhật
-        
-        // a. Lấy mật khẩu hash hiện tại từ DB
         $user_data = $this->userModel->getUserById($user_id); 
         
         if ($user_data && password_verify($old_password, $user_data['password'])) {
-            // b. Mật khẩu cũ đúng, tiến hành cập nhật
             $new_password_hashed = password_hash($new_password, PASSWORD_DEFAULT);
             
             try {
@@ -320,15 +297,12 @@ class StaffController extends Controller
 
 
         } else {
-            // c. Mật khẩu cũ sai
             $_SESSION['error_message'] = 'Mật khẩu cũ không chính xác.';
         }
 
-        // 4. Chuyển hướng
         header('Location: ' . $this->ROOT_URL . 'app/controllers/StaffController.php?action=profile');
         exit;
     }
-    // KẾT THÚC PHƯƠNG THỨC change_password
 
 
     public function reply()

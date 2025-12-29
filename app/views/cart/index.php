@@ -1,14 +1,11 @@
 <?php
-// Jshop/app/views/cart/index.php
 $page_title = "Giỏ Hàng - JSHOP Luxury";
 require_once __DIR__ . '/../layouts/header.php';
 
-// Lấy dữ liệu từ CartController gửi qua
 $cart_items = $data['items'] ?? [];
 ?>
 
 <style>
-    /* Font chữ và màu sắc đồng bộ Luxury */
     .cart-page {
         font-family: 'Be Vietnam Pro', sans-serif !important;
         background-color: #fff;

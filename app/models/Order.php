@@ -1,13 +1,8 @@
 <?php
-// Jshop/app/models/Order.php
-
 require_once __DIR__ . '/../core/Model.php'; 
 
 class Order extends Model { 
   
-    /**
-     * Tạo đơn hàng mới với đầy đủ thông tin giao hàng
-     */
     public function createOrder($data) {
         $sql = "INSERT INTO orders (
                     user_id, 
@@ -49,9 +44,6 @@ class Order extends Model {
         }
     }
 
-    /**
-     * Lấy thông tin đơn hàng theo ID
-     */
     public function getOrderById($order_id) {
         $sql = "SELECT * FROM orders WHERE order_id = ?";
         $stmt = $this->db->prepare($sql);
@@ -59,9 +51,6 @@ class Order extends Model {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Lấy danh sách các đơn hàng đang chờ xác nhận hoặc đang xử lý.
-     */
     public function getPendingOrders() {
         $sql = "
             SELECT 

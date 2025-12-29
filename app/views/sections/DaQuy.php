@@ -1,6 +1,4 @@
 <?php
-// app/views/sections/DaQuy.php
-// Đã sử dụng biến $productsDaQuy đã được truyền từ HomeController
 $products = $productsDaQuy;
 ?>
 <section class="daquy-section">
@@ -35,12 +33,10 @@ $products = $productsDaQuy;
   </div>
 </section>
 <style>
-/* Giữ nguyên CSS, nhưng sửa lỗi padding/margin nếu cần */
 .daquy-section { position: relative; overflow: hidden; }
 .daquy-section .section-title { text-align: center; font-size: 32px; font-weight: 800; color: #c2185b; margin-bottom: 40px; letter-spacing: 1px; }
 .daquy-section .site-width { max-width: 1200px; margin: 0 auto; }
 
-/* Áp dụng CSS chung cho slider container */
 .product-slider-container { position: relative; overflow: hidden; } 
 .product-track { display: flex; gap: 20px; transition: transform 0.5s ease; }
 .product-card { min-width: 260px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.08); transition: transform 0.3s, box-shadow 0.3s; }
@@ -66,22 +62,19 @@ document.addEventListener('DOMContentLoaded', function() {
   const prevBtn = container.querySelector('.product-prev');
   const nextBtn = container.querySelector('.product-next');
   
-  const gap = 20; 
-  const cloneCount = 3; 
+  const gap = 20;
+  const cloneCount = 3;
   let index = cloneCount;
   let isAnimating = false;
 
-  // 1. Clone Slides cho hiệu ứng loop vô tận
   slides.forEach((slide, i) => {
-    track.appendChild(slide.cloneNode(true)); 
-    track.insertBefore(slide.cloneNode(true), track.firstChild); 
+    track.appendChild(slide.cloneNode(true));
+    track.insertBefore(slide.cloneNode(true), track.firstChild);
   });
 
-  // Tính toán chiều rộng slide
   const allSlides = Array.from(track.querySelectorAll('.product-card'));
   const slideWidth = allSlides[cloneCount].offsetWidth + gap;
 
-  // Thiết lập vị trí ban đầu
   track.style.transform = `translateX(${-index * slideWidth}px)`;
 
   function updateSlider(animate = true) {
@@ -93,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function handleTransitionEnd() {
     isAnimating = false;
-    // Quay về vị trí thật sau khi transition kết thúc
     if (index >= slides.length + cloneCount) { 
       index = cloneCount; 
       updateSlider(false); 
@@ -108,7 +100,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   track.addEventListener('transitionend', handleTransitionEnd);
 
-  // Auto-slide
   setInterval(() => { if (!isAnimating) { index++; updateSlider(); } }, 4000);
 });
 </script>

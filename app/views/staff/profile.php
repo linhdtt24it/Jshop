@@ -1,12 +1,8 @@
 <?php
 
-// Lấy dữ liệu Staff từ Controller
-$user_data = $staff_data ?? []; 
 $user_name = $user_data['full_name'] ?? $_SESSION['user_name'] ?? 'Nhân viên';
 $user_id = $user_data['user_id'] ?? $_SESSION['user_id'] ?? 0;
 
-// Chuẩn bị dữ liệu hiển thị, sử dụng dữ liệu DB (nếu có)
-// Sử dụng toán tử null coalescing (??) để tránh lỗi nếu cột NULL
 $user_info = [
     'email' => $user_data['email'] ?? $_SESSION['email'] ?? 'Chưa cập nhật',
     'phone' => $user_data['phone_number'] ?? $_SESSION['phone_number'] ?? 'Chưa cập nhật', 
@@ -18,12 +14,8 @@ $user_info = [
 $user = ['full_name' => $user_name, 'avatar' => 'https://ui-avatars.com/api/?background=fce7f3&color=be123c&name=' . urlencode($user_name)];
 
 
-// KHẮC PHỤC LỖI BASE_URL TRỎ ĐẾN CONTROLLER BỊ SAI
 $ROOT_URL = str_replace('public/', '', BASE_URL);
-
-// Lấy số lượng tin nhắn mới (Cần được truyền từ Controller)
-$new_messages_count = count(array_filter($messages ?? [], fn($m) => $m['status'] === 'new')); 
-
+$new_messages_count = count(array_filter($messages ?? [], fn($m) => $m['status'] === 'new'));
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -37,7 +29,6 @@ $new_messages_count = count(array_filter($messages ?? [], fn($m) => $m['status']
    <link rel="stylesheet" href="/Jshop/public/assets/css/staff-dashboard.css">
    
    <style>
-        /* CSS Modal */
         .modal {
             position: fixed;
             top: 0;
@@ -45,7 +36,7 @@ $new_messages_count = count(array_filter($messages ?? [], fn($m) => $m['status']
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-            display: none; /* Mặc định ẩn */
+            display: none;
             justify-content: center;
             align-items: center;
             z-index: 1000;
@@ -94,7 +85,6 @@ $new_messages_count = count(array_filter($messages ?? [], fn($m) => $m['status']
             border-radius: 4px;
             box-sizing: border-box;
         }
-        /* CSS Hiển thị */
         .profile-card-header {
             display: flex;
             align-items: center;
@@ -323,12 +313,10 @@ $new_messages_count = count(array_filter($messages ?? [], fn($m) => $m['status']
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Modal Thông tin cá nhân
         const editModal = document.getElementById('editProfileModal');
         const editBtn = document.getElementById('editProfileBtn');
         const closeEditSpan = editModal.querySelector('.close-btn');
 
-        // Modal Đổi mật khẩu
         const passModal = document.getElementById('changePasswordModal');
         const passLink = document.getElementById('changePasswordLink');
         const closePassSpan = passModal.querySelector('.close-btn');
@@ -337,14 +325,11 @@ $new_messages_count = count(array_filter($messages ?? [], fn($m) => $m['status']
         const confirmPass = document.getElementById('confirmPassword');
         const errorDiv = document.getElementById('passwordMismatchError');
 
-        // Hàm điền dữ liệu cũ vào form Chỉnh sửa
         function fillEditForm() {
-            // Lấy giá trị hiện tại trên trang
             const ageText = document.getElementById('profileAge').textContent.trim();
             const hometownText = document.getElementById('profileHometown').textContent.trim();
             const healthText = document.getElementById('profileHealth').textContent.trim();
             
-            // Điền giá trị, nếu là 'Chưa cập nhật' thì điền chuỗi rỗng
             document.getElementById('fullName').value = document.getElementById('profileFullName').textContent.trim();
             document.getElementById('age').value = ageText !== 'Chưa cập nhật' ? ageText : '';
             document.getElementById('hometown').value = hometownText !== 'Chưa cập nhật' ? hometownText : '';
@@ -353,7 +338,6 @@ $new_messages_count = count(array_filter($messages ?? [], fn($m) => $m['status']
             document.getElementById('phone').value = document.getElementById('profilePhone').textContent.trim();
         }
 
-        // --- Xử lý Modal Thông tin cá nhân ---
         editBtn.onclick = function() {
             fillEditForm();
             editModal.style.display = 'flex';
@@ -362,9 +346,7 @@ $new_messages_count = count(array_filter($messages ?? [], fn($m) => $m['status']
             editModal.style.display = 'none';
         }
         
-        // --- Xử lý Modal Đổi mật khẩu ---
         passLink.onclick = function() {
-            // Reset form và ẩn lỗi khi mở
             passForm.reset();
             errorDiv.style.display = 'none';
             passModal.style.display = 'flex';
@@ -373,7 +355,6 @@ $new_messages_count = count(array_filter($messages ?? [], fn($m) => $m['status']
             passModal.style.display = 'none';
         }
         
-        // --- Xử lý Form Validation Mật khẩu ---
         passForm.onsubmit = function(event) {
             if (newPass.value !== confirmPass.value) {
                 event.preventDefault();
@@ -383,7 +364,6 @@ $new_messages_count = count(array_filter($messages ?? [], fn($m) => $m['status']
             }
         }
 
-        // Đóng modal khi nhấp ra ngoài
         window.onclick = function(event) {
             if (event.target == editModal || event.target == passModal) {
                 editModal.style.display = 'none';

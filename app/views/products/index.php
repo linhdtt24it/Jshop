@@ -1,5 +1,4 @@
 <?php
-// app/views/cart/index.php
 $page_title = "Giỏ hàng";
 include __DIR__ . "/../../layouts/header.php";
 ?>
@@ -10,7 +9,6 @@ include __DIR__ . "/../../layouts/header.php";
       <h2 class="mb-4 text-center">Giỏ hàng của bạn</h2>
 
       <?php if (empty($items)): ?>
-        <!-- TRỐNG HOẶC CHƯA LOGIN -->
         <div class="text-center p-5 bg-light rounded shadow-sm">
           <i class="bi bi-cart-x display-1 text-muted mb-3"></i>
           <h4 class="text-muted">
@@ -41,7 +39,6 @@ include __DIR__ . "/../../layouts/header.php";
         </div>
 
       <?php else: ?>
-        <!-- CÓ SẢN PHẨM -->
         <div class="table-responsive">
           <table class="table table-hover align-middle">
             <thead class="table-success">

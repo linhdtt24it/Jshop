@@ -2,22 +2,16 @@
 require_once __DIR__ . '/../../../config/constants.php';
 header('Content-Type: text/html; charset=UTF-8');
 
-// Kiểm tra xem có cần hiển thị OTP modal không
 $show_otp_modal = false;
 if (!isset($_SESSION['user_id']) && isset($_SESSION['otp_verified']) && $_SESSION['otp_verified'] === false) {
     $show_otp_modal = true;
 }
 
-// Kiểm tra file tồn tại
 $loginRegisterPath = __DIR__ . '/../auth/login_register.php';
 $otpModalPath = __DIR__ . '/../auth/modal_otp.php';
 
 $hasLoginRegister = file_exists($loginRegisterPath);
 $hasOTPModal = file_exists($otpModalPath);
-
-// DEBUG
-error_log("Login Register Path: $loginRegisterPath - Exists: " . ($hasLoginRegister ? 'YES' : 'NO'));
-error_log("OTP Modal Path: $otpModalPath - Exists: " . ($hasOTPModal ? 'YES' : 'NO'));
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -27,7 +21,6 @@ error_log("OTP Modal Path: $otpModalPath - Exists: " . ($hasOTPModal ? 'YES' : '
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title><?= htmlspecialchars($page_title ?? 'JSHOP', ENT_QUOTES, 'UTF-8') ?> - Trang sức cao cấp</title>
 
-    <!-- CSS -->
      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
      <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -90,7 +83,6 @@ error_log("OTP Modal Path: $otpModalPath - Exists: " . ($hasOTPModal ? 'YES' : '
   </div>
 </header>
 
-<!-- NAVBAR -->
 <nav class="navbar navbar-main">
   <div class="container">
     <ul class="nav main-menu">
@@ -116,7 +108,6 @@ error_log("OTP Modal Path: $otpModalPath - Exists: " . ($hasOTPModal ? 'YES' : '
   </div>
 </nav>
 
-<!-- SLIDER -->
 <?php if ($is_home ?? false): ?>
 <section class="main-slider">
   <div class="swiper mySwiper">
@@ -131,7 +122,6 @@ error_log("OTP Modal Path: $otpModalPath - Exists: " . ($hasOTPModal ? 'YES' : '
 </section>
 <?php endif; ?>
 
-<!-- MODAL LOGIN/REGISTER -->
 <?php if (!isset($_SESSION['user_id'])): ?>
     <?php if ($hasLoginRegister): ?>
         <?php include_once $loginRegisterPath; ?>
@@ -141,14 +131,12 @@ error_log("OTP Modal Path: $otpModalPath - Exists: " . ($hasOTPModal ? 'YES' : '
     <?php endif; ?>
 <?php endif; ?>
 
-<!-- MODAL OTP (luôn có, ẩn) -->
 <?php if ($hasOTPModal): ?>
     <?php include_once $otpModalPath; ?>
 <?php else: ?>
     <div class="modal fade" id="otpModal" tabindex="-1"></div>
 <?php endif; ?>
 
-<!-- BACK TO TOP -->
 <button id="backToTop" class="back-to-top" aria-label="Lên đầu trang">
     <i class="bi bi-chevron-up"></i>
 </button>
@@ -157,11 +145,9 @@ error_log("OTP Modal Path: $otpModalPath - Exists: " . ($hasOTPModal ? 'YES' : '
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <script>
-// Đảm bảo hàm này nằm ở ngoài cùng, không bọc trong thẻ <script> nào khác
 function addToCart(productId) {
     console.log('🛒 Đang thêm sản phẩm:', productId);
     
-    // Sử dụng đường dẫn API dựa trên BASE_URL
     const apiUrl = '<?= BASE_URL ?>cart/add?id=' + productId;
 
     fetch(apiUrl)
@@ -197,7 +183,6 @@ function addToCart(productId) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Logic Back to top
     const backToTopButton = document.getElementById('backToTop');
     if (backToTopButton) {
         window.addEventListener('scroll', function() {
@@ -208,7 +193,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Logic Swiper cho trang chủ
     <?php if ($is_home ?? false): ?>
     new Swiper('.mySwiper', {
         loop: true,

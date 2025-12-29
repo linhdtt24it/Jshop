@@ -1,5 +1,4 @@
 <?php
-// Jshop/app/models/Product.php
 require_once __DIR__ . '/../core/Model.php';
 
 class Product extends Model {
@@ -50,7 +49,6 @@ class Product extends Model {
         return $row['total'];
     }
 
-    // ĐÃ SỬA LỖI SQL TẠI ĐÂY
     public function getAllProductsWithDetails() {
         $sql = "
             SELECT 
@@ -59,7 +57,7 @@ class Product extends Model {
                 coll.name AS collection_name
             FROM products p
             LEFT JOIN categories c ON p.category_id = c.category_id
-            LEFT JOIN collections coll ON p.collection_id = coll.collection_id -- Sửa lỗi: p->collection_id thành p.collection_id
+            LEFT JOIN collections coll ON p.collection_id = coll.collection_id
             ORDER BY p.product_id DESC
         ";
         return $this->selectAll($sql);
@@ -76,9 +74,6 @@ class Product extends Model {
         return $this->execute($sql, [$stock, $product_id]);
     }
 
-    /**
-     * Thêm mới hoặc cập nhật sản phẩm.
-     */
     public function saveProduct($data) {
         $fields = [
             'name', 'description', 'category_id', 'material_id', 'collection_id', 
@@ -89,7 +84,6 @@ class Product extends Model {
         foreach ($fields as $field) {
             $value = $data[$field] ?? null; 
             
-            // Chuyển chuỗi rỗng ("") thành NULL để tránh lỗi SQL cho các cột INT/FK
             if ($value === "") {
                 $params[] = null;
             } else {
@@ -98,12 +92,10 @@ class Product extends Model {
         }
 
         if (isset($data['product_id']) && $data['product_id'] > 0) {
-            // Update existing product
             $setClauses = implode('=?, ', $fields) . '=?';
             $sql = "UPDATE products SET {$setClauses} WHERE product_id=?";
             $params[] = $data['product_id'];
         } else {
-            // Insert new product
             $placeholders = implode(', ', array_fill(0, count($fields), '?'));
             $fieldNames = implode(', ', $fields);
             $sql = "INSERT INTO products ({$fieldNames}) VALUES ({$placeholders})";
