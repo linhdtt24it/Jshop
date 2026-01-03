@@ -156,6 +156,13 @@ $cart_items = $data['items'] ?? [];
     </div>
 
     <div class="container">
+        <?php
+        if (isset($_SESSION['flash_message'])) {
+            echo '<div class="alert alert-warning" role="alert">' . htmlspecialchars($_SESSION['flash_message']) . '</div>';
+            unset($_SESSION['flash_message']);
+        }
+        ?>
+
         <?php if (empty($cart_items)): ?>
             <div class="text-center py-5">
                 <i class="fas fa-cart-arrow-down" style="font-size: 4rem; color: #eee;"></i>
@@ -202,9 +209,8 @@ $cart_items = $data['items'] ?? [];
                                     
                                     <td>
                                         <div class="qty-control">
-                                            <a href="<?= BASE_URL ?>cart/update?id=<?= $item['product_id'] ?>&qty=<?= $item['quantity']-1 ?>" class="qty-btn">-</a>
-                                            <input type="number" value="<?= $item['quantity'] ?>" class="qty-input" readonly>
-                                            <a href="<?= BASE_URL ?>cart/update?id=<?= $item['product_id'] ?>&qty=<?= $item['quantity']+1 ?>" class="qty-btn">+</a>
+                                            <input type="number" value="<?= $item['quantity'] ?>" class="qty-input" min="1" style="width: 60px; background-color: white;"
+                                                   onchange="updateQuantity(<?= $item['product_id'] ?>, this.value)">
                                         </div>
                                     </td>
                                     
@@ -251,3 +257,12 @@ $cart_items = $data['items'] ?? [];
 </div>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
+
+<script>
+function updateQuantity(productId, newQuantity) {
+    if (newQuantity < 1) {
+        newQuantity = 1;
+    }
+    window.location.href = `<?= BASE_URL ?>cart/update?id=${productId}&qty=${newQuantity}`;
+}
+</script>

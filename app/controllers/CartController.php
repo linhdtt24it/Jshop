@@ -66,14 +66,24 @@ class CartController extends Controller {
         $new_qty = (int)($_GET['qty'] ?? 0);
 
         if ($user_id && $product_id > 0) {
-            $this->cartModel->updateQuantity($user_id, $product_id, $new_qty);
-            
-            $items = $this->cartModel->getCartItemsByUserId($user_id);
-            $total_count = 0;
-            foreach ($items as $item) {
-                $total_count += $item['quantity'];
+            $result = $this->cartModel->updateQuantity($user_id, $product_id, $new_qty);
+
+            if ($result === true) {
+                $items = $this->cartModel->getCartItemsByUserId($user_id);
+                $total_count = 0;
+                foreach ($items as $item) {
+                    $total_count += $item['quantity'];
+                }
+                $_SESSION['cart_count'] = $total_count;
+            } else {
+                $message = 'Lỗi khi cập nhật giỏ hàng.';
+                if ($result === 'out_of_stock') {
+                    $productModel = $this->model('Product');
+                    $product = $productModel->getProductById($product_id);
+                    $message = 'Số lượng sản phẩm trong kho không đủ. Chỉ còn ' . $product['stock'] . ' sản phẩm.';
+                }
+                $_SESSION['flash_message'] = $message;
             }
-            $_SESSION['cart_count'] = $total_count;
         }
 
         header('Location: ' . BASE_URL . 'cart');

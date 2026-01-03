@@ -50,6 +50,13 @@ class CheckoutController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') return;
 
         $user_id = $_SESSION['user_id'];
+        $cart_items = $this->cartModel->getCartItemsByUserId($user_id);
+
+        if (empty($cart_items)) {
+            header("Location: " . BASE_URL . "cart");
+            exit;
+        }
+
         $payment_method = $_POST['payment_method'] ?? 'COD';
         $total_amount = (float)($_POST['total_amount'] ?? 0);
 
@@ -64,12 +71,9 @@ class CheckoutController extends Controller {
             'order_status'     => 'pending' 
         ];
 
-        $order_id = $this->orderModel->createOrder($order_data);
+        $order_id = $this->orderModel->createOrderWithItemsAndStockUpdate($order_data, $cart_items);
 
         if ($order_id) {
-            $cart_items = $this->cartModel->getCartItemsByUserId($user_id);
-            $this->orderItemModel->addOrderItems($order_id, $cart_items);
-            
             $this->cartModel->clearCartByUserId($user_id);
             $_SESSION['cart_count'] = 0;
 
@@ -88,6 +92,10 @@ class CheckoutController extends Controller {
                     header("Location: " . BASE_URL . "checkout/success");
                     break;
             }
+            exit;
+        } else {
+            // Failure, redirect back to cart where flash message will be shown
+            header("Location: " . BASE_URL . "cart");
             exit;
         }
     }

@@ -89,6 +89,19 @@ class CartModel extends Model {
         if ($quantity <= 0) {
             return $this->removeItem($user_id, $product_id);
         }
+
+        $product_model = new Product();
+        $product = $product_model->getProductById($product_id);
+
+        if (!$product) {
+            return 'not_found';
+        }
+        
+        $stock = $product['stock'];
+
+        if ($stock < $quantity) {
+            return 'out_of_stock';
+        }
         
         $sql = "
             UPDATE cart 
@@ -97,11 +110,12 @@ class CartModel extends Model {
         ";
         
         try {
-            return $this->db->prepare($sql)->execute([
+            $this->db->prepare($sql)->execute([
                 ':quantity' => $quantity,
                 ':user_id' => $user_id,
                 ':product_id' => $product_id
             ]);
+            return true;
         } catch (PDOException $e) {
             return false;
         }

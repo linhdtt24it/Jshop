@@ -43,10 +43,15 @@ include __DIR__ . "/../layouts/header.php";
         </p>
       </div>
 
+      <div class="mb-4">
+        <label for="custom_text" class="form-label fw-bold"><i class="bi bi-pencil-square me-2"></i>Dịch vụ khắc chữ</label>
+        <input type="text" id="custom_text" class="form-control" placeholder="Nhập nội dung cần khắc (nếu có)">
+      </div>
+
       <div class="d-grid gap-3 d-md-flex">
         <button type="button" 
                 class="btn btn-dark btn-lg px-5 py-3 shadow-none" 
-                onclick="addToCart(<?= $product['product_id'] ?>)">
+                onclick="addToCart(<?= $product['product_id'] ?>, document.getElementById('custom_text').value)">
           <i class="bi bi-cart-plus me-2"></i> THÊM VÀO GIỎ HÀNG
         </button>
 
