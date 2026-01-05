@@ -82,6 +82,13 @@ $total_price = $data['total_price'] ?? 0;
                                 <small class="text-muted d-block fw-normal">Thanh toán tiện lợi qua ứng dụng ZaloPay.</small>
                             </label>
                         </div>
+                        <div class="form-check mb-0 p-3 border rounded hover-border mt-3">
+                            <input class="form-check-input mt-2" type="radio" name="payment_method" id="payment_bank_qr" value="MOMO_QR">
+                            <label class="form-check-label fw-bold d-block" for="payment_bank_qr">
+                                <img src="https://www.vietinbank.vn/web/portal/assets/images/logo-vi.png" width="20" height="20" class="me-2"> Thanh toán bằng mã QR Vietinbank
+                                <small class="text-muted d-block fw-normal">Quét mã QR bằng ứng dụng ngân hàng để thanh toán.</small>
+                            </label>
+                        </div>
                     </div>
                 </div>
 

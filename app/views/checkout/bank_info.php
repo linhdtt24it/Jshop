@@ -2,15 +2,34 @@
 $page_title = $data['page_title'] ?? 'Cổng Thanh Toán';
 include __DIR__ . "/../layouts/header.php";
 
+$order = $data['order'] ?? [];
 $order_id = $data['order_id'] ?? 0;
 $method = $data['method'] ?? 'Ví điện tử';
 
-if ($method === 'MOMO') {
+$logo = '';
+$main_color = '';
+$payment_title = '';
+
+if ($method === 'BANK_TRANSFER') {
+    $logo = 'https://www.vietinbank.vn/web/portal/assets/images/logo-vi.png';
+    $main_color = '#0056a6';
+    $payment_title = 'Chuyển khoản Ngân hàng';
+    $bank_bin = '970415'; // BIN for Vietinbank
+    $account_no = '107881666265';
+    $account_name = 'PHẠM THÁI BẢO';
+    $amount = $order['total_amount'];
+    $info = "Thanh toan don hang JSHOP " . $order_id;
+    $qr_url = "https://img.vietqr.io/image/$bank_bin-$account_no-compact2.png?amount=$amount&addInfo=" . urlencode($info) . "&accountName=" . urlencode($account_name);
+
+} elseif ($method === 'MOMO') {
     $logo = 'https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png';
     $main_color = '#ae136e';
+    $payment_title = 'Thanh toán qua Ví MoMo';
 } else {
+    // Fallback for other methods if any
     $logo = 'https://img.mservice.io/momo-payment/2020/03/9216790b-6029-4d69-82f5-f5b9d368e7d2.png'; 
     $main_color = '#008fe5';
+    $payment_title = 'Cổng thanh toán';
 }
 ?>
 
@@ -19,16 +38,32 @@ if ($method === 'MOMO') {
         <div class="col-md-6">
             <div class="card shadow-lg border-0 p-4" style="border-radius: 20px;">
                 <div class="card-body">
-                    <img src="<?= $logo ?>" alt="<?= $method ?>" class="mb-4 rounded shadow-sm" style="width: 80px; height: 80px; object-fit: contain;">
+                    <?php if ($logo): ?>
+                    <img src="<?= $logo ?>" alt="<?= $method ?>" class="mb-4 rounded shadow-sm" style="height: 80px; object-fit: contain;">
+                    <?php endif; ?>
                     
-                    <h2 class="fw-bold mb-3" style="font-family: 'Playfair Display', serif;">Thanh toán qua <?= $method ?></h2>
-                    <p class="text-muted mb-4">Vui lòng mở ứng dụng <strong><?= $method ?></strong> để quét mã QR thanh toán cho đơn hàng <span class="text-dark fw-bold">#<?= $order_id ?></span></p>
+                    <h2 class="fw-bold mb-3" style="font-family: 'Playfair Display', serif;"><?= $payment_title ?></h2>
+                    <p class="text-muted mb-4">Vui lòng quét mã QR để thanh toán cho đơn hàng <span class="text-dark fw-bold">#<?= $order_id ?></span></p>
 
+                    <?php if ($method === 'BANK_TRANSFER'): ?>
+                    <div class="qr-container p-3 border rounded-4 bg-white d-inline-block mb-4 shadow-sm" style="border: 2px dashed <?= $main_color ?> !important;">
+                        <img src="<?= $qr_url ?>" alt="QR Code" class="img-fluid" style="width: 250px;">
+                    </div>
+                    <div class="alert alert-light border-0 text-start small">
+                        <p class="mb-2"><strong>Ngân hàng:</strong> Ngân hàng TMCP Công thương Việt Nam (VietinBank)</p>
+                        <p class="mb-2"><strong>Chủ tài khoản:</strong> <?= $account_name ?></p>
+                        <p class="mb-1"><strong>Số tài khoản:</strong> <?= $account_no ?></p>
+                        <hr>
+                        <p class="mb-2"><strong>Số tiền:</strong> <span class="fw-bold text-danger"><?= number_format($amount) ?> đ</span></p>
+                        <p class="mb-0"><strong>Nội dung:</strong> <span class="fw-bold"><?= $info ?></span></p>
+                    </div>
+                    <?php else: ?>
                     <div class="qr-container p-3 border rounded-4 bg-white d-inline-block mb-4 shadow-sm" style="border: 2px dashed <?= $main_color ?> !important;">
                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=JSHOP_PAYMENT_<?= $order_id ?>" alt="QR Code" class="img-fluid" style="width: 200px;">
                     </div>
+                    <?php endif; ?>
 
-                    <div class="alert border-0 small mb-0" style="background-color: #f8f9fa;">
+                    <div class="alert border-0 small mb-0 mt-4" style="background-color: #f8f9fa;">
                         <div class="spinner-border spinner-border-sm me-2" role="status" style="color: <?= $main_color ?>;"></div>
                         Hệ thống đang chờ xác nhận thanh toán... <br>
                         <small class="text-muted">Đừng đóng trình duyệt, trang sẽ <b>tự động hoàn tất</b> khi tiền về.</small>
@@ -60,7 +95,7 @@ if ($method === 'MOMO') {
                 }
             })
             .catch(err => console.error("Đang kết nối lại với hệ thống..."));
-    }, 2000);
+    }, 3000);
 </script>
 
 <style>

@@ -84,6 +84,11 @@ class ProductController extends Controller {
     public function detail($id) {
         $id = (int)$id;
 
+        if ($id <= 0) {
+            header("Location: " . BASE_URL . "product");
+            exit;
+        }
+
         $stmt = $this->db->prepare("
             SELECT p.*, c.name AS cat_name
             FROM products p

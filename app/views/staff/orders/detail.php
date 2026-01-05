@@ -173,6 +173,42 @@ $user = [
                             <p class="mb-0"><strong>Ngày đặt:</strong><br> <?= date('d/m/Y H:i', strtotime($data['order']['created_at'])) ?></p>
                         </div>
                     </div>
+
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-white fw-bold">
+                            Trạng thái thanh toán
+                        </div>
+                        <div class="card-body">
+                            <?php
+                                $status = $data['order']['payment_status'] ?? 'pending';
+                                $status_text = 'Chờ thanh toán';
+                                $status_class = 'text-warning';
+                                if ($status == 'completed') {
+                                    $status_text = 'Đã thanh toán';
+                                    $status_class = 'text-success';
+                                } elseif ($status == 'failed') {
+                                    $status_text = 'Thanh toán thất bại';
+                                    $status_class = 'text-danger';
+                                }
+                            ?>
+                            <div class="mb-3">
+                                <span class="fw-bold">Trạng thái hiện tại:</span>
+                                <span class="fw-bold <?= $status_class ?>"><?= $status_text ?></span>
+                            </div>
+                             <form action="<?= $ROOT_URL ?>app/controllers/StaffController.php?action=update_payment_status" method="POST">
+                                <input type="hidden" name="order_id" value="<?= $data['order']['order_id'] ?>">
+                                <div class="mb-3">
+                                    <label class="form-label">Cập nhật:</label>
+                                    <select name="payment_status" class="form-select">
+                                        <option class="text-warning" value="pending" <?= $status == 'pending' ? 'selected' : '' ?>>Chờ thanh toán</option>
+                                        <option class="text-success" value="completed" <?= $status == 'completed' ? 'selected' : '' ?>>Đã thanh toán</option>
+                                        <option class="text-danger" value="failed" <?= $status == 'failed' ? 'selected' : '' ?>>Thanh toán thất bại</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-success w-100">Cập nhật TT</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

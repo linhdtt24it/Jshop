@@ -60,6 +60,11 @@ class CheckoutController extends Controller {
         $payment_method = $_POST['payment_method'] ?? 'COD';
         $total_amount = (float)($_POST['total_amount'] ?? 0);
 
+        $order_status = 'pending';
+        if ($payment_method === 'MOMO_QR') {
+            $order_status = 'on-hold';
+        }
+
         $order_data = [
             'user_id'          => $user_id,
             'receiver_name'    => trim($_POST['receiver_name']),
@@ -68,7 +73,7 @@ class CheckoutController extends Controller {
             'total_amount'     => $total_amount,
             'payment_method'   => $payment_method,
             'payment_status'   => 'pending', 
-            'order_status'     => 'pending' 
+            'order_status'     => $order_status
         ];
 
         $order_id = $this->orderModel->createOrderWithItemsAndStockUpdate($order_data, $cart_items);
@@ -87,6 +92,9 @@ class CheckoutController extends Controller {
                 case 'ZALOPAY':
                     header("Location: " . BASE_URL . "checkout/zalopayRedirect/$order_id");
                     break;
+                case 'MOMO_QR':
+                    header("Location: " . BASE_URL . "checkout/momoQrInfo/$order_id");
+                    break;
                 default:
                     $_SESSION['checkout_success_info'] = ['order_id' => $order_id, 'total' => $total_amount];
                     header("Location: " . BASE_URL . "checkout/success");
@@ -98,6 +106,12 @@ class CheckoutController extends Controller {
             header("Location: " . BASE_URL . "cart");
             exit;
         }
+    }
+
+    public function momoQrInfo($order_id) {
+        $order = $this->orderModel->getOrderById($order_id);
+        $user = $this->model('User')->getUserById($order['user_id']);
+        $this->view('checkout/momo_qr_info', ['order' => $order, 'user' => $user, 'order_id' => $order_id]);
     }
 
     public function cancelOrder($order_id) {
@@ -142,12 +156,76 @@ class CheckoutController extends Controller {
 
     public function bankTransferInfo($order_id) {
         $order = $this->orderModel->getOrderById($order_id);
-        $this->view('checkout/bank_info', ['order' => $order, 'order_id' => $order_id]);
+        $this->view('checkout/bank_info', ['order' => $order, 'order_id' => $order_id, 'method' => 'BANK_TRANSFER']);
     }
 
     public function momoRedirect($order_id) {
-        $this->view('checkout/mock_redirect', ['order_id' => $order_id, 'method' => 'MOMO', 'page_title' => 'Thanh toán MoMo']);
+        require_once __DIR__ . '/../../momo/loader.php';
+        $momo_config = require __DIR__ . '/../../config/momo.php';
+
+        $order = $this->orderModel->getOrderById($order_id);
+        if (!$order) {
+            // Handle order not found
+            header("Location: " . BASE_URL . "cart");
+            exit;
+        }
+
+        $amount = (string)$order['total_amount'];
+        $orderId = (string)$order['order_id'];
+        $orderInfo = "Thanh toán đơn hàng #" . $orderId;
+        $requestId = time() . "";
+        $notifyUrl = BASE_URL . "checkout/momo_ipn";
+        $returnUrl = BASE_URL . "checkout/momo_return";
+
+        $partnerInfo = new \MService\Payment\Shared\SharedModels\PartnerInfo($momo_config['partnerCode'], $momo_config['accessKey'], $momo_config['secretKey']);
+        $env = new \MService\Payment\Shared\SharedModels\Environment($momo_config['endpoint'], $partnerInfo, 'development');
+
+        $response = \MService\Payment\AllInOne\Processors\CaptureMoMo::process($env, $orderId, $orderInfo, $amount, '', $requestId, $returnUrl, $notifyUrl);
+
+        if (isset($response['payUrl'])) {
+            header("Location: " . $response['payUrl']);
+            exit;
+        } else {
+            // Handle error
+            $_SESSION['flash_message'] = "Không thể tạo yêu cầu thanh toán MoMo. Vui lòng thử lại.";
+            header("Location: " . BASE_URL . "cart");
+            exit;
+        }
     }
+
+    public function momo_ipn() {
+        require_once __DIR__ . '/../../momo/loader.php';
+        $momo_config = require __DIR__ . '/../../config/momo.php';
+
+        $partnerInfo = new \MService\Payment\Shared\SharedModels\PartnerInfo($momo_config['partnerCode'], $momo_config['accessKey'], $momo_config['secretKey']);
+        $env = new \MService\Payment\Shared\SharedModels\Environment($momo_config['endpoint'], $partnerInfo, 'development');
+
+        try {
+            $response = \MService\Payment\AllInOne\Processors\CaptureIPN::process($env, file_get_contents('php://input'));
+
+            if ($response['errorCode'] == 0) {
+                $order_id = $response['orderId'];
+                $this->orderModel->updateOrderStatus($order_id, 'paid', 'processing');
+            }
+        } catch (Exception $e) {
+            // Log error
+            error_log("Momo IPN Error: " . $e->getMessage());
+        }
+    }
+    
+    public function momo_return() {
+        if (isset($_GET['errorCode']) && $_GET['errorCode'] == 0) {
+            $order_id = $_GET['orderId'];
+            $order = $this->orderModel->getOrderById($order_id);
+            $_SESSION['checkout_success_info'] = ['order_id' => $order['order_id'], 'total' => $order['total_amount']];
+            header("Location: " . BASE_URL . "checkout/success");
+        } else {
+            $_SESSION['flash_message'] = "Thanh toán MoMo thất bại. Vui lòng thử lại.";
+            header("Location: " . BASE_URL . "cart");
+        }
+        exit;
+    }
+
 
     public function zalopayRedirect($order_id) {
         $this->view('checkout/mock_redirect', ['order_id' => $order_id, 'method' => 'ZALOPAY', 'page_title' => 'Thanh toán ZaloPay']);

@@ -137,5 +137,29 @@ class Order extends Model {
             return false;
         }
     }
+
+    public function updateOrderStatus($order_id, $payment_status, $order_status) {
+        $sql = "UPDATE orders SET payment_status = ?, order_status = ? WHERE order_id = ?";
+        try {
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$payment_status, $order_status, $order_id]);
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log("Lỗi Update Order Status: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function updatePaymentStatus($order_id, $status) {
+        $sql = "UPDATE orders SET payment_status = ? WHERE order_id = ?";
+        try {
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$status, $order_id]);
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log("Lỗi Update Payment Status: " . $e->getMessage());
+            return false;
+        }
+    }
     
 }

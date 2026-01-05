@@ -154,6 +154,24 @@ class StaffController extends Controller
         }
     }
 
+    private function update_payment_status()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $order_id = (int)($_POST['order_id'] ?? 0);
+            $status = $_POST['payment_status'] ?? '';
+            
+            if ($order_id > 0 && !empty($status)) {
+                $this->orderModel->updatePaymentStatus($order_id, $status);
+                $_SESSION['success_message'] = "Cập nhật trạng thái thanh toán cho đơn hàng #$order_id thành công!";
+            } else {
+                $_SESSION['error_message'] = "Dữ liệu không hợp lệ.";
+            }
+
+            header('Location: ' . $this->ROOT_URL . 'app/controllers/StaffController.php?action=order_detail&id=' . $order_id);
+            exit;
+        }
+    }
+
     private function messages()
     {
         $messages = $this->contactModel->getAllMessages();

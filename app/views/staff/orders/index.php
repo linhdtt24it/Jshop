@@ -8,9 +8,22 @@ $user = ['full_name' => $user_name, 'avatar' => 'https://ui-avatars.com/api/?bac
 
 $ROOT_URL = str_replace('public/', '', BASE_URL ?? '/Jshop/public/'); 
 
-function displayStatus($status) {
+function displayStatus($status, $is_payment_status = false) {
+    if ($is_payment_status) {
+        switch ($status) {
+            case 'pending':
+                return '<span class="badge bg-warning text-dark">Chờ thanh toán</span>';
+            case 'completed':
+                return '<span class="badge bg-success">Đã thanh toán</span>';
+            case 'failed':
+                return '<span class="badge bg-danger">Thanh toán thất bại</span>';
+            default:
+                return '<span class="badge bg-light text-dark">' . htmlspecialchars($status) . '</span>';
+        }
+    }
+
+    // Handle Order Status and Payment Methods
     switch ($status) {
-       
         case 'pending': 
             $badge_class = 'white text-dark';
             $text = 'Chờ xác nhận';
@@ -31,16 +44,6 @@ function displayStatus($status) {
             $badge_class = 'secondary'; 
             $text = 'Đã hủy';
             break;
-        
-        case 'paid':
-            $badge_class = 'success';
-            $text = 'Đã TT';
-            break;
-        case 'failed':
-            $badge_class = 'danger';
-            $text = 'Thất bại';
-            break;
-        
         case 'COD':
             $badge_class = 'dark';
             $text = 'COD';
@@ -57,7 +60,6 @@ function displayStatus($status) {
             $badge_class = 'blue';
             $text = 'ZaloPay';
             break;
-        
         default: 
             $badge_class = 'light';
             $text = $status;
@@ -187,7 +189,7 @@ function getRowClass($status) {
                                         <td><?= number_format($order['total_amount']) ?>đ</td>
                                         <td><?= mb_strimwidth(htmlspecialchars($order['shipping_address']), 0, 30, "...") ?></td>
                                         <td><?= displayStatus($order['payment_method']) ?></td>
-                                        <td><?= displayStatus($order['payment_status']) ?></td>
+                                        <td><?= displayStatus($order['payment_status'], true) ?></td>
                                         <td><?= displayStatus($order['order_status']) ?></td>
                                         <td><?= date('H:i d/m', strtotime($order['created_at'])) ?></td>
                                         <td>
